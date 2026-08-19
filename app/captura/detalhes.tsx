@@ -1,0 +1,217 @@
+import * as Location from 'expo-location';
+import { useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { getSpecies } from '@/catalog';
+import { saveCatch } from '@/db/queries';
+import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
+import { useDraft } from '@/stores/draft';
+
+export default function Detalhes() {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const draft = useDraft();
+  const [salvando, setSalvando] = useState(false);
+
+  const species = draft.speciesId ? getSpecies(draft.speciesId) : undefined;
+  const medida = Number(draft.lengthCm.replace(',', '.'));
+
+  /*
+   * GPS em segundo plano, sob demanda e silencioso (F06 e requisito de bateria).
+   * Se o usuário negar, o registro segue sem local — localização nunca bloqueia o fluxo.
+   */
+  useEffect(() => {
+    let vivo = true;
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+      const pos = await Location.getLastKnownPositionAsync();
+      const usar = pos ?? (await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }));
+      if (vivo && usar) {
+        useDraft.getState().set({ lat: usar.coords.latitude, lng: usar.coords.longitude });
+      }
+    })().catch(() => {
+      // Sem GPS o registro continua. Não há mensagem de erro de propósito.
+    });
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const pesoEstimado = useMemo(() => {
+    if (!species || !Number.isFinite(medida) || medida <= 0) return null;
+    return estimateWeightG(medida, species);
+  }, [species, medida]);
+
+  const pesoReal = draft.weightG.trim().length > 0 ? Number(draft.weightG.replace(',', '.')) : null;
+
+  async function salvar() {
+    if (salvando) return;
+    if (!draft.photoUri) {
+      Alert.alert('Falta a foto', 'Volte e fotografe a captura.');
+      return;
+    }
+
+    const check = checkMeasure(medida, species ?? null);
+    if (!check.ok) {
+      if (check.kind === 'fora-do-limite') {
+        Alert.alert('Medida inválida', check.message);
+        return;
+      }
+      // RN04: fora da faixa da espécie pode ser o peixe da vida do sujeito. Avisa e deixa salvar.
+      const confirmou = await new Promise<boolean>((resolve) => {
+        Alert.alert('Conferir medida', check.message, [
+          { text: 'Corrigir', style: 'cancel', onPress: () => resolve(false) },
+          { text: 'É isso mesmo', onPress: () => resolve(true) },
+        ]);
+      });
+      if (!confirmou) return;
+    }
+
+    setSalvando(true);
+    try {
+      const r = await saveCatch({
+        speciesId: draft.speciesId,
+        lengthCm: medida,
+        weightG: pesoReal !== null && Number.isFinite(pesoReal) ? pesoReal * 1000 : null,
+        photoLocal: draft.photoUri,
+        lat: draft.lat,
+        lng: draft.lng,
+        placeLabel: draft.placeLabel.trim() || null,
+        released: draft.released,
+        caughtAt: draft.caughtAt,
+        offlineOrigin: false,
+        });
+
+      if (r.unlocked && species) {
+        Alert.alert('Espécie desbloqueada!', `${species.commonName} entrou no seu álbum.`);
+      } else if (r.trophy && species) {
+        Alert.alert('Exemplar de troféu', `Esse ${species.commonName} está entre os grandes.`);
+      }
+
+      useDraft.getState().reset();
+      router.dismissAll();
+      router.replace('/');
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      className="flex-1 bg-fundo"
+    >
+      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}>
+        {draft.photoUri ? (
+          <Image source={{ uri: draft.photoUri }} className="h-56 w-full bg-elevado" resizeMode="cover" />
+        ) : null}
+
+        <View className="px-5 pt-5">
+          <Campo rotulo="Espécie">
+            <Pressable
+              onPress={() => router.push('/captura/especie')}
+              className="rounded-2xl border border-borda bg-superficie px-4 py-3 active:opacity-70"
+            >
+              <Text className={species ? 'text-base text-texto' : 'text-base text-suave'}>
+                {species ? species.commonName : draft.speciesId === null && draft.lengthCm ? 'Não identificado' : 'Escolher espécie'}
+              </Text>
+              {species ? (
+                <Text className="mt-0.5 text-xs italic text-suave">{species.scientificName}</Text>
+              ) : null}
+            </Pressable>
+          </Campo>
+
+          <Campo rotulo={`${species ? measureLabel(species) : 'Comprimento'} (cm)`}>
+            <TextInput
+              value={draft.lengthCm}
+              onChangeText={(v) => draft.set({ lengthCm: v })}
+              keyboardType="decimal-pad"
+              placeholder="0"
+              placeholderTextColor="#5E7972"
+              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-2xl font-semibold text-texto"
+            />
+            {pesoEstimado !== null ? (
+              <Text className="mt-2 text-sm text-suave">{weightLabel(null, pesoEstimado)}</Text>
+            ) : species && !species.lengthWeight ? (
+              <Text className="mt-2 text-sm text-suave">
+                Sem estimativa de peso para esta espécie — informe o peso real se quiser registrar.
+              </Text>
+            ) : null}
+          </Campo>
+
+          <Campo rotulo="Peso real (kg) — opcional">
+            <TextInput
+              value={draft.weightG}
+              onChangeText={(v) => draft.set({ weightG: v })}
+              keyboardType="decimal-pad"
+              placeholder="0,0"
+              placeholderTextColor="#5E7972"
+              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
+            />
+          </Campo>
+
+          <Campo rotulo="Local — opcional">
+            <TextInput
+              value={draft.placeLabel}
+              onChangeText={(v) => draft.set({ placeLabel: v })}
+              placeholder="Pesqueiro Recanto, Rio Paranhana..."
+              placeholderTextColor="#5E7972"
+              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
+            />
+            <Text className="mt-2 text-xs text-suave">
+              A coordenada exata fica só no seu aparelho. Amigos veem apenas este rótulo.
+            </Text>
+          </Campo>
+
+          <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-borda bg-superficie px-4 py-3">
+            <Text className="text-base text-texto">Pescado e solto</Text>
+            <Switch
+              value={draft.released}
+              onValueChange={(v) => draft.set({ released: v })}
+              trackColor={{ true: '#35D6A4', false: '#1E453B' }}
+              thumbColor="#E8F0ED"
+            />
+          </View>
+        </View>
+      </ScrollView>
+
+      <View
+        className="absolute inset-x-0 bottom-0 border-t border-borda bg-fundo px-5 pt-3"
+        style={{ paddingBottom: insets.bottom + 12 }}
+      >
+        <Pressable
+          onPress={salvar}
+          disabled={salvando}
+          className="items-center rounded-2xl bg-destaque py-4 active:opacity-80"
+        >
+          <Text className="text-base font-bold text-fundo">
+            {salvando ? 'Salvando...' : 'Salvar captura'}
+          </Text>
+        </Pressable>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
+
+function Campo({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
+  return (
+    <View className="mt-5">
+      <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-suave">{rotulo}</Text>
+      {children}
+    </View>
+  );
+}

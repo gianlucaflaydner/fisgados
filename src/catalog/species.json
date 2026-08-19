@@ -1,0 +1,4702 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-19T18:54:02.657Z",
+  "fishbaseVersion": "v19.04",
+  "albums": [
+    {
+      "id": "pesqueiros-sul",
+      "name": "Pesqueiros do Sul",
+      "cardCount": 23
+    },
+    {
+      "id": "rios-acudes-sul",
+      "name": "Rios e açudes do Sul",
+      "cardCount": 30
+    },
+    {
+      "id": "costa-sul",
+      "name": "Costa e lagoas do Sul",
+      "cardCount": 38
+    }
+  ],
+  "species": [
+    {
+      "id": "tilapia",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 1,
+        "rios-acudes-sul": 21
+      },
+      "commonName": "Tilápia",
+      "aliases": [
+        "tilápia-do-nilo",
+        "saint peter",
+        "tilápia-nilótica"
+      ],
+      "scientificName": "Oreochromis niloticus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 28,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.0366,
+        "b": 2.844,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Kaptai Lake, 1995-96",
+        "sampleSize": 1741,
+        "candidates": 13,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude",
+        "rio"
+      ],
+      "fact": "Originária da África, é o peixe mais estocado nos pesqueiros brasileiros e provavelmente o primeiro que você fisgou. Em ambiente natural do Sul é considerada invasora.",
+      "silhouette": "tilapia.svg",
+      "visuallySimilarTo": [
+        "cara",
+        "tilapia-vermelha"
+      ],
+      "badges": {
+        "bronze": "Oi, Tilápia",
+        "prata": "De Novo?",
+        "ouro": "É TILAAAAPIA",
+        "platina": "Praga do Açude",
+        "diamante": "Tilapocalipse",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 2,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-hungara",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 3,
+        "rios-acudes-sul": 22
+      },
+      "commonName": "Carpa-húngara",
+      "aliases": [
+        "carpa",
+        "carpa-comum",
+        "carpa-escama"
+      ],
+      "scientificName": "Cyprinus carpio",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.0173,
+        "b": 2.993,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Flanders (Yser, Scheldt and Meuse drainage basin), 1992-2009",
+        "sampleSize": 2158,
+        "candidates": 145,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude",
+        "rio"
+      ],
+      "fact": "Come no fundo, revirando o lodo com a boca protrátil. É a briga mais pesada e mais lenta que um pesqueiro do Sul oferece.",
+      "silhouette": "carpa-hungara.svg",
+      "visuallySimilarTo": [
+        "carpa-capim",
+        "carpa-cabeca-grande",
+        "carpa-espelho",
+        "carpa-colorida",
+        "carpa-prateada",
+        "kinguio"
+      ],
+      "badges": {
+        "bronze": "Bolinha de Massa",
+        "prata": "Puxou Feio",
+        "ouro": "Carpeiro",
+        "platina": "Tanque Húngaro",
+        "diamante": "Imperador do Fundo",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1450,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-capim",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 6
+      },
+      "commonName": "Carpa-capim",
+      "aliases": [
+        "carpa-herbívora",
+        "amur",
+        "carpa-do-capim"
+      ],
+      "scientificName": "Ctenopharyngodon idella",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 55,
+      "maxLengthCm": 110,
+      "lengthWeight": {
+        "a": 0.01899,
+        "b": 2.8623,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Zhujiang River = Pearl River",
+        "sampleSize": 253,
+        "candidates": 10,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Alimenta-se de vegetação e é estocada para controlar plantas aquáticas. Corpo alongado e cilíndrico, bem diferente da carpa-húngara.",
+      "silhouette": "carpa-capim.svg",
+      "visuallySimilarTo": [
+        "carpa-hungara",
+        "carpa-cabeca-grande"
+      ],
+      "badges": {
+        "bronze": "Fisgou Carpa-capim",
+        "prata": "Repeteco de Carpa-capim",
+        "ouro": "Pescador de Carpa-capim",
+        "platina": "Mestre de Carpa-capim",
+        "diamante": "Lenda de Carpa-capim",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 79,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-cabeca-grande",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 7
+      },
+      "commonName": "Carpa-cabeça-grande",
+      "aliases": [
+        "carpa-cabeçuda",
+        "big head",
+        "carpa-prateada-cabeçuda"
+      ],
+      "scientificName": "Hypophthalmichthys nobilis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 55,
+      "maxLengthCm": 110,
+      "lengthWeight": {
+        "a": 0.00951,
+        "b": 3.0475,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Zhujiang River = Pearl River.",
+        "sampleSize": 126,
+        "candidates": 8,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Filtradora de plâncton, com a cabeça desproporcionalmente grande que lhe dá o nome. Raramente ataca isca — quando entra, costuma ser fisgada de raspão.",
+      "silhouette": "carpa-cabeca-grande.svg",
+      "visuallySimilarTo": [
+        "carpa-hungara",
+        "carpa-capim",
+        "carpa-prateada"
+      ],
+      "badges": {
+        "bronze": "Fisgou Carpa-cabeça-grande",
+        "prata": "Repeteco de Carpa-cabeça-grande",
+        "ouro": "Pescador de Carpa-cabeça-grande",
+        "platina": "Mestre de Carpa-cabeça-grande",
+        "diamante": "Lenda de Carpa-cabeça-grande",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 275,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pacu",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 9
+      },
+      "commonName": "Pacu",
+      "aliases": [
+        "pacu-caranha",
+        "caranha"
+      ],
+      "scientificName": "Piaractus mesopotamicus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 32,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.0185,
+        "b": 3,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Tarija",
+        "sampleSize": 2,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Tem dentes molariformes que quebram sementes e caroços — e anzol mal escolhido. Nativo da bacia do Paraná, é presença certa em pesqueiro.",
+      "silhouette": "pacu.svg",
+      "visuallySimilarTo": [
+        "tambaqui",
+        "tambacu",
+        "pirapitinga"
+      ],
+      "badges": {
+        "bronze": "Roubou a Massa",
+        "prata": "Nadadeira Larga",
+        "ouro": "Pacuzeiro",
+        "platina": "Costela do Tanque",
+        "diamante": "Chapa de Prata",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 55383,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tambaqui",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 11
+      },
+      "commonName": "Tambaqui",
+      "aliases": [
+        "tambaki"
+      ],
+      "scientificName": "Colossoma macropomum",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.0249,
+        "b": 3.008,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Amazonas State",
+        "sampleSize": 1993,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Amazônico de origem, chega ao Sul apenas por estocagem — a água fria do inverno gaúcho limita a criação. É o maior caracídeo das Américas.",
+      "silhouette": "tambaqui.svg",
+      "visuallySimilarTo": [
+        "pacu",
+        "tambacu",
+        "pirapitinga"
+      ],
+      "badges": {
+        "bronze": "Fisgou Tambaqui",
+        "prata": "Repeteco de Tambaqui",
+        "ouro": "Pescador de Tambaqui",
+        "platina": "Mestre de Tambaqui",
+        "diamante": "Lenda de Tambaqui",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 263,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tambacu",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 12
+      },
+      "commonName": "Tambacu",
+      "aliases": [
+        "híbrido",
+        "tambacú"
+      ],
+      "scientificName": "Piaractus mesopotamicus × Colossoma macropomum",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": null,
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Híbrido de pacu com tambaqui, criado para juntar o crescimento rápido de um com a rusticidade do outro. Não existe na natureza — só em tanque.",
+      "silhouette": "tambacu.svg",
+      "visuallySimilarTo": [
+        "pacu",
+        "tambaqui"
+      ],
+      "badges": {
+        "bronze": "Fisgou Tambacu",
+        "prata": "Repeteco de Tambacu",
+        "ouro": "Pescador de Tambacu",
+        "platina": "Mestre de Tambacu",
+        "diamante": "Lenda de Tambacu",
+        "curated": false
+      },
+      "hybrid": true,
+      "taxonomy": {
+        "fishbaseSpecCode": null,
+        "status": "hibrido",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "bagre-africano",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 13,
+        "rios-acudes-sul": 24
+      },
+      "commonName": "Bagre-africano",
+      "aliases": [
+        "clarias",
+        "bagre-do-nilo",
+        "african"
+      ],
+      "scientificName": "Clarias gariepinus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 100,
+      "lengthWeight": {
+        "a": 0.00617,
+        "b": 3.04,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Lake Awassa",
+        "sampleSize": 918,
+        "candidates": 9,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Respira ar atmosférico e sobrevive horas fora d’água, o que o torna invasor perigoso quando escapa de tanque. Escorrega da mão como sabão.",
+      "silhouette": "bagre-africano.svg",
+      "visuallySimilarTo": [
+        "jundia",
+        "bagre-branco",
+        "bagre-americano"
+      ],
+      "badges": {
+        "bronze": "Que Isso?",
+        "prata": "Melequento",
+        "ouro": "Bagreiro",
+        "platina": "Bigode de Aço",
+        "diamante": "Sem Escama, Sem Medo",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1934,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "jundia",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 15,
+        "rios-acudes-sul": 11
+      },
+      "commonName": "Jundiá",
+      "aliases": [
+        "jundiá-cinza",
+        "bagre-jundiá",
+        "jundia"
+      ],
+      "scientificName": "Rhamdia quelen",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 28,
+      "maxLengthCm": 47,
+      "lengthWeight": {
+        "a": 0.0122142,
+        "b": 3.04,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Pampa plains lakes, Buenos Aires / 2008-2012",
+        "sampleSize": 98,
+        "candidates": 12,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude",
+        "pesqueiro"
+      ],
+      "fact": "O bagre nativo do Sul, de hábito noturno e presença em praticamente todo rio e açude gaúcho. Os ferrões peitorais doem por horas.",
+      "silhouette": "jundia.svg",
+      "visuallySimilarTo": [
+        "mandi-amarelo",
+        "bagre-africano",
+        "bagre-americano"
+      ],
+      "badges": {
+        "bronze": "Escorregou",
+        "prata": "Ferrão no Dedo",
+        "ouro": "Jundiazeiro",
+        "platina": "Bigode do Açude",
+        "diamante": "Barba Longa",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 23351,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "traira",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 16,
+        "rios-acudes-sul": 9
+      },
+      "commonName": "Traíra",
+      "aliases": [
+        "lobó",
+        "tarairá",
+        "traira"
+      ],
+      "scientificName": "Hoplias malabaricus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 32,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.00980453,
+        "b": 3.09,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Parana River",
+        "sampleSize": 2840,
+        "candidates": 20,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "açude",
+        "rio",
+        "pesqueiro"
+      ],
+      "fact": "Predador de tocaia: fica parada junto ao barranco e ataca em explosão. A dentição é o motivo de todo pescador do Sul ter uma cicatriz para mostrar.",
+      "silhouette": "traira.svg",
+      "visuallySimilarTo": [
+        "trairao"
+      ],
+      "badges": {
+        "bronze": "Mordida Seca",
+        "prata": "Cuidado com o Dedo",
+        "ouro": "Pescador de Traíra",
+        "platina": "Dona do Barranco",
+        "diamante": "Traíra Não Perdoa",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4757,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pintado",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 17
+      },
+      "commonName": "Pintado",
+      "aliases": [
+        "surubim",
+        "surubim-pintado"
+      ],
+      "scientificName": "Pseudoplatystoma corruscans",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 60,
+      "maxLengthCm": 120,
+      "lengthWeight": {
+        "a": 0.00380793,
+        "b": 3.16,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Itaipu Reservoir, Paraná, 1983-89",
+        "sampleSize": 347,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "rio"
+      ],
+      "fact": "Marcado por pintas escuras arredondadas sobre fundo claro. Confundir com a cachara é o erro mais comum do álbum — nela o padrão vira faixas.",
+      "silhouette": "pintado.svg",
+      "visuallySimilarTo": [
+        "cachara",
+        "pintachara",
+        "surubim-do-uruguai"
+      ],
+      "badges": {
+        "bronze": "Manchado",
+        "prata": "Peso no Fundo",
+        "ouro": "Pintadeiro",
+        "platina": "Bigode Grande",
+        "diamante": "Gigante de Couro",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 8674,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cachara",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 18
+      },
+      "commonName": "Cachara",
+      "aliases": [
+        "surubim-cachara",
+        "surubim"
+      ],
+      "scientificName": "Pseudoplatystoma reticulatum",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 55,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.00375978,
+        "b": 3.16,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": "Pseudoplatystoma corruscans",
+        "locality": "Itaipu Reservoir, Paraná, 1983-89",
+        "sampleSize": 347,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "rio"
+      ],
+      "fact": "O desenho é reticulado, formando faixas verticais que se conectam — não pintas soltas. Esse é o traço que a separa do pintado.",
+      "silhouette": "cachara.svg",
+      "visuallySimilarTo": [
+        "pintado",
+        "pintachara",
+        "surubim-do-uruguai"
+      ],
+      "badges": {
+        "bronze": "Fisgou Cachara",
+        "prata": "Repeteco de Cachara",
+        "ouro": "Pescador de Cachara",
+        "platina": "Mestre de Cachara",
+        "diamante": "Lenda de Cachara",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 66249,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pintachara",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 19
+      },
+      "commonName": "Pintachara",
+      "aliases": [
+        "híbrido",
+        "pintachara"
+      ],
+      "scientificName": "Pseudoplatystoma corruscans × Pseudoplatystoma reticulatum",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 58,
+      "maxLengthCm": 100,
+      "lengthWeight": null,
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Híbrido de pintado com cachara, com desenho intermediário que confunde até quem pesca há anos. Comum em pesqueiro, controverso em rio.",
+      "silhouette": "pintachara.svg",
+      "visuallySimilarTo": [
+        "pintado",
+        "cachara"
+      ],
+      "badges": {
+        "bronze": "Fisgou Pintachara",
+        "prata": "Repeteco de Pintachara",
+        "ouro": "Pescador de Pintachara",
+        "platina": "Mestre de Pintachara",
+        "diamante": "Lenda de Pintachara",
+        "curated": false
+      },
+      "hybrid": true,
+      "taxonomy": {
+        "fishbaseSpecCode": null,
+        "status": "hibrido",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "dourado",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 20,
+        "rios-acudes-sul": 28
+      },
+      "commonName": "Dourado",
+      "aliases": [
+        "dourado-do-rio",
+        "pirajuba",
+        "douradão"
+      ],
+      "scientificName": "Salminus brasiliensis",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 55,
+      "maxLengthCm": 100,
+      "lengthWeight": {
+        "a": 0.00877752,
+        "b": 3.11,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Parana River",
+        "sampleSize": 1441,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "pesqueiro"
+      ],
+      "fact": "Chamado de tigre do rio pela briga: corre, salta e sacode a cabeça fora d’água. No rio Uruguai é a captura mais cobiçada do Sul.",
+      "silhouette": "dourado.svg",
+      "visuallySimilarTo": [
+        "tabarana"
+      ],
+      "badges": {
+        "bronze": "Brilho na Água",
+        "prata": "Pulou!",
+        "ouro": "Caçador de Dourado",
+        "platina": "Tigre do Rio",
+        "diamante": "Ouro do Uruguai",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 56329,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "black-bass",
+      "albums": [
+        "pesqueiros-sul",
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 21,
+        "rios-acudes-sul": 25
+      },
+      "commonName": "Black bass",
+      "aliases": [
+        "achigã",
+        "bass",
+        "black-bass"
+      ],
+      "scientificName": "Micropterus salmoides",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.00601,
+        "b": 3.248,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Oklahoma",
+        "sampleSize": 3174,
+        "candidates": 62,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "açude",
+        "pesqueiro"
+      ],
+      "fact": "Norte-americano introduzido no Sul, é o peixe que criou a pesca esportiva com isca artificial. Ataca de boca escancarada e pula para cuspir a isca.",
+      "silhouette": "black-bass.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Atacou a Isca",
+        "prata": "Pulo do Bass",
+        "ouro": "Basseiro",
+        "platina": "Boca Grande",
+        "diamante": "Lenda do Lago",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 3385,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "truta-arco-iris",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 22
+      },
+      "commonName": "Truta arco-íris",
+      "aliases": [
+        "truta",
+        "trutinha"
+      ],
+      "scientificName": "Oncorhynchus mykiss",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 18,
+      "avgLengthCm": 30,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.00663932,
+        "b": 3.063,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Sacramento River, California",
+        "sampleSize": 484,
+        "candidates": 8,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "serra",
+        "pesqueiro",
+        "rio"
+      ],
+      "fact": "A carta característica da serra gaúcha e catarinense: São Francisco de Paula, Gramado, Canela, Urubici. Precisa de água fria e corrente para sobreviver.",
+      "silhouette": "truta-arco-iris.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Água Gelada",
+        "prata": "Fisgou na Serra",
+        "ouro": "Truteiro",
+        "platina": "Arco-Íris Completo",
+        "diamante": "Cristal de Urubici",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 239,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "lambari",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 1
+      },
+      "commonName": "Lambari",
+      "aliases": [
+        "lambari-do-rabo-amarelo",
+        "tambiú",
+        "piaba"
+      ],
+      "scientificName": "Astyanax lacustris",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 5,
+      "avgLengthCm": 10,
+      "maxLengthCm": 16,
+      "lengthWeight": {
+        "a": 0.0106947,
+        "b": 3.14,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Iguacu River basin / 2004-2009",
+        "sampleSize": 3380,
+        "candidates": 7,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "O primeiro peixe de quase todo pescador brasileiro, e a isca viva mais usada para traíra e dourado. Anda em cardume e come qualquer coisa.",
+      "silhouette": "lambari.svg",
+      "visuallySimilarTo": [
+        "lambari-rabo-vermelho",
+        "lambari-cachorro"
+      ],
+      "badges": {
+        "bronze": "Isca Viva",
+        "prata": "Roubou a Massa",
+        "ouro": "Zé do Lambari",
+        "platina": "Cardume Inteiro",
+        "diamante": "Fritada Histórica",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 58108,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cara",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 5
+      },
+      "commonName": "Cará",
+      "aliases": [
+        "acará",
+        "cará-comum",
+        "cara"
+      ],
+      "scientificName": "Geophagus brasiliensis",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 16,
+      "maxLengthCm": 28,
+      "lengthWeight": {
+        "a": 0.0198641,
+        "b": 2.98,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Iguacu River basin / 2004-2009",
+        "sampleSize": 417,
+        "candidates": 10,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude",
+        "lagoa"
+      ],
+      "fact": "Ciclídeo nativo com brilho azulado nas escamas. Peneira o substrato com a boca em busca de invertebrados — daí o nome do gênero, \"comedor de terra\".",
+      "silhouette": "cara.svg",
+      "visuallySimilarTo": [
+        "tilapia",
+        "cara-rabo-amarelo",
+        "chanchito"
+      ],
+      "badges": {
+        "bronze": "Peixinho Bonito",
+        "prata": "Teimoso",
+        "ouro": "Careiro",
+        "platina": "Rei da Beirada",
+        "diamante": "Azul de Açude",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4751,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "mandi-amarelo",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 12
+      },
+      "commonName": "Mandi-amarelo",
+      "aliases": [
+        "mandi",
+        "mandi-pintado",
+        "mandiuva"
+      ],
+      "scientificName": "Pimelodus maculatus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 40,
+      "lengthWeight": {
+        "a": 0.00764526,
+        "b": 3.08,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Itaipu Reservoir, Paraná, 1983-89",
+        "sampleSize": 1474,
+        "candidates": 11,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio"
+      ],
+      "fact": "Bagre de corpo amarelado com manchas escuras espalhadas. Anda em grupo e é o companheiro constante de quem pesca de fundo em rio do Sul.",
+      "silhouette": "mandi-amarelo.svg",
+      "visuallySimilarTo": [
+        "jundia"
+      ],
+      "badges": {
+        "bronze": "Amarelinho",
+        "prata": "Espinho na Mão",
+        "ouro": "Mandizeiro",
+        "platina": "Bigode Amarelo",
+        "diamante": "Ouro do Fundo",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 23451,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "piava",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 18
+      },
+      "commonName": "Piava",
+      "aliases": [
+        "piapara",
+        "piau",
+        "piava-três-pintas"
+      ],
+      "scientificName": "Megaleporinus obtusidens",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.0100792,
+        "b": 3.08,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Parana River",
+        "sampleSize": 3317,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Tem manchas escuras arredondadas ao longo do corpo e boca pequena e dura, difícil de fisgar. O gênero era Leporinus até revisão taxonômica recente.",
+      "silhouette": "piava.svg",
+      "visuallySimilarTo": [
+        "grumata",
+        "ximbore"
+      ],
+      "badges": {
+        "bronze": "Mordida Rápida",
+        "prata": "Boca Dura",
+        "ouro": "Piaveiro",
+        "platina": "Faixa Dourada",
+        "diamante": "Correnteza Vencida",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 23445,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "grumata",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 20
+      },
+      "commonName": "Grumatã",
+      "aliases": [
+        "curimba",
+        "curimbatá",
+        "curimatã",
+        "grumatã"
+      ],
+      "scientificName": "Prochilodus lineatus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 18,
+      "avgLengthCm": 33,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.0135678,
+        "b": 2.94,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Parana River",
+        "sampleSize": 13968,
+        "candidates": 16,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio"
+      ],
+      "fact": "A boca em forma de ventosa, feita para raspar o fundo, é o que o separa da piava à primeira vista. Faz piracema em cardumes enormes.",
+      "silhouette": "grumata.svg",
+      "visuallySimilarTo": [
+        "piava",
+        "biru",
+        "ximbore"
+      ],
+      "badges": {
+        "bronze": "Curimba ou Grumatã?",
+        "prata": "Fisgado de Raspão",
+        "ouro": "Grumatazeiro",
+        "platina": "Cardume de Inverno",
+        "diamante": "Senhor da Subida",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 13056,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cascudo",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 16
+      },
+      "commonName": "Cascudo",
+      "aliases": [
+        "acari",
+        "cascudo-preto",
+        "vieja"
+      ],
+      "scientificName": "Hypostomus commersoni",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 28,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.023839,
+        "b": 2.73,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Parana River",
+        "sampleSize": 302,
+        "candidates": 4,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Coberto de placas ósseas e com boca de ventosa para raspar algas. Raramente morde anzol — quando acontece, é fisgada de fora.",
+      "silhouette": "cascudo.svg",
+      "visuallySimilarTo": [
+        "cascudo-viola",
+        "tamboata"
+      ],
+      "badges": {
+        "bronze": "Raspa-Vidro",
+        "prata": "Couraça",
+        "ouro": "Cascudeiro",
+        "platina": "Armadura Completa",
+        "diamante": "Fóssil Vivo",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 23467,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "peixe-rei-de-lagoa",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 26
+      },
+      "commonName": "Peixe-rei-de-lagoa",
+      "aliases": [
+        "peixe-rei",
+        "pejerrey"
+      ],
+      "scientificName": "Odontesthes bonariensis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.0286,
+        "b": 3,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Uruguay River (middle reaches)",
+        "sampleSize": 2,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "lagoa",
+        "açude"
+      ],
+      "fact": "Prateado e alongado, com uma faixa lateral brilhante. Prefere água fria — no Sul é pescaria de inverno nas lagoas.",
+      "silhouette": "peixe-rei-de-lagoa.svg",
+      "visuallySimilarTo": [
+        "peixe-rei-marinho"
+      ],
+      "badges": {
+        "bronze": "Fisgou Peixe-rei-de-lagoa",
+        "prata": "Repeteco de Peixe-rei-de-lagoa",
+        "ouro": "Pescador de Peixe-rei-de-lagoa",
+        "platina": "Mestre de Peixe-rei-de-lagoa",
+        "diamante": "Lenda de Peixe-rei-de-lagoa",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4678,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pescada-branca",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 27
+      },
+      "commonName": "Pescada-branca",
+      "aliases": [
+        "corvina-de-água-doce",
+        "pescada-do-piauí",
+        "pescada"
+      ],
+      "scientificName": "Plagioscion squamosissimus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.00979,
+        "b": 3.09,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Itaipu Reservoir, Paraná, 1983-89",
+        "sampleSize": 7200,
+        "candidates": 8,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Parente de água doce da corvina marinha, introduzida em reservatórios de boa parte do país. Ataca isca artificial de meia-água ao entardecer.",
+      "silhouette": "pescada-branca.svg",
+      "visuallySimilarTo": [
+        "corvina",
+        "pescada-olhuda",
+        "pescadinha-real"
+      ],
+      "badges": {
+        "bronze": "Fisgou Pescada-branca",
+        "prata": "Repeteco de Pescada-branca",
+        "ouro": "Pescador de Pescada-branca",
+        "platina": "Mestre de Pescada-branca",
+        "diamante": "Lenda de Pescada-branca",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4310,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "trairao",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 10
+      },
+      "commonName": "Trairão",
+      "aliases": [
+        "traíra-gigante",
+        "trairao"
+      ],
+      "scientificName": "Hoplias lacerdae",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.0100357,
+        "b": 3.09,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": "Hoplias malabaricus",
+        "locality": "Parana River",
+        "sampleSize": 2840,
+        "candidates": 11,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Versão grande da traíra, capaz de passar dos dez quilos. Vive em remansos profundos e engole isca do tamanho de um lambari adulto.",
+      "silhouette": "trairao.svg",
+      "visuallySimilarTo": [
+        "traira"
+      ],
+      "badges": {
+        "bronze": "Isso Não é Traíra",
+        "prata": "Levou a Isca",
+        "ouro": "Trairãozeiro",
+        "platina": "Boca de Balde",
+        "diamante": "Monstro do Remanso",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 50704,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tabarana",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 29
+      },
+      "commonName": "Tabarana",
+      "aliases": [
+        "dourado-branco",
+        "tabarana"
+      ],
+      "scientificName": "Salminus hilarii",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 18,
+      "avgLengthCm": 32,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.0105808,
+        "b": 3.03,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Taquari River, Paranapanema Basin / 2011-2013.",
+        "sampleSize": 92,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio"
+      ],
+      "fact": "Prima menor e mais clara do dourado, do mesmo gênero. Caça em água rasa e corrente, onde o dourado raramente entra.",
+      "silhouette": "tabarana.svg",
+      "visuallySimilarTo": [
+        "dourado"
+      ],
+      "badges": {
+        "bronze": "Parece Dourado",
+        "prata": "Prata Viva",
+        "ouro": "Tabaraneiro",
+        "platina": "Flecha do Raso",
+        "diamante": "Fantasma da Corredeira",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 51188,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "surubim-do-uruguai",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 30
+      },
+      "commonName": "Surubim-do-Uruguai",
+      "aliases": [
+        "suruvi",
+        "surubim-pintado-do-uruguai"
+      ],
+      "scientificName": "Steindachneridion scriptum",
+      "variety": null,
+      "rarity": "lendario",
+      "measure": "comprimento",
+      "minLengthCm": 35,
+      "avgLengthCm": 60,
+      "maxLengthCm": 90,
+      "lengthWeight": null,
+      "habitat": [
+        "rio"
+      ],
+      "fact": "Endêmico da bacia do Uruguai e ameaçado de extinção — capturá-lo é evento de uma vida. Se pegar, fotografe e devolva.",
+      "silhouette": "surubim-do-uruguai.svg",
+      "visuallySimilarTo": [
+        "pintado",
+        "cachara"
+      ],
+      "badges": {
+        "bronze": null,
+        "prata": null,
+        "ouro": "Existe Mesmo",
+        "platina": "Guardião do Uruguai",
+        "diamante": "Mito do Rio",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 48553,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "baiacu",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 1
+      },
+      "commonName": "Baiacu",
+      "aliases": [
+        "baiacu-mirim",
+        "baiacu-pintado"
+      ],
+      "scientificName": "Sphoeroides greeleyi",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 13,
+      "maxLengthCm": 18,
+      "lengthWeight": {
+        "a": 0.0177,
+        "b": 3.086,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Espirito Santo (0°S - 25°S), 2003-2004",
+        "sampleSize": 306,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Infla-se de água quando ameaçado e corta linha com os dentes fundidos em placa. Tóxico: não se come, e é o ladrão de isca mais odiado da praia.",
+      "silhouette": "baiacu.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Inchou",
+        "prata": "De Novo Não",
+        "ouro": "Baiacuzeiro",
+        "platina": "Praga do Anzol",
+        "diamante": "Bola de Espinho",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 5423,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "corvina",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 2
+      },
+      "commonName": "Corvina",
+      "aliases": [
+        "corvina-branca",
+        "burriquete",
+        "corvinão"
+      ],
+      "scientificName": "Micropogonias furnieri",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 32,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.01143,
+        "b": 2.996,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 4082,
+        "candidates": 10,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário",
+        "lagoa"
+      ],
+      "fact": "Produz um ronco audível vibrando a bexiga natatória — dá para ouvir o cardume da praia. É o peixe de praia mais pescado do litoral gaúcho.",
+      "silhouette": "corvina.svg",
+      "visuallySimilarTo": [
+        "papa-terra",
+        "pescada-olhuda",
+        "miraguaia",
+        "pescada-branca",
+        "castanha"
+      ],
+      "badges": {
+        "bronze": "Roncou",
+        "prata": "Coro da Praia",
+        "ouro": "Corvineiro",
+        "platina": "Ronco de Cardume",
+        "diamante": "Rainha da Arrebentação",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 7620,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "papa-terra",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 4
+      },
+      "commonName": "Papa-terra",
+      "aliases": [
+        "betara",
+        "papa-terra-branco",
+        "perna-de-moça"
+      ],
+      "scientificName": "Menticirrhus americanus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.00499,
+        "b": 3.13,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Parana´ state coast / 2004 - 2005",
+        "sampleSize": 1118,
+        "candidates": 9,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Vive rente ao fundo na arrebentação, fuçando a areia com o barbilhão do queixo. Aparece junto com a corvina, mas tem corpo mais alongado.",
+      "silhouette": "papa-terra.svg",
+      "visuallySimilarTo": [
+        "corvina",
+        "papa-terra-listrado",
+        "maria-luiza",
+        "castanha"
+      ],
+      "badges": {
+        "bronze": "Comeu no Fundo",
+        "prata": "Areia na Linha",
+        "ouro": "Betareiro",
+        "platina": "Sentinela da Praia",
+        "diamante": "Ouro da Beira",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 409,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "bagre-branco",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 10
+      },
+      "commonName": "Bagre-branco",
+      "aliases": [
+        "bagre",
+        "bagre-marinho",
+        "bagre-do-mar"
+      ],
+      "scientificName": "Genidens barbus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 38,
+      "maxLengthCm": 70,
+      "lengthWeight": {
+        "a": 0.00733,
+        "b": 3.125,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 116,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "O macho carrega os ovos na boca até a eclosão, sem se alimentar. Os ferrões serrilhados justificam o respeito com que se retira o anzol.",
+      "silhouette": "bagre-branco.svg",
+      "visuallySimilarTo": [
+        "bagre-africano",
+        "bagre-amarelo"
+      ],
+      "badges": {
+        "bronze": "Fisgou Bagre-branco",
+        "prata": "Repeteco de Bagre-branco",
+        "ouro": "Pescador de Bagre-branco",
+        "platina": "Mestre de Bagre-branco",
+        "diamante": "Lenda de Bagre-branco",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 13992,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "peixe-rei-marinho",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 12
+      },
+      "commonName": "Peixe-rei-marinho",
+      "aliases": [
+        "peixe-rei",
+        "pejerrey-marinho"
+      ],
+      "scientificName": "Odontesthes argentinensis",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.00481,
+        "b": 3.068,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 53,
+        "candidates": 2,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "lagoa"
+      ],
+      "fact": "Anda em cardumes densos junto à arrebentação e é pescaria clássica de inverno no litoral do RS. A faixa prateada lateral brilha ao sol.",
+      "silhouette": "peixe-rei-marinho.svg",
+      "visuallySimilarTo": [
+        "peixe-rei-de-lagoa"
+      ],
+      "badges": {
+        "bronze": "Riscado de Prata",
+        "prata": "Cardume Ligeiro",
+        "ouro": "Peixe-Reizeiro",
+        "platina": "Prata Corrida",
+        "diamante": "Realeza da Lagoa",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 12927,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tainha",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 13
+      },
+      "commonName": "Tainha",
+      "aliases": [
+        "tainha-verdadeira",
+        "muge",
+        "parati-grande"
+      ],
+      "scientificName": "Mugil liza",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 70,
+      "lengthWeight": {
+        "a": 0.01597,
+        "b": 2.9022,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Southern region (Lagoa dos Patos estuary), Rio Grande do Sul",
+        "sampleSize": 967,
+        "candidates": 10,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário",
+        "lagoa"
+      ],
+      "fact": "A safra de maio a julho move o litoral catarinense inteiro, com pesca de arrasto de praia e cardumes visíveis da areia. Come vegetal e detrito, quase nunca isca.",
+      "silhouette": "tainha.svg",
+      "visuallySimilarTo": [
+        "parati"
+      ],
+      "badges": {
+        "bronze": "Lá Vem Ela",
+        "prata": "Safra Aberta",
+        "ouro": "Tainheiro",
+        "platina": "Deu Tainha!",
+        "diamante": "Dono da Safra",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1090,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pescada-olhuda",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 7
+      },
+      "commonName": "Pescada-olhuda",
+      "aliases": [
+        "pescadinha",
+        "maria-mole",
+        "pescada"
+      ],
+      "scientificName": "Cynoscion guatucupa",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.02105,
+        "b": 2.776,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 6598,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Olho grande adaptado à caça em água turva e boca cheia de dentes caninos. Carne mole, que estraga rápido se não for gelada na hora.",
+      "silhouette": "pescada-olhuda.svg",
+      "visuallySimilarTo": [
+        "corvina",
+        "pescada-branca",
+        "pescadinha-real"
+      ],
+      "badges": {
+        "bronze": "Fisgou Pescada-olhuda",
+        "prata": "Repeteco de Pescada-olhuda",
+        "ouro": "Pescador de Pescada-olhuda",
+        "platina": "Mestre de Pescada-olhuda",
+        "diamante": "Lenda de Pescada-olhuda",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 52918,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "marimba",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 16
+      },
+      "commonName": "Marimbá",
+      "aliases": [
+        "sargo-de-dente",
+        "marimbau",
+        "marimba"
+      ],
+      "scientificName": "Diplodus argenteus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 24,
+      "maxLengthCm": 40,
+      "lengthWeight": {
+        "a": 0.0111,
+        "b": 3.181,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": "Diplodus sargus",
+        "locality": "Azores Archipelago / 1997-1999",
+        "sampleSize": 1178,
+        "candidates": 18,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Vive em costão rochoso e tem dentes incisivos que lembram os de um roedor, usados para arrancar mexilhão da pedra.",
+      "silhouette": "marimba.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Marimbá",
+        "prata": "Repeteco de Marimbá",
+        "ouro": "Pescador de Marimbá",
+        "platina": "Mestre de Marimbá",
+        "diamante": "Lenda de Marimbá",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 3574,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "guaivira",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 23
+      },
+      "commonName": "Guaivira",
+      "aliases": [
+        "tibiro",
+        "salteira",
+        "guaivira"
+      ],
+      "scientificName": "Oligoplites saliens",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.0069,
+        "b": 2.9,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Parana´ state coast / 2004 - 2005",
+        "sampleSize": 30,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Corpo comprimido e nadadeiras com espinhos livres, que ferem a mão desatenta. Caça em grupo na arrebentação e briga acima do peso.",
+      "silhouette": "guaivira.svg",
+      "visuallySimilarTo": [
+        "anchova",
+        "pampo",
+        "xerelete"
+      ],
+      "badges": {
+        "bronze": "Fisgou Guaivira",
+        "prata": "Repeteco de Guaivira",
+        "ouro": "Pescador de Guaivira",
+        "platina": "Mestre de Guaivira",
+        "diamante": "Lenda de Guaivira",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1000,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "peixe-espada",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 26
+      },
+      "commonName": "Peixe-espada",
+      "aliases": [
+        "espada",
+        "lírio",
+        "peixe-espada-comum"
+      ],
+      "scientificName": "Trichiurus lepturus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 40,
+      "avgLengthCm": 75,
+      "maxLengthCm": 130,
+      "lengthWeight": {
+        "a": 0.0002,
+        "b": 3.26,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Peninsular west coast",
+        "sampleSize": 1307,
+        "candidates": 20,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Corpo em fita prateada sem nadadeira caudal, com dentição que corta linha de aço fina. Sobe para a superfície à noite, atraído por luz.",
+      "silhouette": "peixe-espada.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fita Prateada",
+        "prata": "Dente por Dente",
+        "ouro": "Espadeiro",
+        "platina": "Lâmina Viva",
+        "diamante": "Prata da Noite",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1288,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "anchova",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 25
+      },
+      "commonName": "Anchova",
+      "aliases": [
+        "enchova",
+        "anchova-azul",
+        "anchova-do-sul"
+      ],
+      "scientificName": "Pomatomus saltatrix",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 80,
+      "lengthWeight": {
+        "a": 0.0136,
+        "b": 2.899,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 1771,
+        "candidates": 5,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Caça em cardume e mata mais do que come, deixando um rastro de peixe partido ao meio. Corta linha de nylon com facilidade — anzol de aço é obrigatório.",
+      "silhouette": "anchova.svg",
+      "visuallySimilarTo": [
+        "guaivira"
+      ],
+      "badges": {
+        "bronze": "Cortou a Linha",
+        "prata": "Dente Afiado",
+        "ouro": "Anchoveiro",
+        "platina": "Tesoura do Mar",
+        "diamante": "Fúria Azul",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 364,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "robalo-peva",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 30
+      },
+      "commonName": "Robalo-peva",
+      "aliases": [
+        "robalo",
+        "camurim",
+        "robalo-chuchuca"
+      ],
+      "scientificName": "Centropomus parallelus",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 70,
+      "lengthWeight": {
+        "a": 0.0047,
+        "b": 3.19,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Guandu River / 2010-2011",
+        "sampleSize": 39,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "estuário",
+        "litoral"
+      ],
+      "fact": "Menor e mais atarracado que o robalo-flecha, com preferência por mangue e água salobra. A linha lateral preta é a marca do gênero.",
+      "silhouette": "robalo-peva.svg",
+      "visuallySimilarTo": [
+        "robalo-flecha"
+      ],
+      "badges": {
+        "bronze": "Fisgou Robalo-peva",
+        "prata": "Repeteco de Robalo-peva",
+        "ouro": "Pescador de Robalo-peva",
+        "platina": "Mestre de Robalo-peva",
+        "diamante": "Lenda de Robalo-peva",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1014,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "robalo-flecha",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 31
+      },
+      "commonName": "Robalo-flecha",
+      "aliases": [
+        "robalão",
+        "camurim-flecha",
+        "robalo"
+      ],
+      "scientificName": "Centropomus undecimalis",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 50,
+      "maxLengthCm": 100,
+      "lengthWeight": {
+        "a": 0.01518,
+        "b": 2.86,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Southeast Zone (lagoons)",
+        "sampleSize": 715,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "estuário",
+        "litoral"
+      ],
+      "fact": "Corpo mais alongado e focinho mais afilado que o peva, e chega ao dobro do tamanho. Some no meio da estrutura no primeiro arranque.",
+      "silhouette": "robalo-flecha.svg",
+      "visuallySimilarTo": [
+        "robalo-peva"
+      ],
+      "badges": {
+        "bronze": "Sombra no Mangue",
+        "prata": "Quase Levou",
+        "ouro": "Robaleiro",
+        "platina": "Flecha Prateada",
+        "diamante": "Fantasma do Costão",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 345,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "linguado",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 29
+      },
+      "commonName": "Linguado",
+      "aliases": [
+        "linguado-branco",
+        "solha",
+        "linguado-do-sul"
+      ],
+      "scientificName": "Paralichthys orbignyanus",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 36,
+      "maxLengthCm": 62,
+      "lengthWeight": {
+        "a": 0.00822,
+        "b": 3.077,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 439,
+        "candidates": 2,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Nasce simétrico e migra um olho para o outro lado do corpo ao crescer. Fica enterrado na areia esperando a presa passar por cima.",
+      "silhouette": "linguado.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Achatado",
+        "prata": "Camuflado",
+        "ouro": "Linguadeiro",
+        "platina": "Olho no Fundo",
+        "diamante": "Tapete do Canal",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 26369,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "sororoca",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 27
+      },
+      "commonName": "Sororoca",
+      "aliases": [
+        "serra",
+        "sororoca-serra",
+        "cavala-sororoca"
+      ],
+      "scientificName": "Scomberomorus brasiliensis",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 45,
+      "maxLengthCm": 80,
+      "lengthWeight": {
+        "a": 0.0119368,
+        "b": 2.8,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Carribean coast",
+        "sampleSize": 791,
+        "candidates": 5,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Cavala de corpo riscado que cruza o litoral em cardume veloz, atrás de sardinha. Dentes de tesoura exigem encastoado de aço.",
+      "silhouette": "sororoca.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Sororoca",
+        "prata": "Repeteco de Sororoca",
+        "ouro": "Pescador de Sororoca",
+        "platina": "Mestre de Sororoca",
+        "diamante": "Lenda de Sororoca",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 119,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "miraguaia",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 9
+      },
+      "commonName": "Miraguaia",
+      "aliases": [
+        "miragaia",
+        "burro",
+        "miraguaia-do-sul"
+      ],
+      "scientificName": "Pogonias courbina",
+      "variety": null,
+      "rarity": "lendario",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 70,
+      "maxLengthCm": 140,
+      "lengthWeight": {
+        "a": 0.01858,
+        "b": 2.899,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 256,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Pode passar de cinquenta quilos e tem dentes faringeanos capazes de triturar concha de marisco. Sobrepescada no Sul, virou captura de uma vez na vida.",
+      "silhouette": "miraguaia.svg",
+      "visuallySimilarTo": [
+        "corvina"
+      ],
+      "badges": {
+        "bronze": null,
+        "prata": null,
+        "ouro": "Bateu o Tambor",
+        "platina": "Peso Morto",
+        "diamante": "Lenda da Barra",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 425,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tilapia-vermelha",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 2
+      },
+      "commonName": "Tilápia-vermelha",
+      "aliases": [
+        "saint peter vermelha",
+        "tilápia rosa",
+        "red tilápia"
+      ],
+      "scientificName": "Oreochromis niloticus",
+      "variety": "linhagem vermelha",
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 28,
+      "maxLengthCm": 55,
+      "lengthWeight": {
+        "a": 0.0366,
+        "b": 2.844,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Kaptai Lake, 1995-96",
+        "sampleSize": 1741,
+        "candidates": 13,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Linhagem de coloração alaranjada selecionada para a mesa, porque a pele clara vale mais no filé. É a mesma espécie da tilápia comum — só a cor muda.",
+      "silhouette": "tilapia-vermelha.svg",
+      "visuallySimilarTo": [
+        "tilapia"
+      ],
+      "badges": {
+        "bronze": "Que Cor é Essa?",
+        "prata": "Rosinha",
+        "ouro": "Tilápia de Gala",
+        "platina": "Filé Nobre",
+        "diamante": "Rainha do Tanque",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 2,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-espelho",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 4
+      },
+      "commonName": "Carpa-espelho",
+      "aliases": [
+        "carpa israel",
+        "carpa israelense",
+        "espelho",
+        "carpa sem escama"
+      ],
+      "scientificName": "Cyprinus carpio",
+      "variety": "espelho (linhagem israelense)",
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.0173,
+        "b": 2.993,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Flanders (Yser, Scheldt and Meuse drainage basin), 1992-2009",
+        "sampleSize": 2158,
+        "candidates": 145,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Quase sem escamas, com algumas poucas grandes e brilhantes espalhadas pelo corpo — daí o nome. A linhagem chegou ao Brasil via Israel, e é por isso que meio mundo a chama de carpa israel.",
+      "silhouette": "carpa-espelho.svg",
+      "visuallySimilarTo": [
+        "carpa-hungara",
+        "carpa-colorida"
+      ],
+      "badges": {
+        "bronze": "Cadê as Escamas?",
+        "prata": "Espelhou",
+        "ouro": "Carpa Israel",
+        "platina": "Couro Liso",
+        "diamante": "Espelho do Tanque",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1450,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-colorida",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 5
+      },
+      "commonName": "Carpa-colorida",
+      "aliases": [
+        "koi",
+        "carpa japonesa",
+        "nishikigoi",
+        "carpa laranja",
+        "carpa ornamental"
+      ],
+      "scientificName": "Cyprinus carpio",
+      "variety": "colorida (koi)",
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 80,
+      "lengthWeight": {
+        "a": 0.0173,
+        "b": 2.993,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Flanders (Yser, Scheldt and Meuse drainage basin), 1992-2009",
+        "sampleSize": 2158,
+        "candidates": 154,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Selecionada no Japão por mais de dois séculos só pela cor, e às vezes solta no pesqueiro para enfeitar. Fisgar uma dá aquela sensação de ter pescado o peixe errado.",
+      "silhouette": "carpa-colorida.svg",
+      "visuallySimilarTo": [
+        "carpa-hungara",
+        "carpa-espelho",
+        "kinguio"
+      ],
+      "badges": {
+        "bronze": "Peguei o Enfeite",
+        "prata": "Laranja Demais",
+        "ouro": "Carpa Koi",
+        "platina": "Jardim Japonês",
+        "diamante": "Nishikigoi",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1450,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "carpa-prateada",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 8
+      },
+      "commonName": "Carpa-prateada",
+      "aliases": [
+        "carpa-prata",
+        "silver carp",
+        "carpa filtradora"
+      ],
+      "scientificName": "Hypophthalmichthys molitrix",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 25,
+      "avgLengthCm": 50,
+      "maxLengthCm": 95,
+      "lengthWeight": {
+        "a": 0.00838,
+        "b": 3.093,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Heilongjiang River = Amur River",
+        "sampleSize": 416,
+        "candidates": 9,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro",
+        "açude"
+      ],
+      "fact": "Filtradora como a cabeça-grande, mas de corpo prateado uniforme e cabeça menor. É famosa por saltar metros fora d’água quando assustada pelo motor de um barco.",
+      "silhouette": "carpa-prateada.svg",
+      "visuallySimilarTo": [
+        "carpa-cabeca-grande",
+        "carpa-hungara"
+      ],
+      "badges": {
+        "bronze": "Pulou no Barco",
+        "prata": "Prata Viva",
+        "ouro": "Carpeiro de Prata",
+        "platina": "Salto Alto",
+        "diamante": "Chuva de Carpa",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 274,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pirapitinga",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 10
+      },
+      "commonName": "Pirapitinga",
+      "aliases": [
+        "pacu-vermelho",
+        "caranha-vermelha"
+      ],
+      "scientificName": "Piaractus brachypomus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 75,
+      "lengthWeight": {
+        "a": 0.0134028,
+        "b": 3.116,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Madiera River, Amazon /  2008-2011",
+        "sampleSize": 51,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Prima amazônica do pacu, com a barriga alaranjada bem marcada quando jovem. Chega ao Sul só por estocagem de pesqueiro.",
+      "silhouette": "pirapitinga.svg",
+      "visuallySimilarTo": [
+        "pacu",
+        "tambaqui"
+      ],
+      "badges": {
+        "bronze": "Fisgou Pirapitinga",
+        "prata": "Repeteco de Pirapitinga",
+        "ouro": "Pescador de Pirapitinga",
+        "platina": "Mestre de Pirapitinga",
+        "diamante": "Lenda de Pirapitinga",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 5808,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "bagre-americano",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 14
+      },
+      "commonName": "Bagre-americano",
+      "aliases": [
+        "catfish",
+        "channel catfish",
+        "bagre-do-canal"
+      ],
+      "scientificName": "Ictalurus punctatus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 85,
+      "lengthWeight": {
+        "a": 0.00571,
+        "b": 3.132,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Georgia, rivers",
+        "sampleSize": 988,
+        "candidates": 12,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Bagre norte-americano de cauda bifurcada e pintas escuras nos jovens, estocado em pesqueiro pela carne firme. A cauda em forquilha é o que o separa do jundiá e do africano.",
+      "silhouette": "bagre-americano.svg",
+      "visuallySimilarTo": [
+        "bagre-africano",
+        "jundia"
+      ],
+      "badges": {
+        "bronze": "Fisgou Bagre-americano",
+        "prata": "Repeteco de Bagre-americano",
+        "ouro": "Pescador de Bagre-americano",
+        "platina": "Mestre de Bagre-americano",
+        "diamante": "Lenda de Bagre-americano",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 290,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "esturjao",
+      "albums": [
+        "pesqueiros-sul"
+      ],
+      "albumOrder": {
+        "pesqueiros-sul": 23
+      },
+      "commonName": "Esturjão",
+      "aliases": [
+        "esturjão-russo",
+        "sturgeon",
+        "peixe-do-caviar"
+      ],
+      "scientificName": "Acipenser gueldenstaedtii",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 40,
+      "avgLengthCm": 80,
+      "maxLengthCm": 150,
+      "lengthWeight": {
+        "a": 0.0039,
+        "b": 3.0559,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "NW Black Sea",
+        "sampleSize": 4003,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "pesqueiro"
+      ],
+      "fact": "Linhagem de peixe com mais de 200 milhões de anos, com placas ósseas no lugar de escamas e focinho de pá. No Sul existe por causa das fazendas de caviar, e alguns pesqueiros o estocam.",
+      "silhouette": "esturjao.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Isso é Peixe?",
+        "prata": "Focinho de Pá",
+        "ouro": "Caçador de Esturjão",
+        "platina": "Fóssil na Linha",
+        "diamante": "Senhor do Caviar",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4712,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "lambari-rabo-vermelho",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 2
+      },
+      "commonName": "Lambari-do-rabo-vermelho",
+      "aliases": [
+        "lambari-vermelho",
+        "tambiú-vermelho",
+        "piaba-vermelha"
+      ],
+      "scientificName": "Astyanax fasciatus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 5,
+      "avgLengthCm": 10,
+      "maxLengthCm": 16,
+      "lengthWeight": {
+        "a": 0.0118875,
+        "b": 2.96,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Taquari River, Paranapanema Basin / 2011-2013.",
+        "sampleSize": 3595,
+        "candidates": 8,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "A nadadeira caudal avermelhada é o que o separa do lambari-do-rabo-amarelo, e os dois vivem lado a lado no mesmo cardume.",
+      "silhouette": "lambari-rabo-vermelho.svg",
+      "visuallySimilarTo": [
+        "lambari",
+        "lambari-cachorro"
+      ],
+      "badges": {
+        "bronze": "Fisgou Lambari-do-rabo-vermelho",
+        "prata": "Repeteco de Lambari-do-rabo-vermelho",
+        "ouro": "Pescador de Lambari-do-rabo-vermelho",
+        "platina": "Mestre de Lambari-do-rabo-vermelho",
+        "diamante": "Lenda de Lambari-do-rabo-vermelho",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 8080,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "lambari-cachorro",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 3
+      },
+      "commonName": "Lambari-cachorro",
+      "aliases": [
+        "tambicu",
+        "peixe-cachorro",
+        "lambari-guaçu",
+        "dentudo"
+      ],
+      "scientificName": "Oligosarcus jenynsii",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 18,
+      "maxLengthCm": 30,
+      "lengthWeight": {
+        "a": 0.0063,
+        "b": 3.19,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Delta State Park Jacui / 2008-2009",
+        "sampleSize": 140,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude",
+        "lagoa"
+      ],
+      "fact": "Lambari predador, de boca grande e dentes à mostra, que ataca isca artificial pequena. Comum em todo o RS e frequentemente confundido com um lambari comum grande.",
+      "silhouette": "lambari-cachorro.svg",
+      "visuallySimilarTo": [
+        "lambari",
+        "lambari-rabo-vermelho"
+      ],
+      "badges": {
+        "bronze": "Mostrou o Dente",
+        "prata": "Lambari Bravo",
+        "ouro": "Tambicu",
+        "platina": "Dentuço do Açude",
+        "diamante": "Cachorro Grande",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 23429,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "biru",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 4
+      },
+      "commonName": "Birú",
+      "aliases": [
+        "voga",
+        "saguiru",
+        "birú-voga"
+      ],
+      "scientificName": "Cyphocharax voga",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 16,
+      "maxLengthCm": 25,
+      "lengthWeight": {
+        "a": 0.0112,
+        "b": 3.1,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Delta State Park Jacui / 2008-2009",
+        "sampleSize": 889,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "lagoa",
+        "rio",
+        "açude"
+      ],
+      "fact": "Detritívoro de corpo prateado e boca pequena, abundantíssimo nas lagoas do RS. Raramente morde anzol, e é base da alimentação de traíra e dourado.",
+      "silhouette": "biru.svg",
+      "visuallySimilarTo": [
+        "grumata"
+      ],
+      "badges": {
+        "bronze": "Fisgou Birú",
+        "prata": "Repeteco de Birú",
+        "ouro": "Pescador de Birú",
+        "platina": "Mestre de Birú",
+        "diamante": "Lenda de Birú",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 51337,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cara-rabo-amarelo",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 6
+      },
+      "commonName": "Cará-do-rabo-amarelo",
+      "aliases": [
+        "cará-amarelo",
+        "acará",
+        "cará-de-arroio"
+      ],
+      "scientificName": "Gymnogeophagus rhabdotus",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 5,
+      "avgLengthCm": 11,
+      "maxLengthCm": 16,
+      "lengthWeight": {
+        "a": 0.0198641,
+        "b": 2.98,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": "Geophagus brasiliensis",
+        "locality": "Iguacu River basin / 2004-2009",
+        "sampleSize": 417,
+        "candidates": 11,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Ciclídeo pequeno com faixa escura no flanco e cauda amarelada, típico dos arroios gaúchos. O gênero é quase todo endêmico do Sul e do Uruguai.",
+      "silhouette": "cara-rabo-amarelo.svg",
+      "visuallySimilarTo": [
+        "cara",
+        "chanchito"
+      ],
+      "badges": {
+        "bronze": "Fisgou Cará-do-rabo-amarelo",
+        "prata": "Repeteco de Cará-do-rabo-amarelo",
+        "ouro": "Pescador de Cará-do-rabo-amarelo",
+        "platina": "Mestre de Cará-do-rabo-amarelo",
+        "diamante": "Lenda de Cará-do-rabo-amarelo",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 12311,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "chanchito",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 7
+      },
+      "commonName": "Chanchito",
+      "aliases": [
+        "cará-listrado",
+        "acará-chanchito",
+        "cará"
+      ],
+      "scientificName": "Australoheros facetus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 6,
+      "avgLengthCm": 13,
+      "maxLengthCm": 20,
+      "lengthWeight": {
+        "a": 0.0186,
+        "b": 3.09,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Delta State Park Jacui / 2008-2009",
+        "sampleSize": 18,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude",
+        "lagoa"
+      ],
+      "fact": "Ciclídeo de listras verticais escuras que ficam mais fortes quando ele está bravo, e ele fica bravo com facilidade. Defende a ninhada atacando o que passar.",
+      "silhouette": "chanchito.svg",
+      "visuallySimilarTo": [
+        "cara",
+        "cara-rabo-amarelo"
+      ],
+      "badges": {
+        "bronze": "Fisgou Chanchito",
+        "prata": "Repeteco de Chanchito",
+        "ouro": "Pescador de Chanchito",
+        "platina": "Mestre de Chanchito",
+        "diamante": "Lenda de Chanchito",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4679,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "joaninha",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 8
+      },
+      "commonName": "Joaninha",
+      "aliases": [
+        "jacundá",
+        "peixe-sabão",
+        "crenicichla"
+      ],
+      "scientificName": "Crenicichla lepidota",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 6,
+      "avgLengthCm": 12,
+      "maxLengthCm": 20,
+      "lengthWeight": {
+        "a": 0.0085,
+        "b": 3.13,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Delta State Park Jacui / 2008-2009",
+        "sampleSize": 43,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Ciclídeo alongado de tocaia, com uma mancha redonda na base da cauda que parece um olho falso. Fica parada entre as pedras esperando um lambari desavisado.",
+      "silhouette": "joaninha.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Joaninha",
+        "prata": "Repeteco de Joaninha",
+        "ouro": "Pescador de Joaninha",
+        "platina": "Mestre de Joaninha",
+        "diamante": "Lenda de Joaninha",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 11159,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "mucum",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 13
+      },
+      "commonName": "Muçum",
+      "aliases": [
+        "mussum",
+        "peixe-cobra",
+        "enguia-de-água-doce"
+      ],
+      "scientificName": "Synbranchus marmoratus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 45,
+      "maxLengthCm": 90,
+      "lengthWeight": null,
+      "habitat": [
+        "açude",
+        "rio"
+      ],
+      "fact": "Parece cobra, respira ar e consegue atravessar terra úmida entre um açude e outro. Nasce fêmea e vira macho ao envelhecer.",
+      "silhouette": "mucum.svg",
+      "visuallySimilarTo": [
+        "tuvira"
+      ],
+      "badges": {
+        "bronze": "Isso é Cobra!",
+        "prata": "Escorregou de Novo",
+        "ouro": "Muçunzeiro",
+        "platina": "Nó na Linha",
+        "diamante": "Serpente do Açude",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 5319,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tuvira",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 14
+      },
+      "commonName": "Tuvira",
+      "aliases": [
+        "sarapó",
+        "peixe-faca",
+        "ituí"
+      ],
+      "scientificName": "Gymnotus carapo",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 35,
+      "maxLengthCm": 65,
+      "lengthWeight": {
+        "a": 0.0031,
+        "b": 3.02,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Itaipu Reservoir, Paraná, 1983-89",
+        "sampleSize": 70,
+        "candidates": 4,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "açude",
+        "rio"
+      ],
+      "fact": "Nada para frente e para trás ondulando uma única nadadeira ventral, e se orienta por um campo elétrico fraco que ele mesmo gera. É a isca viva preferida para trairão.",
+      "silhouette": "tuvira.svg",
+      "visuallySimilarTo": [
+        "mucum"
+      ],
+      "badges": {
+        "bronze": "Fisgou Tuvira",
+        "prata": "Repeteco de Tuvira",
+        "ouro": "Pescador de Tuvira",
+        "platina": "Mestre de Tuvira",
+        "diamante": "Lenda de Tuvira",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 10915,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tamboata",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 15
+      },
+      "commonName": "Tamboatá",
+      "aliases": [
+        "caborja",
+        "tamoatá",
+        "peixe-soldado"
+      ],
+      "scientificName": "Hoplosternum littorale",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 16,
+      "maxLengthCm": 25,
+      "lengthWeight": {
+        "a": 0.0231228,
+        "b": 2.89,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Taquari River, Paranapanema Basin / 2011-2013.",
+        "sampleSize": 523,
+        "candidates": 7,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "açude",
+        "rio"
+      ],
+      "fact": "Couraçado por duas fileiras de placas ósseas, respira ar pelo intestino e sobrevive em água podre onde nada mais vive. Constrói ninho de espuma na vegetação.",
+      "silhouette": "tamboata.svg",
+      "visuallySimilarTo": [
+        "cascudo"
+      ],
+      "badges": {
+        "bronze": "Fisgou Tamboatá",
+        "prata": "Repeteco de Tamboatá",
+        "ouro": "Pescador de Tamboatá",
+        "platina": "Mestre de Tamboatá",
+        "diamante": "Lenda de Tamboatá",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 5377,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cascudo-viola",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 17
+      },
+      "commonName": "Cascudo-viola",
+      "aliases": [
+        "viola",
+        "cascudo-chicote",
+        "loricária"
+      ],
+      "scientificName": "Loricariichthys anus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 28,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.0064,
+        "b": 3.45,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Chasqueiro Stream, Arroio Grande",
+        "sampleSize": 72,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "lagoa",
+        "rio"
+      ],
+      "fact": "Cascudo achatado e comprido, com cauda em chicote que pode ser metade do corpo. O macho carrega os ovos grudados no lábio inferior até eclodirem.",
+      "silhouette": "cascudo-viola.svg",
+      "visuallySimilarTo": [
+        "cascudo"
+      ],
+      "badges": {
+        "bronze": "Fisgou Cascudo-viola",
+        "prata": "Repeteco de Cascudo-viola",
+        "ouro": "Pescador de Cascudo-viola",
+        "platina": "Mestre de Cascudo-viola",
+        "diamante": "Lenda de Cascudo-viola",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 50667,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "ximbore",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 19
+      },
+      "commonName": "Ximboré",
+      "aliases": [
+        "voga",
+        "piau-ximboré",
+        "boga"
+      ],
+      "scientificName": "Schizodon nasutus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 38,
+      "lengthWeight": {
+        "a": 0.0138031,
+        "b": 2.96,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Taquari River, Paranapanema Basin / 2011-2013.",
+        "sampleSize": 460,
+        "candidates": 2,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "rio",
+        "açude"
+      ],
+      "fact": "Parente da piava com focinho mais pontudo e uma faixa escura contínua ao longo do corpo, em vez das manchas redondas. Come vegetal e é osso duro de fisgar.",
+      "silhouette": "ximbore.svg",
+      "visuallySimilarTo": [
+        "piava",
+        "grumata"
+      ],
+      "badges": {
+        "bronze": "Fisgou Ximboré",
+        "prata": "Repeteco de Ximboré",
+        "ouro": "Pescador de Ximboré",
+        "platina": "Mestre de Ximboré",
+        "diamante": "Lenda de Ximboré",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 53264,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "kinguio",
+      "albums": [
+        "rios-acudes-sul"
+      ],
+      "albumOrder": {
+        "rios-acudes-sul": 23
+      },
+      "commonName": "Kinguio",
+      "aliases": [
+        "peixe-dourado",
+        "goldfish",
+        "carpa laranja",
+        "kinguim"
+      ],
+      "scientificName": "Carassius auratus",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 8,
+      "avgLengthCm": 18,
+      "maxLengthCm": 35,
+      "lengthWeight": {
+        "a": 0.0234,
+        "b": 2.9,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Alabama",
+        "sampleSize": 251236,
+        "candidates": 15,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "açude",
+        "lagoa"
+      ],
+      "fact": "O peixinho-dourado de aquário, que solto em açude perde a cor de aquário e volta ao bronze escuro do ancestral selvagem. Espécie distinta da carpa, apesar do parentesco.",
+      "silhouette": "kinguio.svg",
+      "visuallySimilarTo": [
+        "carpa-colorida",
+        "carpa-hungara"
+      ],
+      "badges": {
+        "bronze": "Fugiu do Aquário",
+        "prata": "Dourado de Vidro",
+        "ouro": "Kinguieiro",
+        "platina": "Sobrevivente do Açude",
+        "diamante": "Peixinho de Ouro",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 271,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "castanha",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 3
+      },
+      "commonName": "Castanha",
+      "aliases": [
+        "castanha-do-sul",
+        "corvina-castanha",
+        "castanheta"
+      ],
+      "scientificName": "Umbrina canosai",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 27,
+      "maxLengthCm": 38,
+      "lengthWeight": {
+        "a": 0.0148,
+        "b": 2.996,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 14741,
+        "candidates": 4,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Sciaenídeo de corpo mais alto e escuro que a corvina, com listras oblíquas douradas. É uma das capturas mais frequentes da pesca de praia no inverno gaúcho.",
+      "silhouette": "castanha.svg",
+      "visuallySimilarTo": [
+        "corvina",
+        "papa-terra"
+      ],
+      "badges": {
+        "bronze": "Fisgou Castanha",
+        "prata": "Repeteco de Castanha",
+        "ouro": "Pescador de Castanha",
+        "platina": "Mestre de Castanha",
+        "diamante": "Lenda de Castanha",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 413,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "papa-terra-listrado",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 5
+      },
+      "commonName": "Papa-terra-listrado",
+      "aliases": [
+        "betara-listrado",
+        "papa-terra-da-areia"
+      ],
+      "scientificName": "Menticirrhus littoralis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.00402,
+        "b": 3.247,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 245,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Quase idêntico ao papa-terra comum, mas de corpo uniforme e sem as listras oblíquas — o que é irônico, dado o nome. Vive mais dentro da arrebentação que o parente.",
+      "silhouette": "papa-terra-listrado.svg",
+      "visuallySimilarTo": [
+        "papa-terra",
+        "maria-luiza"
+      ],
+      "badges": {
+        "bronze": "Fisgou Papa-terra-listrado",
+        "prata": "Repeteco de Papa-terra-listrado",
+        "ouro": "Pescador de Papa-terra-listrado",
+        "platina": "Mestre de Papa-terra-listrado",
+        "diamante": "Lenda de Papa-terra-listrado",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 411,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "maria-luiza",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 6
+      },
+      "commonName": "Maria-luiza",
+      "aliases": [
+        "maria-luísa",
+        "cangoá",
+        "corvinota"
+      ],
+      "scientificName": "Paralonchurus brasiliensis",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 10,
+      "avgLengthCm": 20,
+      "maxLengthCm": 29,
+      "lengthWeight": {
+        "a": 0.00283,
+        "b": 3.36,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Parana´ state coast / 2004 - 2005",
+        "sampleSize": 2884,
+        "candidates": 5,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Pequeno sciaenídeo com uma barba de barbilhões curtos sob o queixo, usada para achar comida no fundo mole. Companhia constante de quem pesca corvina.",
+      "silhouette": "maria-luiza.svg",
+      "visuallySimilarTo": [
+        "papa-terra",
+        "papa-terra-listrado"
+      ],
+      "badges": {
+        "bronze": "Fisgou Maria-luiza",
+        "prata": "Repeteco de Maria-luiza",
+        "ouro": "Pescador de Maria-luiza",
+        "platina": "Mestre de Maria-luiza",
+        "diamante": "Lenda de Maria-luiza",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1187,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pescadinha-real",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 8
+      },
+      "commonName": "Pescadinha-real",
+      "aliases": [
+        "pescadinha",
+        "pescada-real",
+        "goete"
+      ],
+      "scientificName": "Macrodon atricauda",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 28,
+      "maxLengthCm": 45,
+      "lengthWeight": {
+        "a": 0.00238,
+        "b": 3.39,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande and southern Brazil",
+        "sampleSize": 739,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Tem dois caninos grandes e curvos na frente da boca, que a distinguem da pescada-olhuda. A população do Sul foi separada da do Nordeste como espécie própria em 2010.",
+      "silhouette": "pescadinha-real.svg",
+      "visuallySimilarTo": [
+        "pescada-olhuda",
+        "pescada-branca"
+      ],
+      "badges": {
+        "bronze": "Fisgou Pescadinha-real",
+        "prata": "Repeteco de Pescadinha-real",
+        "ouro": "Pescador de Pescadinha-real",
+        "platina": "Mestre de Pescadinha-real",
+        "diamante": "Lenda de Pescadinha-real",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 66332,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "bagre-amarelo",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 11
+      },
+      "commonName": "Bagre-amarelo",
+      "aliases": [
+        "bagre-guri",
+        "guri",
+        "bagre-do-estuário"
+      ],
+      "scientificName": "Genidens genidens",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 40,
+      "lengthWeight": {
+        "a": 0.00498,
+        "b": 3.191,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Paraná (0°S - 25°S), 2003-2004",
+        "sampleSize": 423,
+        "candidates": 7,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "estuário",
+        "litoral"
+      ],
+      "fact": "Bagre marinho menor e mais amarelado que o bagre-branco, dono absoluto da Lagoa dos Patos. Como o primo, o macho choca os ovos na boca.",
+      "silhouette": "bagre-amarelo.svg",
+      "visuallySimilarTo": [
+        "bagre-branco"
+      ],
+      "badges": {
+        "bronze": "Fisgou Bagre-amarelo",
+        "prata": "Repeteco de Bagre-amarelo",
+        "ouro": "Pescador de Bagre-amarelo",
+        "platina": "Mestre de Bagre-amarelo",
+        "diamante": "Lenda de Bagre-amarelo",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 13982,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "parati",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 14
+      },
+      "commonName": "Parati",
+      "aliases": [
+        "tainha-pequena",
+        "parati-olho-de-fogo",
+        "curimã"
+      ],
+      "scientificName": "Mugil curema",
+      "variety": null,
+      "rarity": "comum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 28,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.012,
+        "b": 2.919,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Marica, Sacuarema, Araruama coastal lagoons, South western Brazil / 2011.",
+        "sampleSize": 1005,
+        "candidates": 11,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "estuário",
+        "litoral",
+        "lagoa"
+      ],
+      "fact": "Tainha menor, de olho com anel amarelo e corpo mais esguio, que fica no estuário o ano todo em vez de migrar. Muita gente chama qualquer tainha jovem de parati, mas é outra espécie.",
+      "silhouette": "parati.svg",
+      "visuallySimilarTo": [
+        "tainha"
+      ],
+      "badges": {
+        "bronze": "Fisgou Parati",
+        "prata": "Repeteco de Parati",
+        "ouro": "Pescador de Parati",
+        "platina": "Mestre de Parati",
+        "diamante": "Lenda de Parati",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1086,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "savelha",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 15
+      },
+      "commonName": "Savelha",
+      "aliases": [
+        "sardinha-savelha",
+        "saveia",
+        "arenque-do-sul"
+      ],
+      "scientificName": "Brevoortia pectinata",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 25,
+      "maxLengthCm": 38,
+      "lengthWeight": {
+        "a": 0.0081,
+        "b": 3.122,
+        "lengthType": "TL",
+        "origin": "aTL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 874,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Anda em cardumes enormes rente à praia e é a isca preferida para anchova e cação. Escama solta com o toque e o corpo é achatado como o de uma sardinha grande.",
+      "silhouette": "savelha.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Savelha",
+        "prata": "Repeteco de Savelha",
+        "ouro": "Pescador de Savelha",
+        "platina": "Mestre de Savelha",
+        "diamante": "Lenda de Savelha",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1590,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cabrinha",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 17
+      },
+      "commonName": "Cabrinha",
+      "aliases": [
+        "cabra",
+        "coió",
+        "peixe-voador-de-fundo"
+      ],
+      "scientificName": "Prionotus punctatus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 40,
+      "lengthWeight": {
+        "a": 0.0056,
+        "b": 3.238,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 1076,
+        "candidates": 7,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Tem nadadeiras peitorais enormes que abre como asas azuis, e três raios livres em cada lado que usa como pernas para caminhar no fundo. Ronca quando tirada da água.",
+      "silhouette": "cabrinha.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Abriu as Asas",
+        "prata": "Roncou na Mão",
+        "ouro": "Cabrinheiro",
+        "platina": "Asa Azul",
+        "diamante": "Borboleta do Fundo",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1245,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "abrotea",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 18
+      },
+      "commonName": "Abrótea",
+      "aliases": [
+        "abrótea-do-sul",
+        "brótola",
+        "abrotia"
+      ],
+      "scientificName": "Urophycis brasiliensis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 30,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.00398,
+        "b": 3.206,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 252,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Corpo mole e alongado, com a primeira nadadeira dorsal terminando num filamento longo e um barbilhão no queixo. Pescaria de inverno na praia gaúcha, quando a água esfria.",
+      "silhouette": "abrotea.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Abrótea",
+        "prata": "Repeteco de Abrótea",
+        "ouro": "Pescador de Abrótea",
+        "platina": "Mestre de Abrótea",
+        "diamante": "Lenda de Abrótea",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 311,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "tira-vira",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 19
+      },
+      "commonName": "Tira-vira",
+      "aliases": [
+        "tira-vira-do-sul",
+        "peixe-lagarto",
+        "pez palo"
+      ],
+      "scientificName": "Percophis brasiliensis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 18,
+      "avgLengthCm": 32,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.00415,
+        "b": 2.997,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 247,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Corpo alongado e achatado com boca enorme cheia de dentes finos, adaptado para emboscar de dentro da areia. Exclusivo do Atlântico Sul-ocidental — não existe em nenhum outro lugar.",
+      "silhouette": "tira-vira.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Tira-vira",
+        "prata": "Repeteco de Tira-vira",
+        "ouro": "Pescador de Tira-vira",
+        "platina": "Mestre de Tira-vira",
+        "diamante": "Lenda de Tira-vira",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 465,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "chicharro",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 20
+      },
+      "commonName": "Chicharro",
+      "aliases": [
+        "xixarro",
+        "carapau",
+        "chicharro-miúdo"
+      ],
+      "scientificName": "Trachurus lathami",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 22,
+      "maxLengthCm": 35,
+      "lengthWeight": {
+        "a": 0.00194,
+        "b": 3.467,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 123,
+        "candidates": 6,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Carangídeo de cardume com uma quilha de escudos ósseos afiados ao longo da linha lateral, que corta a mão de quem segura errado. Come qualquer coisa pequena e brilhante.",
+      "silhouette": "chicharro.svg",
+      "visuallySimilarTo": [
+        "xerelete"
+      ],
+      "badges": {
+        "bronze": "Fisgou Chicharro",
+        "prata": "Repeteco de Chicharro",
+        "ouro": "Pescador de Chicharro",
+        "platina": "Mestre de Chicharro",
+        "diamante": "Lenda de Chicharro",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 369,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "peixe-galo",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 21
+      },
+      "commonName": "Peixe-galo",
+      "aliases": [
+        "galo-de-penacho",
+        "galo",
+        "peixe-espelho"
+      ],
+      "scientificName": "Selene setapinnis",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 15,
+      "avgLengthCm": 28,
+      "maxLengthCm": 50,
+      "lengthWeight": {
+        "a": 0.0156,
+        "b": 2.92,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "São Paulo and Santa Catarina, 1997-98",
+        "sampleSize": null,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Corpo tão achatado e prateado que parece uma folha de metal, com a testa quase vertical. De frente, quase desaparece na água.",
+      "silhouette": "peixe-galo.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Peixe-galo",
+        "prata": "Repeteco de Peixe-galo",
+        "ouro": "Pescador de Peixe-galo",
+        "platina": "Mestre de Peixe-galo",
+        "diamante": "Lenda de Peixe-galo",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 378,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "xerelete",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 22
+      },
+      "commonName": "Xerelete",
+      "aliases": [
+        "carapau",
+        "guarajuba",
+        "xaréu-azul"
+      ],
+      "scientificName": "Caranx crysos",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 35,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.0188923,
+        "b": 2.861,
+        "lengthType": "TL",
+        "origin": "convertido",
+        "proxySpecies": null,
+        "locality": "Central coast, 1993-2000",
+        "sampleSize": 380,
+        "candidates": 9,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Carangídeo veloz que caça em grupo perto de estrutura e briga muito acima do peso. No Sul aparece nos meses quentes, seguindo água mais azul.",
+      "silhouette": "xerelete.svg",
+      "visuallySimilarTo": [
+        "chicharro",
+        "guaivira"
+      ],
+      "badges": {
+        "bronze": "Fisgou Xerelete",
+        "prata": "Repeteco de Xerelete",
+        "ouro": "Pescador de Xerelete",
+        "platina": "Mestre de Xerelete",
+        "diamante": "Lenda de Xerelete",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1933,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "pampo",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 24
+      },
+      "commonName": "Pampo-do-sul",
+      "aliases": [
+        "pampo",
+        "pompano",
+        "pampo-galhudo"
+      ],
+      "scientificName": "Trachinotus marginatus",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 12,
+      "avgLengthCm": 25,
+      "maxLengthCm": 40,
+      "lengthWeight": {
+        "a": 0.0055,
+        "b": 3.096,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": "Trachinotus ovatus",
+        "locality": "Algarve coast, Portugal / 1998-00",
+        "sampleSize": 82,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Endêmico da zona de arrebentação do Sul do Brasil, Uruguai e Argentina — não ocorre em nenhum outro lugar do mundo. Nada na espuma, quase na areia, atrás de tatuíra.",
+      "silhouette": "pampo.svg",
+      "visuallySimilarTo": [
+        "guaivira"
+      ],
+      "badges": {
+        "bronze": "Na Espuma",
+        "prata": "Pegou na Tatuíra",
+        "ouro": "Pampeiro",
+        "platina": "Dono da Arrebentação",
+        "diamante": "Só Existe Aqui",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 1971,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "congro",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 28
+      },
+      "commonName": "Congro",
+      "aliases": [
+        "congro-rosa",
+        "enguia-do-mar",
+        "safio"
+      ],
+      "scientificName": "Conger orbignianus",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 60,
+      "maxLengthCm": 100,
+      "lengthWeight": {
+        "a": 0.00022,
+        "b": 3.41,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Rio Grande do Sul (28°-34°S)",
+        "sampleSize": 366,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "Enguia marinha que passa o dia enfiada em fenda de pedra e sai à noite para caçar. Pega em molhe e trapiche, e dá um nó na linha antes de sair.",
+      "silhouette": "congro.svg",
+      "visuallySimilarTo": [],
+      "badges": {
+        "bronze": "Fisgou Congro",
+        "prata": "Repeteco de Congro",
+        "ouro": "Pescador de Congro",
+        "platina": "Mestre de Congro",
+        "diamante": "Lenda de Congro",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 299,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "raia-emplastro",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 32
+      },
+      "commonName": "Raia-emplastro",
+      "aliases": [
+        "raia-de-nariz-curto",
+        "emplastro",
+        "raia-santa"
+      ],
+      "scientificName": "Sympterygia bonapartii",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 20,
+      "avgLengthCm": 40,
+      "maxLengthCm": 60,
+      "lengthWeight": {
+        "a": 0.003,
+        "b": 3.218,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Punta del Diablo / 2006-2010.",
+        "sampleSize": 112,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "lagoa"
+      ],
+      "fact": "Raia de corpo em losango e cauda fina, sem ferrão — o que assusta nela é só a aparência. Põe cápsulas córneas retangulares que dão na praia e viram o \"saco de sereia\".",
+      "silhouette": "raia-emplastro.svg",
+      "visuallySimilarTo": [
+        "raia-viola",
+        "raia-manteiga"
+      ],
+      "badges": {
+        "bronze": "Fisgou Raia-emplastro",
+        "prata": "Repeteco de Raia-emplastro",
+        "ouro": "Pescador de Raia-emplastro",
+        "platina": "Mestre de Raia-emplastro",
+        "diamante": "Lenda de Raia-emplastro",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 54031,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "raia-manteiga",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 33
+      },
+      "commonName": "Raia-manteiga",
+      "aliases": [
+        "ticonha",
+        "raia-águia",
+        "raia-de-fogo"
+      ],
+      "scientificName": "Myliobatis goodei",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "largura",
+      "minLengthCm": 25,
+      "avgLengthCm": 50,
+      "maxLengthCm": 90,
+      "lengthWeight": null,
+      "habitat": [
+        "litoral",
+        "lagoa"
+      ],
+      "fact": "Raia-águia de asas pontudas que literalmente voa debaixo d’água, com uma cabeça saliente à frente do disco. Tem ferrão na base da cauda — mede-se pela largura do disco.",
+      "silhouette": "raia-manteiga.svg",
+      "visuallySimilarTo": [
+        "raia-emplastro"
+      ],
+      "badges": {
+        "bronze": "Fisgou Raia-manteiga",
+        "prata": "Repeteco de Raia-manteiga",
+        "ouro": "Pescador de Raia-manteiga",
+        "platina": "Mestre de Raia-manteiga",
+        "diamante": "Lenda de Raia-manteiga",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 2583,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "raia-viola",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 34
+      },
+      "commonName": "Raia-viola",
+      "aliases": [
+        "cação-viola",
+        "viola",
+        "raia-guitarra"
+      ],
+      "scientificName": "Pseudobatos horkelii",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 70,
+      "maxLengthCm": 120,
+      "lengthWeight": {
+        "a": 0.00396,
+        "b": 3,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": "Pseudobatos productus",
+        "locality": "(não informada)",
+        "sampleSize": 1,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Metade raia, metade tubarão, com o corpo em forma de violão — não há como confundir. Está criticamente ameaçada e usa o litoral do RS como berçário: se pegar, devolva.",
+      "silhouette": "raia-viola.svg",
+      "visuallySimilarTo": [
+        "raia-emplastro",
+        "cacao-anjo"
+      ],
+      "badges": {
+        "bronze": "Que Bicho É Esse?",
+        "prata": "Meio Cação",
+        "ouro": "Violeiro",
+        "platina": "Guitarra do Sul",
+        "diamante": "Devolvida à Água",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 8732,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "caconete",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 35
+      },
+      "commonName": "Caçonete",
+      "aliases": [
+        "cação-bico-de-cristal",
+        "gatuso",
+        "cação-liso"
+      ],
+      "scientificName": "Mustelus schmitti",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 55,
+      "maxLengthCm": 85,
+      "lengthWeight": {
+        "a": 0.003,
+        "b": 3.047,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "Punta del Diablo / 2006-2010.",
+        "sampleSize": 616,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Tubarão pequeno de dentes achatados feitos para triturar caranguejo, inofensivo para gente. Pele áspera de lixa e olhos verdes muito característicos.",
+      "silhouette": "caconete.svg",
+      "visuallySimilarTo": [
+        "cacao-bico-doce",
+        "cacao-bico-de-cristal"
+      ],
+      "badges": {
+        "bronze": "Fisgou Caçonete",
+        "prata": "Repeteco de Caçonete",
+        "ouro": "Pescador de Caçonete",
+        "platina": "Mestre de Caçonete",
+        "diamante": "Lenda de Caçonete",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 5937,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cacao-bico-doce",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 36
+      },
+      "commonName": "Cação-bico-doce",
+      "aliases": [
+        "frango-do-mar",
+        "cação",
+        "rabo-seco"
+      ],
+      "scientificName": "Rhizoprionodon lalandii",
+      "variety": null,
+      "rarity": "incomum",
+      "measure": "comprimento",
+      "minLengthCm": 30,
+      "avgLengthCm": 55,
+      "maxLengthCm": 90,
+      "lengthWeight": {
+        "a": 0.00193,
+        "b": 3.17,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "southeastern Brazil / 1996-2003",
+        "sampleSize": 8266,
+        "candidates": 3,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral",
+        "estuário"
+      ],
+      "fact": "O tubarãozinho que mais aparece na pesca de praia do Sul, de focinho longo e afilado. Nome de bico-doce porque o focinho é mole, não porque o bicho seja manso.",
+      "silhouette": "cacao-bico-doce.svg",
+      "visuallySimilarTo": [
+        "caconete",
+        "cacao-bico-de-cristal"
+      ],
+      "badges": {
+        "bronze": "Peguei um Tubarão!",
+        "prata": "Frango do Mar",
+        "ouro": "Cacionista",
+        "platina": "Lixa na Mão",
+        "diamante": "Terror da Beira",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 900,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cacao-bico-de-cristal",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 37
+      },
+      "commonName": "Cação-bico-de-cristal",
+      "aliases": [
+        "tubarão-sombreiro",
+        "cação-cambeva",
+        "tope"
+      ],
+      "scientificName": "Galeorhinus galeus",
+      "variety": null,
+      "rarity": "raro",
+      "measure": "comprimento",
+      "minLengthCm": 40,
+      "avgLengthCm": 80,
+      "maxLengthCm": 150,
+      "lengthWeight": {
+        "a": 0.0188,
+        "b": 2.6671,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": null,
+        "locality": "(não informada)",
+        "sampleSize": 510,
+        "candidates": 12,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Tubarão migrador de grande porte, com a segunda dorsal quase do tamanho da anal. Sofreu colapso populacional no Sul e hoje é captura incomum e ameaçada.",
+      "silhouette": "cacao-bico-de-cristal.svg",
+      "visuallySimilarTo": [
+        "caconete",
+        "cacao-bico-doce"
+      ],
+      "badges": {
+        "bronze": "Fisgou Cação-bico-de-cristal",
+        "prata": "Repeteco de Cação-bico-de-cristal",
+        "ouro": "Pescador de Cação-bico-de-cristal",
+        "platina": "Mestre de Cação-bico-de-cristal",
+        "diamante": "Lenda de Cação-bico-de-cristal",
+        "curated": false
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 4642,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    },
+    {
+      "id": "cacao-anjo",
+      "albums": [
+        "costa-sul"
+      ],
+      "albumOrder": {
+        "costa-sul": 38
+      },
+      "commonName": "Cação-anjo",
+      "aliases": [
+        "peixe-anjo",
+        "anjo",
+        "tubarão-anjo"
+      ],
+      "scientificName": "Squatina guggenheim",
+      "variety": null,
+      "rarity": "lendario",
+      "measure": "comprimento",
+      "minLengthCm": 35,
+      "avgLengthCm": 70,
+      "maxLengthCm": 120,
+      "lengthWeight": {
+        "a": 0.0346,
+        "b": 2.708,
+        "lengthType": "TL",
+        "origin": "TL",
+        "proxySpecies": "Squatina squatina",
+        "locality": "North Sea & West Coast, 1956-84",
+        "sampleSize": 8,
+        "candidates": 1,
+        "fishbaseVersion": "v19.04"
+      },
+      "habitat": [
+        "litoral"
+      ],
+      "fact": "Tubarão achatado que passa a vida enterrado na areia esperando presa, com aparência de raia e mordida de tubarão. Criticamente ameaçado no Sul do Brasil — encontrar um é evento raro.",
+      "silhouette": "cacao-anjo.svg",
+      "visuallySimilarTo": [
+        "raia-viola"
+      ],
+      "badges": {
+        "bronze": null,
+        "prata": null,
+        "ouro": "Anjo na Areia",
+        "platina": "Emboscada Perfeita",
+        "diamante": "Anjo do Sul",
+        "curated": true
+      },
+      "hybrid": false,
+      "taxonomy": {
+        "fishbaseSpecCode": 53932,
+        "status": "aceito",
+        "acceptedName": null
+      }
+    }
+  ]
+}

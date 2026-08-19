@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Fisgados",
+    "slug": "fisgados",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "fisgados",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.fisgados.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1F1A"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.fisgados.app",
+      "supportsTablet": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B1F1A",
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O Fisgados usa a câmera para você fotografar a captura."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "O Fisgados registra onde você pescou. A coordenada exata nunca é compartilhada com ninguém."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
