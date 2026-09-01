@@ -1,13 +1,14 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList, Image, Pressable, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { getSpecies, SPECIES } from '@/catalog';
-import { listCatches, listUnlockedIds } from '@/db/queries';
+import { SPECIES } from '@/catalog';
+import { CartaCaptura } from '@/components/CartaCaptura';
+import { countBySpecies, listCatches, listPersonalBests, listUnlockedIds } from '@/db/queries';
 import type { CatchRow } from '@/db/schema';
 import { useDraft } from '@/stores/draft';
-import { weightLabel } from '@/domain/weight';
+import { useSession } from '@/stores/session';
 
 /** Vem do catálogo, não de constante: número escrito à mão é número que envelhece. */
 const TOTAL_ESPECIES = SPECIES.length;
@@ -16,24 +17,40 @@ export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const resetDraft = useDraft((s) => s.reset);
+  const user = useSession((s) => s.user);
 
   const [rows, setRows] = useState<CatchRow[]>([]);
   const [desbloqueadas, setDesbloqueadas] = useState(0);
+  const [recordes, setRecordes] = useState<Map<string, number>>(new Map());
+  const [contagem, setContagem] = useState<Map<string, number>>(new Map());
 
   // Recarrega ao voltar para a tela: o histórico muda quando o usuário registra algo.
+  // Depende da conta porque o álbum é de quem está logado — trocar de conta troca a lista.
+  const userId = user?.id;
   useFocusEffect(
     useCallback(() => {
+      // Durante o logout esta tela ainda desenha um quadro antes de sair; sem dono, não há o que
+      // buscar, e insistir mostraria o histórico de quem acabou de sair.
+      if (!userId) return;
+
       let vivo = true;
       (async () => {
-        const [lista, ids] = await Promise.all([listCatches(50), listUnlockedIds()]);
+        const [lista, ids, melhores, quantas] = await Promise.all([
+          listCatches(userId, 50),
+          listUnlockedIds(userId),
+          listPersonalBests(userId),
+          countBySpecies(userId),
+        ]);
         if (!vivo) return;
         setRows(lista);
         setDesbloqueadas(ids.size);
+        setRecordes(melhores);
+        setContagem(quantas);
       })();
       return () => {
         vivo = false;
       };
-    }, []),
+    }, [userId]),
   );
 
   function registrar() {
@@ -46,13 +63,22 @@ export default function Home() {
       <FlatList
         data={rows}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 108 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 116 }}
         ListHeaderComponent={
           <View className="px-5 pb-2 pt-4">
-            <Text className="text-3xl font-bold text-texto">
-              {desbloqueadas}
-              <Text className="text-xl font-normal text-suave"> / {TOTAL_ESPECIES} espécies</Text>
-            </Text>
+            {user ? (
+              <Text className="mb-1 text-sm text-suave">Boa pescaria, {user.name}</Text>
+            ) : null}
+            <Pressable
+              onPress={() => router.push('/album')}
+              className="flex-row items-end justify-between active:opacity-70"
+            >
+              <Text className="text-3xl font-bold text-cobalto">
+                {desbloqueadas}
+                <Text className="text-xl font-normal text-suave"> / {TOTAL_ESPECIES} espécies</Text>
+              </Text>
+              <Text className="pb-1 text-sm font-semibold text-cobalto">Ver álbum</Text>
+            </Pressable>
             <Text className="mt-1 text-sm text-suave">
               {rows.length === 0
                 ? 'Nenhuma captura registrada ainda.'
@@ -69,7 +95,14 @@ export default function Home() {
             </Text>
           </View>
         }
-        renderItem={({ item }) => <CatchItem row={item} />}
+        renderItem={({ item }) => (
+          <CartaCaptura
+            row={item}
+            recorde={item.speciesId ? recordes.get(item.speciesId) === item.lengthCm : false}
+            quantas={item.speciesId ? contagem.get(item.speciesId) : undefined}
+            onPress={() => router.push({ pathname: '/captura/[id]', params: { id: item.id } })}
+          />
+        )}
       />
 
       <View
@@ -80,43 +113,9 @@ export default function Home() {
           onPress={registrar}
           className="items-center rounded-2xl bg-destaque py-4 active:opacity-80"
         >
-          <Text className="text-base font-bold text-fundo">Registrar captura</Text>
+          <Text className="text-base font-bold text-destaque-texto">Registrar captura</Text>
         </Pressable>
       </View>
-    </View>
-  );
-}
-
-function CatchItem({ row }: { row: CatchRow }) {
-  const species = row.speciesId ? getSpecies(row.speciesId) : undefined;
-  const nome = species?.commonName ?? 'Não identificado';
-  const peso = weightLabel(row.weightG, row.weightEstG);
-  const data = new Date(row.caughtAt).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'short',
-  });
-
-  return (
-    <View className="mx-5 mt-3 flex-row items-center rounded-2xl border border-borda bg-superficie p-3">
-      <Image
-        source={{ uri: row.photoLocal }}
-        className="h-16 w-16 rounded-xl bg-elevado"
-        resizeMode="cover"
-      />
-      <View className="ml-3 flex-1">
-        <Text className="text-base font-semibold text-texto" numberOfLines={1}>
-          {nome}
-        </Text>
-        <Text className="mt-0.5 text-sm text-suave">
-          {row.lengthCm} cm{peso ? ` · ${peso}` : ''}
-        </Text>
-        {row.placeLabel ? (
-          <Text className="mt-0.5 text-xs text-suave" numberOfLines={1}>
-            {row.placeLabel}
-          </Text>
-        ) : null}
-      </View>
-      <Text className="ml-2 text-xs text-suave">{data}</Text>
     </View>
   );
 }

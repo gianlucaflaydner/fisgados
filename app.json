@@ -5,11 +5,11 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "fisgados",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "android": {
       "package": "com.fisgados.app",
       "adaptiveIcon": {
-        "backgroundColor": "#0B1F1A"
+        "backgroundColor": "#1B45D8"
       }
     },
     "ios": {
@@ -22,8 +22,17 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0B1F1A",
-          "resizeMode": "contain"
+          "backgroundColor": "#F4F7FF",
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#071827"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O Fisgados abre suas fotos para você registrar uma captura já fotografada."
         }
       ],
       [

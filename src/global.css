@@ -1,3 +1,56 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Tokens de cor — dois temas. Espelham `src/theme/cores.ts`, que é a fonte de verdade para as
+ * cores entregues por propriedade (ActivityIndicator, placeholderTextColor, Switch, cabeçalho).
+ * Um teste em `scripts/test-domain.mts` compara os dois lados a cada `npm test`: dois arquivos
+ * com a mesma paleta é justamente o tipo de coisa que desanda em silêncio.
+ *
+ * Os valores são triplas RGB separadas por espaço, e não hexadecimais, para que o Tailwind consiga
+ * aplicar modificador de opacidade (`bg-fundo/50`) sobre a variável.
+ */
+:root {
+  --cor-fundo: 244 247 255;
+  --cor-superficie: 255 255 255;
+  --cor-elevado: 231 238 255;
+  --cor-borda: 210 221 247;
+  --cor-texto: 11 26 61;
+  --cor-suave: 88 106 146;
+  --cor-cobalto: 27 69 216;
+  --cor-destaque: 255 90 46;
+  --cor-destaque-texto: 43 12 2;
+  --cor-perigo: 194 31 73;
+  --cor-comum: 95 124 113;
+  --cor-incomum: 30 138 85;
+  --cor-raro: 112 64 201;
+  --cor-lendario: 168 114 12;
+  --cor-bronze: 161 92 47;
+  --cor-prata: 138 151 165;
+  --cor-ouro: 168 114 12;
+  --cor-platina: 110 143 160;
+  --cor-diamante: 44 127 168;
+}
+
+.dark:root {
+  --cor-fundo: 7 24 39;
+  --cor-superficie: 14 35 52;
+  --cor-elevado: 22 48 70;
+  --cor-borda: 31 64 89;
+  --cor-texto: 232 241 248;
+  --cor-suave: 143 170 192;
+  --cor-cobalto: 91 132 255;
+  --cor-destaque: 255 106 61;
+  --cor-destaque-texto: 10 21 32;
+  --cor-perigo: 255 92 124;
+  --cor-comum: 143 168 160;
+  --cor-incomum: 63 190 126;
+  --cor-raro: 185 140 240;
+  --cor-lendario: 240 190 74;
+  --cor-bronze: 200 131 79;
+  --cor-prata: 195 205 216;
+  --cor-ouro: 240 190 74;
+  --cor-platina: 191 224 236;
+  --cor-diamante: 127 211 240;
+}

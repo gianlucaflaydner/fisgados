@@ -8,6 +8,20 @@
       "when": 1787151539305,
       "tag": "0000_slimy_doctor_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787499479752,
+      "tag": "0001_groovy_kang",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1787503148733,
+      "tag": "0002_icy_sprite",
+      "breakpoints": true
     }
   ]
 }

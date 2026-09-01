@@ -8,8 +8,24 @@
 
 import { create } from 'zustand';
 
+/**
+ * De onde veio a foto. Muda o que o app pode assumir sobre o resto do registro: foto tirada
+ * agora acontece onde a pessoa está; foto da galeria pode ser de outro dia e de outro lugar.
+ */
+export type OrigemFoto = 'camera' | 'galeria';
+
+/** A foto como saiu do aparelho, esperando enquadramento. Descartada assim que vira `photoUri`. */
+export interface FotoParaEnquadrar {
+  uri: string;
+  largura: number;
+  altura: number;
+}
+
 export interface Draft {
+  /** A foto final, já enquadrada em 3:4 e comprimida. É esta que vai para o banco. */
   photoUri: string | null;
+  fotoBruta: FotoParaEnquadrar | null;
+  origemFoto: OrigemFoto | null;
   speciesId: string | null;
   lengthCm: string;
   weightG: string;
@@ -23,6 +39,8 @@ export interface Draft {
 
 const vazio = (): Draft => ({
   photoUri: null,
+  fotoBruta: null,
+  origemFoto: null,
   speciesId: null,
   lengthCm: '',
   weightG: '',
