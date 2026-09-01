@@ -1,0 +1,143 @@
+{
+  "_comentario": [
+    "Curadoria manual das fotos, feita por revisão visual carta a carta.",
+    "A busca automática propõe; este arquivo decide. Sem ele, uma nova rodada de",
+    "photos:fetch traria de volta esqueletos, aves segurando peixe e pranchas de livro.",
+    "",
+    "indice = posição da candidata escolhida em scripts/.cache/alternativas.json",
+    "null   = nenhuma candidata serve; a espécie fica sem foto de propósito",
+    "nota   = por que, quando a escolha tem ressalva"
+  ],
+  "bagre-africano": {
+    "indice": 3,
+    "motivo": "a original era um monte de peixes empilhados"
+  },
+  "bagre-amarelo": {
+    "indice": 6,
+    "motivo": "a original era um esqueleto na areia"
+  },
+  "bagre-americano": {
+    "indice": 3,
+    "motivo": "a original era uma carcaça inchada"
+  },
+  "bagre-branco": {
+    "indice": 5,
+    "motivo": "a original era um esqueleto na areia"
+  },
+  "baiacu": {
+    "indice": 3,
+    "motivo": "a original estava borrada"
+  },
+  "cacao-bico-doce": {
+    "indice": 7,
+    "motivo": "a original era uma pilha de mortos no gelo"
+  },
+  "cachara": {
+    "indice": 3,
+    "motivo": "a original era dominada por uma pessoa",
+    "nota": "foto de espécime sobre fundo preto, não de campo"
+  },
+  "cara": {
+    "indice": 7,
+    "motivo": "a original estava escura demais"
+  },
+  "carpa-colorida": {
+    "indice": 1,
+    "motivo": "a original era idêntica à de outras duas carpas",
+    "nota": "agora é um koi de verdade; as três carpas dividem o nome científico Cyprinus carpio"
+  },
+  "carpa-espelho": {
+    "indice": 7,
+    "motivo": "a original era idêntica à de outras duas carpas",
+    "nota": "é uma carpa comum, não uma carpa-espelho. A variedade não se distingue por nome científico e não achei foto boa da linhagem — precisa de escolha manual"
+  },
+  "carpa-prateada": {
+    "indice": 9,
+    "motivo": "a original mostrava evisceração"
+  },
+  "cascudo-viola": {
+    "indice": null,
+    "motivo": "a original era uma ave segurando o peixe",
+    "nota": "nenhuma candidata serve: só ave, gravura antiga e prancha de espécime. Sem foto é melhor que foto errada"
+  },
+  "castanha": {
+    "indice": 1,
+    "motivo": "a original era uma pilha de peixes mortos"
+  },
+  "guaivira": {
+    "indice": 3,
+    "motivo": "a original era prancha de livro antigo"
+  },
+  "kinguio": {
+    "indice": 8,
+    "motivo": "a original era uma ave segurando o peixe"
+  },
+  "mucum": {
+    "indice": 7,
+    "motivo": "a original estava escondida na vegetação"
+  },
+  "peixe-espada": {
+    "indice": 1,
+    "motivo": "a original era dominada pelo corpo da pessoa"
+  },
+  "peixe-galo": {
+    "indice": 1,
+    "motivo": "a original era um esqueleto ao lado de uma moeda"
+  },
+  "peixe-rei-de-lagoa": {
+    "indice": 5,
+    "motivo": "a original eram duas aves na areia"
+  },
+  "pescada-branca": {
+    "indice": 1,
+    "motivo": "a original era uma mesa de limpeza de peixe"
+  },
+  "pescada-olhuda": {
+    "indice": 7,
+    "motivo": "a original era uma pilha numa bandeja"
+  },
+  "pintachara": {
+    "indice": 5,
+    "motivo": "a original era dominada por uma pessoa",
+    "nota": "é híbrido (Pseudoplatystoma corruscans × reticulatum). A foto é de um dos parentais — não existe registro taxonômico de híbrido"
+  },
+  "pintado": {
+    "indice": 6,
+    "motivo": "a original era uma carcaça em decomposição"
+  },
+  "raia-emplastro": {
+    "indice": 8,
+    "motivo": "a original eram homens num barco"
+  },
+  "savelha": {
+    "indice": 0,
+    "motivo": "a original era ilustração de livro",
+    "nota": "continua sendo ilustração: não existe foto com licença aproveitável desta espécie"
+  },
+  "sororoca": {
+    "indice": 3,
+    "motivo": "a original era uma caixa de peixes mortos"
+  },
+  "tilapia": {
+    "indice": 7,
+    "motivo": "a original era uma ave segurando o peixe"
+  },
+  "tilapia-vermelha": {
+    "indice": null,
+    "motivo": "a original era uma ave segurando o peixe",
+    "nota": "a busca por 'Red tilapia' no Wikimedia trouxe objetos de latão e um prato de comida. Variedade não se distingue por nome científico — precisa de escolha manual"
+  },
+  "traira": {
+    "indice": 6,
+    "motivo": "a original era um close escuro da boca"
+  },
+  "trairao": {
+    "indice": 1,
+    "motivo": "a original estava em água turva, mal se via o peixe"
+  },
+  "tambacu": {
+    "indice": 0,
+    "motivo": "a original era uma prancha científica com vários peixes numerados",
+    "nota": "é híbrido (Piaractus mesopotamicus × Colossoma macropomum) e não tem registro taxonômico próprio. A foto é do parental pacu, diferente da usada no card do Pacu"
+  }
+}
