@@ -20,6 +20,13 @@ import {
 import { emailValido, normalizarEmail, SENHA_MIN, validarCadastro } from '../src/domain/conta.ts';
 import { dataDoExif } from '../src/domain/exif.ts';
 import {
+  atrasoDaTentativa,
+  desistiu,
+  fundir,
+  TENTATIVAS_MAX,
+  venceLocal,
+} from '../src/domain/sincronizacao.ts';
+import {
   calcularRecorte,
   dimensoesAposGirar,
   escalaDeCobertura,
@@ -494,6 +501,77 @@ teste('imagem sem dimensão conhecida não gera recorte inválido', () => {
   });
   assert.ok(r.width > 0 && r.height > 0);
   assert.ok(!Number.isNaN(r.originX) && !Number.isNaN(r.originY));
+});
+
+// ─────────────────────────────────────────────── sincronização (SDD seção 4)
+
+teste('o atraso segue a escala do SDD e nunca sai dela', () => {
+  // Sem jitter (aleatorio devolve 0.5, o meio da faixa) o valor é o da tabela.
+  const meio = () => 0.5;
+  assert.equal(atrasoDaTentativa(0, meio), 2_000);
+  assert.equal(atrasoDaTentativa(1, meio), 8_000);
+  assert.equal(atrasoDaTentativa(2, meio), 30_000);
+  assert.equal(atrasoDaTentativa(3, meio), 120_000);
+  assert.equal(atrasoDaTentativa(4, meio), 600_000);
+});
+
+teste('o atraso satura no último degrau em vez de estourar o índice', () => {
+  const meio = () => 0.5;
+  // Tentativa acima do limite não pode virar undefined nem NaN.
+  for (const n of [5, 9, 100]) {
+    assert.equal(atrasoDaTentativa(n, meio), 600_000, `tentativa ${n}`);
+  }
+  // Nem valor negativo, que só apareceria por bug de contador.
+  assert.equal(atrasoDaTentativa(-3, meio), 2_000);
+});
+
+teste('o jitter espalha em até 20% para os dois lados', () => {
+  // Dez itens na fila voltando juntos não podem disparar no mesmo milissegundo.
+  const minimo = atrasoDaTentativa(2, () => 0);
+  const maximo = atrasoDaTentativa(2, () => 1);
+  assert.equal(minimo, 24_000);
+  assert.equal(maximo, 36_000);
+
+  for (let i = 0; i < 200; i++) {
+    const d = atrasoDaTentativa(2);
+    assert.ok(d >= minimo && d <= maximo, `${d} fora da faixa`);
+    assert.ok(Number.isInteger(d), 'atraso não inteiro');
+  }
+});
+
+teste('desiste exatamente no limite de tentativas, não antes', () => {
+  assert.ok(!desistiu(0));
+  assert.ok(!desistiu(TENTATIVAS_MAX - 1));
+  assert.ok(desistiu(TENTATIVAS_MAX));
+  assert.ok(desistiu(TENTATIVAS_MAX + 1));
+});
+
+teste('conflito é last-write-wins, e empate fica com o remoto', () => {
+  const antes = { updatedAt: '2026-08-20T10:00:00.000Z' };
+  const depois = { updatedAt: '2026-08-20T10:00:01.000Z' };
+
+  assert.ok(venceLocal(depois, antes), 'local mais novo deveria vencer');
+  assert.ok(!venceLocal(antes, depois), 'local mais velho não pode vencer');
+  // Empate: o remoto já foi visto por outros aparelhos, reescrevê-lo criaria diferença inexplicável.
+  assert.ok(!venceLocal(antes, { ...antes }), 'empate deveria ficar com o remoto');
+});
+
+teste('fusos diferentes não confundem a comparação de conflito', () => {
+  // O mesmo instante escrito de dois jeitos não pode dar vencedor.
+  const zulu = { updatedAt: '2026-08-20T12:00:00.000Z' };
+  const brasilia = { updatedAt: '2026-08-20T09:00:00.000-03:00' };
+  assert.ok(!venceLocal(zulu, brasilia));
+  assert.ok(!venceLocal(brasilia, zulu));
+});
+
+teste('operações na mesma linha se fundem em vez de virar duas idas ao servidor', () => {
+  // Registrar e corrigir offline: o upsert manda o estado final de qualquer jeito.
+  assert.deepEqual(fundir('create', 'update'), { operacao: 'create' });
+  assert.deepEqual(fundir('update', 'update'), { operacao: 'update' });
+  assert.deepEqual(fundir('update', 'delete'), { operacao: 'delete' });
+
+  // Criar e apagar antes de sincronizar: o servidor nunca viu a linha, então nada precisa subir.
+  assert.deepEqual(fundir('create', 'delete'), { descartarAmbas: true });
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

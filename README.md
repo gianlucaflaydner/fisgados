@@ -47,7 +47,7 @@ intacta na galeria — o app guarda só o pedaço escolhido.
 ## Outros comandos
 
 ```bash
-npm test                   # testes da camada de domínio (40 casos)
+npm test                   # testes da camada de domínio (47 casos)
 npm run typecheck
 npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
@@ -78,6 +78,8 @@ disso roda offline. O build sai com código 1 se encontrar erro no catálogo.
 | Mudar o desenho da carta de captura | `src/components/CartaCaptura.tsx` |
 | Mudar o desenho da carta do álbum | `src/components/CartaAlbum.tsx` |
 | Mexer na cena de desbloqueio | `src/components/Desbloqueio.tsx` |
+| Mexer nas regras de sincronização | `src/domain/sincronizacao.ts` (puras, com teste) |
+| Mexer no esquema da nuvem | `supabase/migrations/0001_esquema.sql` |
 | Reordenar as cartas de um álbum | `ALBUM_LAYOUT` em `scripts/catalog/species-source.mts` |
 | Trocar a foto de uma espécie | apague o arquivo em `assets/especies/` e rode `photos:fetch -- --baixar` |
 | Mexer em qualquer cor | `src/theme/cores.ts` **e** `src/global.css` — os dois, sempre |
@@ -122,6 +124,7 @@ src/
   domain/             regras do PRD, sem React e sem I/O
   db/                 schema Drizzle, migrations e queries
   auth/               contas locais, hash de senha e sessão
+  sync/               configuração da nuvem (opcional por construção)
   theme/              a paleta dos dois temas, para o que não aceita classe
   media/              entrada e compressão da foto
   components/         pedaços de tela reaproveitados
@@ -144,4 +147,28 @@ scripts/              geração e auditoria do catálogo, testes
 5. **Nomes de insígnia** das 42 cartas em fallback (seção 5 do relatório).
 6. **Extrair o formulário compartilhado** entre `captura/detalhes` e `captura/[id]` — hoje são
    dois formulários iguais e independentes, que vão divergir no primeiro campo novo.
-7. **Etapa 3** — nuvem e amigos: autenticação no Supabase, sincronização, convite por link.
+7. **Etapa 3** — nuvem e amigos. Começada: o esquema Postgres com RLS está em
+   `supabase/migrations/`, a fila de saída (outbox) já enfileira toda escrita, e as regras de
+   repetição e conflito estão testadas. **Falta um projeto Supabase** — ver abaixo.
+
+## Nuvem (Etapa 3, em andamento)
+
+O app funciona inteiro sem nuvem: conta, álbum e histórico são locais. Sincronizar é o que
+acontece depois, quando existe servidor e sinal — a fila apenas acumula até lá, e nenhuma tela
+muda de comportamento.
+
+Para ligar, é preciso um projeto Supabase, que só o dono da conta pode criar:
+
+1. Criar o projeto em supabase.com e aplicar `supabase/migrations/0001_esquema.sql`
+   (`supabase db push`, ou colar no SQL Editor).
+2. Copiar `.env.example` para `.env` e preencher a URL e a **anon key**.
+   A `service_role` nunca entra num app cliente — ela ignora o RLS.
+3. O bucket `catches` e as políticas de Storage saem na mesma migration.
+
+Ainda **não** existe: o cliente Supabase, o upload de foto, o worker que drena a fila, o convite
+por link e os rankings. Foram deixados de fora de propósito — escrever integração contra um
+servidor que não dá para exercitar produz código que parece pronto e nunca foi executado.
+
+Uma decisão de dados espera resposta: as contas hoje são locais, com id gerado no aparelho, e o
+Supabase Auth emite os seus próprios. Migrar exige escolher entre manter o id local e mapear, ou
+re-chavear as capturas — e isso muda o histórico de quem já usou o app.

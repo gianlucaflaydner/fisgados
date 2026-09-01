@@ -139,6 +139,15 @@ export const syncOutbox = sqliteTable('sync_outbox', {
   payload: text('payload').notNull(),
   attempts: integer('attempts').notNull().default(0),
   lastError: text('last_error'),
+
+  /**
+   * Quando este item pode ser tentado de novo (ISO 8601).
+   *
+   * O agendamento fica na linha, e não na memória do worker: a fila precisa sobreviver ao app ser
+   * morto no meio de uma pescaria sem sinal. Sem isto, reabrir o app zeraria o backoff e o
+   * aparelho voltaria a martelar o servidor de dois em dois segundos.
+   */
+  nextAttemptAt: text('next_attempt_at'),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(current_timestamp)`),
@@ -148,4 +157,5 @@ export type CatchRow = typeof catches.$inferSelect;
 export type NewCatch = typeof catches.$inferInsert;
 export type UnlockRow = typeof unlocks.$inferSelect;
 export type UserRow = typeof users.$inferSelect;
+export type OutboxRow = typeof syncOutbox.$inferSelect;
 export type AppPrefRow = typeof appPrefs.$inferSelect;

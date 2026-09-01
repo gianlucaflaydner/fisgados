@@ -9,11 +9,38 @@
  * compilação, e não um histórico que mostra o peixe de outra pessoa.
  */
 
-import { and, desc, eq, isNull, max, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, lte, max, or, sql } from 'drizzle-orm';
 import { db } from './index';
-import { appPrefs, catches, unlocks, type CatchRow, type NewCatch } from './schema';
+import { appPrefs, catches, syncOutbox, unlocks, type CatchRow, type NewCatch } from './schema';
 import { estimateWeightG, isTrophy } from '../domain/weight';
 import { getSpecies } from '../catalog';
+import { atrasoDaTentativa, type EntidadeSync, type OperacaoSync } from '../domain/sincronizacao';
+
+/**
+ * Enfileira uma escrita para a nuvem — SDD seção 4, padrão outbox.
+ *
+ * Recebe a transação e **só é chamado dentro dela**. Não é detalhe de estilo: se a captura for
+ * gravada e o enfileiramento falhar depois, a linha existe no aparelho e nunca sobe, sem nada
+ * indicar que faltou. Na mesma transação, ou as duas coisas acontecem ou nenhuma.
+ *
+ * Nada aqui exige que a nuvem exista. A fila só acumula até haver um servidor para consumi-la, e
+ * o app segue funcionando inteiro offline — que é o requisito não funcional principal do PRD.
+ */
+async function enfileirar(
+  tx: { insert: typeof db.insert },
+  entity: EntidadeSync,
+  entityId: string,
+  operation: OperacaoSync,
+  payload: unknown,
+): Promise<void> {
+  await tx.insert(syncOutbox).values({
+    entity,
+    entityId,
+    operation,
+    payload: JSON.stringify(payload),
+    nextAttemptAt: new Date().toISOString(),
+  });
+}
 
 /** UUID v7: ordenável por tempo, gerado no cliente, definitivo desde o nascimento. */
 export function uuidv7(): string {
@@ -97,6 +124,7 @@ export async function saveCatch(input: NewCatchInput): Promise<SaveResult> {
 
   await db.transaction(async (tx) => {
     await tx.insert(catches).values(row);
+    await enfileirar(tx, 'catch', id, 'create', row);
 
     // RN01 + RN12: só espécie confirmada desbloqueia, e só na primeira vez **daquela conta**.
     if (input.speciesId) {
@@ -107,12 +135,14 @@ export async function saveCatch(input: NewCatchInput): Promise<SaveResult> {
         .limit(1);
 
       if (jaTem.length === 0) {
-        await tx.insert(unlocks).values({
+        const desbloqueio = {
           userId: input.userId,
           speciesId: input.speciesId,
           firstCatchId: id,
           unlockedAt: agora,
-        });
+        };
+        await tx.insert(unlocks).values(desbloqueio);
+        await enfileirar(tx, 'unlock', input.speciesId, 'create', desbloqueio);
         unlocked = true;
       }
     }
@@ -158,19 +188,22 @@ export async function updateCatch(
   let unlocked = false;
 
   await db.transaction(async (tx) => {
+    const alteracao = {
+      speciesId: input.speciesId,
+      lengthCm: input.lengthCm,
+      weightG: input.weightG,
+      weightEstG: species ? estimateWeightG(input.lengthCm, species) : null,
+      placeLabel: input.placeLabel,
+      released: input.released,
+      updatedAt: agora,
+      syncStatus: 'pending' as const,
+    };
+
     await tx
       .update(catches)
-      .set({
-        speciesId: input.speciesId,
-        lengthCm: input.lengthCm,
-        weightG: input.weightG,
-        weightEstG: species ? estimateWeightG(input.lengthCm, species) : null,
-        placeLabel: input.placeLabel,
-        released: input.released,
-        updatedAt: agora,
-        syncStatus: 'pending',
-      })
+      .set(alteracao)
       .where(and(eq(catches.userId, userId), eq(catches.id, id)));
+    await enfileirar(tx, 'catch', id, 'update', { id, userId, ...alteracao });
 
     if (input.speciesId) {
       const jaTem = await tx
@@ -180,12 +213,14 @@ export async function updateCatch(
         .limit(1);
 
       if (jaTem.length === 0) {
-        await tx.insert(unlocks).values({
+        const desbloqueio = {
           userId,
           speciesId: input.speciesId,
           firstCatchId: id,
           unlockedAt: agora,
-        });
+        };
+        await tx.insert(unlocks).values(desbloqueio);
+        await enfileirar(tx, 'unlock', input.speciesId, 'create', desbloqueio);
         unlocked = true;
       }
     }
@@ -277,10 +312,57 @@ export async function listUnlockedIds(userId: string): Promise<Set<string>> {
  */
 export async function deleteCatch(userId: string, id: string): Promise<void> {
   const agora = new Date().toISOString();
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(catches)
+      .set({ deletedAt: agora, updatedAt: agora, syncStatus: 'pending' })
+      .where(and(eq(catches.userId, userId), eq(catches.id, id)));
+    await enfileirar(tx, 'catch', id, 'delete', { id, userId, deletedAt: agora });
+  });
+}
+
+/* ─────────────────────────────────────────────── fila de sincronização ──────────── */
+
+/**
+ * O que está pronto para subir agora.
+ *
+ * Ordena pelo id, que é autoincremento: a fila sobe na ordem em que aconteceu. Uma correção que
+ * chegasse antes da criação da mesma captura produziria um upsert de linha inexistente.
+ */
+export async function proximosDaFila(limite = 20) {
+  const agora = new Date().toISOString();
+  return db
+    .select()
+    .from(syncOutbox)
+    .where(or(isNull(syncOutbox.nextAttemptAt), lte(syncOutbox.nextAttemptAt, agora)))
+    .orderBy(asc(syncOutbox.id))
+    .limit(limite);
+}
+
+/** Item que subiu sai da fila. A linha em `catches` guarda o `syncStatus`. */
+export async function removerDaFila(id: number): Promise<void> {
+  await db.delete(syncOutbox).where(eq(syncOutbox.id, id));
+}
+
+/**
+ * Falhou: conta a tentativa e agenda a próxima com o backoff do SDD.
+ *
+ * O agendamento é gravado, não guardado em memória, para sobreviver ao app ser morto. Sem isso,
+ * reabrir o app zeraria o backoff e o aparelho voltaria a martelar o servidor de 2 em 2 segundos.
+ */
+export async function adiarNaFila(id: number, tentativas: number, erro: string): Promise<void> {
+  const proxima = new Date(Date.now() + atrasoDaTentativa(tentativas)).toISOString();
   await db
-    .update(catches)
-    .set({ deletedAt: agora, updatedAt: agora, syncStatus: 'pending' })
-    .where(and(eq(catches.userId, userId), eq(catches.id, id)));
+    .update(syncOutbox)
+    .set({ attempts: tentativas + 1, lastError: erro.slice(0, 500), nextAttemptAt: proxima })
+    .where(eq(syncOutbox.id, id));
+}
+
+/** Quantos itens esperam para subir. Alimenta o indicador discreto do histórico (SDD 4). */
+export async function pendentesNaFila(): Promise<number> {
+  const linhas = await db.select({ n: sql<number>`count(*)` }).from(syncOutbox);
+  return Number(linhas[0]?.n ?? 0);
 }
 
 /* ─────────────────────────────────────────── preferências do aparelho ───────────── */
