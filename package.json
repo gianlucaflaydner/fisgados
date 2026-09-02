@@ -19,6 +19,7 @@
     "nuvem:check": "tsx scripts/check-cloud.mts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.114.0",
     "drizzle-orm": "^0.45.2",
     "expo": "~54.0.37",
     "expo-camera": "~17.0.10",

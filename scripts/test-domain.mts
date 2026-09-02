@@ -20,6 +20,12 @@ import {
 import { emailValido, normalizarEmail, SENHA_MIN, validarCadastro } from '../src/domain/conta.ts';
 import { dataDoExif } from '../src/domain/exif.ts';
 import {
+  codigoValido,
+  gerarCodigoConvite,
+  normalizarCodigo,
+  TAMANHO_CODIGO,
+} from '../src/domain/convite.ts';
+import {
   atrasoDaTentativa,
   desistiu,
   fundir,
@@ -572,6 +578,45 @@ teste('operações na mesma linha se fundem em vez de virar duas idas ao servido
 
   // Criar e apagar antes de sincronizar: o servidor nunca viu a linha, então nada precisa subir.
   assert.deepEqual(fundir('create', 'delete'), { descartarAmbas: true });
+});
+
+// ──────────────────────────────────────────────── código de convite (F10)
+
+teste('o código gerado tem o tamanho certo e só usa o alfabeto sem ambiguidade', () => {
+  for (let i = 0; i < 300; i++) {
+    const c = gerarCodigoConvite();
+    assert.equal(c.length, TAMANHO_CODIGO, `tamanho errado: ${c}`);
+    // 0/O e 1/I/L ficam de fora: código lido em voz alta não pode depender de distinguir zero de ó.
+    assert.ok(!/[01OIL]/.test(c), `caractere ambíguo em ${c}`);
+    assert.ok(codigoValido(c), `o próprio gerador produziu código inválido: ${c}`);
+  }
+});
+
+teste('o gerador cobre o alfabeto inteiro, incluindo as pontas', () => {
+  // Sorteio no piso e no teto não pode estourar o índice nem repetir o mesmo símbolo.
+  assert.equal(gerarCodigoConvite(() => 0), '222222');
+  assert.equal(gerarCodigoConvite(() => 0.999999), 'ZZZZZZ');
+});
+
+teste('normalizar aceita o que a pessoa realmente digita', () => {
+  assert.equal(normalizarCodigo('  a2b3c4 '), 'A2B3C4');
+  assert.equal(normalizarCodigo('A2B-3C4'), 'A2B3C4');
+  assert.equal(normalizarCodigo('a 2 b 3 c 4'), 'A2B3C4');
+});
+
+teste('normalizar não inventa correção de caractere ambíguo', () => {
+  // Tentador "consertar" O para 0, mas nenhum dos dois está no alfabeto — corrigir um pelo outro
+  // transformaria erro de digitação em outro código válido, que é pior do que recusar.
+  assert.equal(normalizarCodigo('A2B3CO'), 'A2B3CO');
+  assert.ok(!codigoValido('A2B3CO'), 'código com O deveria ser recusado');
+  assert.ok(!codigoValido('A2B3C1'), 'código com 1 deveria ser recusado');
+});
+
+teste('código do tamanho errado é recusado antes de gastar ida ao servidor', () => {
+  assert.ok(!codigoValido(''));
+  assert.ok(!codigoValido('A2B3C'));
+  assert.ok(!codigoValido('A2B3C45'));
+  assert.ok(codigoValido('A2B3C4'));
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

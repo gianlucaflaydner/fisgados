@@ -386,3 +386,26 @@ export async function setPref(key: string, value: string): Promise<void> {
     .values({ key, value })
     .onConflictDoUpdate({ target: appPrefs.key, set: { value } });
 }
+
+export async function removePref(key: string): Promise<void> {
+  await db.delete(appPrefs).where(eq(appPrefs.key, key));
+}
+
+/**
+ * Apaga tudo que pertence a quem usava este aparelho antes.
+ *
+ * Chamado quando outra conta entra — uma conta por aparelho é regra do MVP (F14). Não é limpeza
+ * de cache: é a garantia de que o histórico de uma pessoa não fica no banco de outra, invisível
+ * mas presente. A preferência de tema e a sessão do Supabase ficam, porque são do aparelho e não
+ * da conta.
+ *
+ * A fila de sincronização vai junto: itens da conta anterior nunca mais poderão subir, já que a
+ * sessão que os autorizaria não existe mais.
+ */
+export async function limparDadosLocais(): Promise<void> {
+  await db.transaction(async (tx) => {
+    await tx.delete(catches);
+    await tx.delete(unlocks);
+    await tx.delete(syncOutbox);
+  });
+}

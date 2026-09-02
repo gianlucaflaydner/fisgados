@@ -17,13 +17,16 @@ npm start          # abre o Metro; escaneie o QR com o Expo Go
 
 Não precisa de Android Studio nem Xcode. Câmera, galeria, GPS e SQLite funcionam no Expo Go.
 
-Na primeira abertura o app pede para criar uma conta. Ela existe **só neste aparelho**: não há
-servidor até a Etapa 3, não há e-mail de confirmação e não há recuperação de senha. Serve para
-separar o histórico de duas pessoas no mesmo celular e para cada captura já nascer com dono.
+Na primeira abertura o app pede para criar uma conta, **no Supabase Auth**. Criar e entrar exigem
+internet uma vez; dali em diante a sessão fica no aparelho e o app abre e registra capturas sem
+sinal, que é o estado normal de uma pescaria.
 
-**A sessão não expira.** Quem entra continua entrado até tocar em "Sair" — inclusive depois de
-fechar o app ou de o sistema matá-lo. Se a leitura da sessão falhar no boot, o app tenta de novo e
-mostra um aviso; nunca cai no login, porque erro de banco não é motivo para deslogar ninguém.
+**Uma conta por aparelho** (F14). O aparelho lembra de quem ele é; entrar com outra conta apaga o
+histórico local da anterior, com aviso na tela de cadastro. Sem isso dois históricos dividiriam o
+mesmo SQLite e a sincronização não teria como desempatar de quem é cada linha.
+
+Se a leitura da sessão falhar no boot, o app tenta de novo e mostra um aviso; nunca cai no login,
+porque erro de leitura não é motivo para deslogar ninguém.
 
 O tema segue o sistema por padrão e se troca no botão **Tema**, no topo da home. A escolha é do
 aparelho, não da conta.
@@ -47,7 +50,7 @@ intacta na galeria — o app guarda só o pedaço escolhido.
 ## Outros comandos
 
 ```bash
-npm test                   # testes da camada de domínio (47 casos)
+npm test                   # testes da camada de domínio (52 casos)
 npm run typecheck
 npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
@@ -124,7 +127,7 @@ src/
   catalog/            species.json gerado, tipos e o índice de busca
   domain/             regras do PRD, sem React e sem I/O
   db/                 schema Drizzle, migrations e queries
-  auth/               contas locais, hash de senha e sessão
+  auth/               contas no Supabase Auth, perfil e vínculo com o aparelho
   sync/               configuração da nuvem (opcional por construção)
   theme/              a paleta dos dois temas, para o que não aceita classe
   media/              entrada e compressão da foto
@@ -174,10 +177,12 @@ Para ligar, é preciso um projeto Supabase, que só o dono da conta pode criar:
 direta ao Postgres. Guarde em gerenciador de senhas: um segredo a mais no disco do projeto é um
 passo de distância de virar `EXPO_PUBLIC_` por engano e ir inteiro para dentro do bundle.
 
-Ainda **não** existe: o cliente Supabase, o upload de foto, o worker que drena a fila, o convite
-por link e os rankings. Foram deixados de fora de propósito — escrever integração contra um
-servidor que não dá para exercitar produz código que parece pronto e nunca foi executado.
+**Desligue a confirmação de e-mail** em *Authentication → Sign In / Providers → Email*. Com ela
+ligada o cadastro não devolve sessão até o usuário clicar num link, e o SMTP embutido do plano
+free manda poucos e-mails por hora — para um grupo fechado que entra por convite, é atrito sem
+contrapartida.
 
-Uma decisão de dados espera resposta: as contas hoje são locais, com id gerado no aparelho, e o
-Supabase Auth emite os seus próprios. Migrar exige escolher entre manter o id local e mapear, ou
-re-chavear as capturas — e isso muda o histórico de quem já usou o app.
+Ainda **não** existe: o upload de foto, o worker que drena a fila, o convite por link e os
+rankings. As contas locais foram descartadas em vez de migradas (migration 0004 remove as tabelas
+`users` e `session`); capturas registradas antes disso continuam no banco, invisíveis, porque
+pertencem a ids que não existem mais.

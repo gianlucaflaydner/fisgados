@@ -123,8 +123,9 @@ export default function CriarConta() {
           </Pressable>
 
           <Text className="mt-8 text-center text-xs leading-5 text-suave">
-            Sem e-mail de confirmação e sem recuperação de senha nesta versão: a conta existe só
-            neste aparelho.
+            Você precisa de internet só agora, para criar a conta. Depois o app abre e registra
+            capturas sem sinal. Um aparelho atende uma conta: entrar com outra apaga o histórico
+            local da anterior.
           </Text>
         </View>
       </ScrollView>

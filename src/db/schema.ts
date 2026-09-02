@@ -9,37 +9,6 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-/**
- * Conta local — F14 ("login simples, um dispositivo por conta no MVP").
- *
- * Enquanto a nuvem não existe (Etapa 3), a conta vive só aqui. Ela não tranca o aparelho de
- * ninguém: serve para separar o histórico de duas pessoas que usam o mesmo celular e para o app
- * já nascer gravando o dono em cada captura — no dia da sincronização não vai ser preciso
- * adivinhar de quem é o quê.
- */
-export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  /** Normalizado (minúsculas, sem espaço nas pontas): é a chave de login, não um rótulo. */
-  email: text('email').notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
-  /** Por usuário: dois cadastros com a mesma senha não produzem o mesmo hash. */
-  passwordSalt: text('password_salt').notNull(),
-  createdAt: text('created_at').notNull(),
-});
-
-/**
- * Sessão ativa — linha única (`id = 1`).
- *
- * Fica no SQLite, e não em memória, porque o login precisa sobreviver ao fechar do app: ninguém
- * digita senha na beira do açude toda vez que abre para registrar um peixe.
- */
-export const session = sqliteTable('session', {
-  id: integer('id').primaryKey(),
-  userId: text('user_id').notNull(),
-  startedAt: text('started_at').notNull(),
-});
-
 export const catches = sqliteTable(
   'catches',
   {
@@ -156,6 +125,5 @@ export const syncOutbox = sqliteTable('sync_outbox', {
 export type CatchRow = typeof catches.$inferSelect;
 export type NewCatch = typeof catches.$inferInsert;
 export type UnlockRow = typeof unlocks.$inferSelect;
-export type UserRow = typeof users.$inferSelect;
 export type OutboxRow = typeof syncOutbox.$inferSelect;
 export type AppPrefRow = typeof appPrefs.$inferSelect;

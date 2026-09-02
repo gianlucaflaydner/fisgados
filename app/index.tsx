@@ -67,7 +67,7 @@ export default function Home() {
         ListHeaderComponent={
           <View className="px-5 pb-2 pt-4">
             {user ? (
-              <Text className="mb-1 text-sm text-suave">Boa pescaria, {user.name}</Text>
+              <Text className="mb-1 text-sm text-suave">Boa pescaria, {user.nome}</Text>
             ) : null}
             <Pressable
               onPress={() => router.push('/album')}

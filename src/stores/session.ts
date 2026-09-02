@@ -1,21 +1,19 @@
 /**
  * Quem está usando o app agora.
  *
- * A verdade da sessão está no SQLite (tabela `session`); este store é a cópia em memória que as
- * telas observam. Existe para que a troca de conta redesenhe a árvore inteira de uma vez — o
+ * A verdade da sessão é o token guardado pelo supabase-js; este store é a cópia em memória que
+ * as telas observam. Existe para que a troca de conta redesenhe a árvore inteira de uma vez — o
  * guard de rota e o histórico da home leem a mesma coisa e nunca discordam por um instante.
  *
- * **A sessão não expira.** Não há prazo, não há renovação, não há revalidação periódica: quem
- * entrou continua entrado até tocar em "Sair". Um app que se usa na beira do açude, sem sinal e
- * com a mão molhada, não pode pedir senha de novo no meio de uma pescaria. Quando a Etapa 3
- * trouxer o Supabase, o token que expira fica do lado de lá — a permanência local continua sendo
- * esta linha no banco.
+ * **A sessão não expira na prática.** O primeiro login exige rede, porque a conta mora no
+ * Supabase; dali em diante o token fica no aparelho e o supabase-js o renova sozinho quando
+ * houver conexão. Sem sinal, a sessão em cache abre o app do mesmo jeito — que é o estado normal
+ * de uma pescaria, e não a exceção.
  */
 
 import { create } from 'zustand';
 
-import { sair, usuarioDaSessao } from '../auth';
-import type { UserRow } from '../db/schema';
+import { sair, usuarioDaSessao, type Usuario } from '../auth';
 
 /**
  * `erro` é diferente de "sem usuário". Sem usuário é o login; erro é o banco não ter respondido,
@@ -29,10 +27,10 @@ const TENTATIVAS = 3;
 const ESPERA_MS = 250;
 
 interface SessionStore {
-  user: UserRow | null;
+  user: Usuario | null;
   estado: EstadoSessao;
   restaurar: () => Promise<void>;
-  definir: (user: UserRow) => void;
+  definir: (user: Usuario) => void;
   encerrar: () => Promise<void>;
 }
 

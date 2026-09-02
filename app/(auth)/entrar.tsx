@@ -113,8 +113,8 @@ export default function Entrar() {
           </Pressable>
 
           <Text className="mt-8 text-center text-xs leading-5 text-suave">
-            A conta e o histórico ficam neste aparelho. Nada é enviado para a internet nesta
-            versão.
+            Sua conta fica no servidor; as capturas ficam no aparelho e sobem quando há sinal. A
+            coordenada exata do ponto de pesca nunca sai daqui.
           </Text>
         </View>
       </ScrollView>
