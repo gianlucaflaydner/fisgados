@@ -15,7 +15,8 @@
     "db:generate": "drizzle-kit generate",
     "photos:fetch": "tsx scripts/fetch-photos.mts",
     "photos:prepare": "tsx scripts/prepare-photos.mts",
-    "photos:apply": "tsx scripts/apply-photo-choices.mts"
+    "photos:apply": "tsx scripts/apply-photo-choices.mts",
+    "nuvem:check": "tsx scripts/check-cloud.mts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

@@ -53,6 +53,7 @@ npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
 npm run photos:fetch -- --baixar     # e baixa a primeira candidata de cada espécie
 npm run photos:prepare     # reduz, gera src/catalog/fotos.ts e creditos.ts
+npm run nuvem:check        # confere .env, chave e esquema do Supabase
 npm run catalog:inspect    # colunas das tabelas do FishBase
 npm run catalog:inspect -- Salminus brasiliensis   # + estudos daquela espécie
 npm run db:generate        # nova migration após mexer em src/db/schema.ts
@@ -164,6 +165,14 @@ Para ligar, é preciso um projeto Supabase, que só o dono da conta pode criar:
 2. Copiar `.env.example` para `.env` e preencher a URL e a **anon key**.
    A `service_role` nunca entra num app cliente — ela ignora o RLS.
 3. O bucket `catches` e as políticas de Storage saem na mesma migration.
+4. `npm run nuvem:check` confirma que a chave é aceita e que as quatro tabelas existem.
+
+**Só a publishable key entra no `.env`** (`sb_publishable_`, sucessora da anon). A secret
+(`sb_secret_`, antiga `service_role`) ignora o RLS e é recusada pelo app de propósito.
+
+**A senha do banco não vai no `.env`.** O app nunca a usa — ela serve para o CLI e para conexão
+direta ao Postgres. Guarde em gerenciador de senhas: um segredo a mais no disco do projeto é um
+passo de distância de virar `EXPO_PUBLIC_` por engano e ir inteiro para dentro do bundle.
 
 Ainda **não** existe: o cliente Supabase, o upload de foto, o worker que drena a fila, o convite
 por link e os rankings. Foram deixados de fora de propósito — escrever integração contra um
