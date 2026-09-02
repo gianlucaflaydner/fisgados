@@ -10,10 +10,15 @@
  * É o mesmo estado de quem está numa pescaria sem sinal — e esse estado precisa ser o caminho
  * normal, não a exceção.
  *
- * As variáveis usam o prefixo `EXPO_PUBLIC_` porque o Expo só embute no bundle as que o têm. A
- * chave anônima do Supabase é pública por desenho: quem protege os dados é o RLS do banco
- * (`supabase/migrations/0001_esquema.sql`), não o segredo da chave. A chave `service_role`, essa
- * sim secreta, **nunca** entra num app cliente.
+ * As variáveis usam o prefixo `EXPO_PUBLIC_` porque o Expo só embute no bundle as que o têm.
+ *
+ * A chave é a **publishable** do painel (`sb_publishable_…`), sucessora da antiga anon key. Ela é
+ * pública por desenho: quem protege os dados é o RLS do banco
+ * (`supabase/migrations/0001_esquema.sql`), não o segredo da chave. O nome da variável mantém
+ * `ANON_KEY` porque é a convenção do Supabase e do ecossistema.
+ *
+ * A **secret key** (`sb_secret_…`, antiga `service_role`) ignora o RLS e **nunca** entra num app
+ * cliente — a validação abaixo recusa explicitamente, porque esse engano não pode passar calado.
  */
 
 const URL_SUPABASE = process.env.EXPO_PUBLIC_SUPABASE_URL?.trim() ?? '';
@@ -32,7 +37,19 @@ export interface ConfigNuvem {
  * um erro que não diz o que houve.
  */
 export function nuvemConfigurada(): boolean {
+  if (chaveSecretaPorEngano()) return false;
   return /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(URL_SUPABASE) && CHAVE_ANONIMA.length > 20;
+}
+
+/**
+ * Colaram a secret key no lugar da publishable?
+ *
+ * É o engano caro: a secret ignora o RLS, e num app cliente qualquer pessoa que abrir o bundle
+ * leria e apagaria as capturas de todo mundo. Recusar a conexão é melhor do que conectar assim —
+ * um app sem sincronização é um transtorno, um app com a chave errada é um vazamento.
+ */
+export function chaveSecretaPorEngano(): boolean {
+  return /^sb_secret_/.test(CHAVE_ANONIMA) || /service_role/.test(CHAVE_ANONIMA);
 }
 
 /** A configuração, ou `null` quando não há nuvem. Quem chama decide o que fazer sem ela. */
@@ -44,5 +61,8 @@ export function configNuvem(): ConfigNuvem | null {
 /** Frase para a interface. Some quando a nuvem existe. */
 export function motivoSemNuvem(): string | null {
   if (nuvemConfigurada()) return null;
+  if (chaveSecretaPorEngano()) {
+    return "A chave configurada é a secret key do Supabase, que nunca deve ir num app. Troque pela publishable (sb_publishable_).";
+  }
   return 'Sincronização desligada: este aparelho não tem servidor configurado. Suas capturas continuam salvas aqui.';
 }
