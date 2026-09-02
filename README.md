@@ -128,7 +128,7 @@ src/
   domain/             regras do PRD, sem React e sem I/O
   db/                 schema Drizzle, migrations e queries
   auth/               contas no Supabase Auth, perfil e vínculo com o aparelho
-  sync/               configuração da nuvem (opcional por construção)
+  sync/               cliente Supabase, upload de foto e o worker da fila
   theme/              a paleta dos dois temas, para o que não aceita classe
   media/              entrada e compressão da foto
   components/         pedaços de tela reaproveitados
@@ -182,7 +182,15 @@ ligada o cadastro não devolve sessão até o usuário clicar num link, e o SMTP
 free manda poucos e-mails por hora — para um grupo fechado que entra por convite, é atrito sem
 contrapartida.
 
-Ainda **não** existe: o upload de foto, o worker que drena a fila, o convite por link e os
-rankings. As contas locais foram descartadas em vez de migradas (migration 0004 remove as tabelas
-`users` e `session`); capturas registradas antes disso continuam no banco, invisíveis, porque
-pertencem a ids que não existem mais.
+A sincronização funciona: toda escrita enfileira, e o worker sobe a foto para
+`{user_id}/{catch_id}.jpg` e faz `upsert` da linha. Roda ao entrar e sempre que o app volta do
+segundo plano — que é quando o sinal costuma voltar. Não há detector de conectividade de
+propósito: o aparelho diz que tem wi-fi e o wi-fi do pesqueiro não tem internet; tentar e falhar é
+mais barato e mais honesto, e o backoff cuida de não insistir à toa.
+
+O histórico mostra um indicador discreto de quantas capturas ainda não subiram. Nada ali é botão:
+a captura já está salva no aparelho, e subir é assunto do app.
+
+Ainda **não** existe: o convite por link e os rankings. As contas locais foram descartadas em vez
+de migradas (migration 0004 remove as tabelas `users` e `session`); capturas registradas antes
+disso continuam no banco, invisíveis, porque pertencem a ids que não existem mais.

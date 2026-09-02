@@ -2,7 +2,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, AppState, Pressable, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -11,6 +11,7 @@ import { db } from '@/db';
 import migrations from '@/db/migrations/migrations';
 import { useCores, useTemaAtivo } from '@/theme';
 import { useSession } from '@/stores/session';
+import { useSync } from '@/stores/sync';
 import { useTema, type Preferencia } from '@/stores/tema';
 
 export default function RootLayout() {
@@ -21,14 +22,33 @@ export default function RootLayout() {
   const restaurarTema = useTema((s) => s.restaurar);
   const tema = useTemaAtivo();
   const cores = useCores();
+  const dispararSync = useSync((s) => s.disparar);
 
-  // Só depois das migrations: as tabelas de sessão e de preferências podem não existir ainda no
-  // aparelho de quem atualiza o app, e ler antes da hora derrubaria o boot.
+  // Só depois das migrations: as tabelas de preferências podem não existir ainda no aparelho de
+  // quem atualiza o app, e ler antes da hora derrubaria o boot.
   useEffect(() => {
     if (!success) return;
     void restaurarTema();
     void restaurarSessao();
   }, [success, restaurarTema, restaurarSessao]);
+
+  /*
+   * A fila é esvaziada ao entrar e sempre que o app volta do segundo plano — que é justamente
+   * quando o sinal costuma voltar, saindo do carro ou chegando em casa depois da pescaria.
+   *
+   * Não há detector de conectividade de propósito: o aparelho diz que tem wi-fi e o wi-fi do
+   * pesqueiro não tem internet. Tentar e falhar é mais barato e mais honesto que perguntar, e o
+   * backoff cuida de não insistir à toa.
+   */
+  useEffect(() => {
+    if (!user) return;
+    void dispararSync();
+
+    const inscricao = AppState.addEventListener('change', (estado) => {
+      if (estado === 'active') void dispararSync();
+    });
+    return () => inscricao.remove();
+  }, [user, dispararSync]);
 
   // Migration é pré-condição, não detalhe: abrir o app com schema errado é como se perde dado.
   if (error) {

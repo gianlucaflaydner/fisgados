@@ -9,6 +9,7 @@ import { countBySpecies, listCatches, listPersonalBests, listUnlockedIds } from 
 import type { CatchRow } from '@/db/schema';
 import { useDraft } from '@/stores/draft';
 import { useSession } from '@/stores/session';
+import { useSync } from '@/stores/sync';
 
 /** Vem do catálogo, não de constante: número escrito à mão é número que envelhece. */
 const TOTAL_ESPECIES = SPECIES.length;
@@ -18,6 +19,8 @@ export default function Home() {
   const insets = useSafeAreaInsets();
   const resetDraft = useDraft((s) => s.reset);
   const user = useSession((s) => s.user);
+  const pendentes = useSync((s) => s.pendentes);
+  const dispararSync = useSync((s) => s.disparar);
 
   const [rows, setRows] = useState<CatchRow[]>([]);
   const [desbloqueadas, setDesbloqueadas] = useState(0);
@@ -46,11 +49,13 @@ export default function Home() {
         setDesbloqueadas(ids.size);
         setRecordes(melhores);
         setContagem(quantas);
+        // Voltar para a home é um bom momento: acabou de registrar, ou acabou de chegar em casa.
+        void dispararSync();
       })();
       return () => {
         vivo = false;
       };
-    }, [userId]),
+    }, [userId, dispararSync]),
   );
 
   function registrar() {
@@ -84,6 +89,15 @@ export default function Home() {
                 ? 'Nenhuma captura registrada ainda.'
                 : `${rows.length} captura${rows.length > 1 ? 's' : ''} no histórico`}
             </Text>
+            {/*
+              Indicador discreto, como manda o SDD: informa e não bloqueia. Nada aqui é botão —
+              a captura já está salva, e subir é assunto do app, não tarefa do usuário.
+            */}
+            {pendentes > 0 ? (
+              <Text className="mt-1 text-xs text-suave">
+                {pendentes === 1 ? '1 captura ainda não subiu' : `${pendentes} capturas ainda não subiram`}
+              </Text>
+            ) : null}
           </View>
         }
         ListEmptyComponent={

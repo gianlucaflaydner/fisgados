@@ -322,6 +322,24 @@ export async function deleteCatch(userId: string, id: string): Promise<void> {
   });
 }
 
+/**
+ * Marca a captura como sincronizada e guarda onde a foto ficou no servidor.
+ *
+ * `photoRemote` é o caminho no bucket, não a URL: URL de bucket privado é assinada e expira em
+ * minutos, então guardar uma seria guardar algo que amanhã não abre. O caminho é estável, e a
+ * assinatura se pede na hora de mostrar.
+ */
+export async function marcarSincronizada(
+  userId: string,
+  id: string,
+  photoRemote: string,
+): Promise<void> {
+  await db
+    .update(catches)
+    .set({ syncStatus: 'synced', photoRemote })
+    .where(and(eq(catches.userId, userId), eq(catches.id, id)));
+}
+
 /* ─────────────────────────────────────────────── fila de sincronização ──────────── */
 
 /**
