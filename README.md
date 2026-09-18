@@ -3,9 +3,10 @@
 Álbum de capturas para pescadores do Sul. Veja [prd.md](prd.md) para o produto e
 [sdd.md](sdd.md) para a arquitetura.
 
-**Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues.
+**Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues; 3 (nuvem e amigos)
+em andamento.
 91 cartas, 84 espécies, 79 com estimativa de peso.
-Conta local com login (F14), foto da câmera ou da galeria com enquadramento em 3:4, captura
+Conta no Supabase (F14), sincronização, amigos por código e ranking, foto da câmera ou da galeria com enquadramento em 3:4, captura
 desenhada como carta, e dois temas — **Papel** de dia, **Água Funda** de madrugada.
 
 ## Rodar no celular
@@ -66,7 +67,7 @@ intacta na galeria — o app guarda só o pedaço escolhido.
 ## Outros comandos
 
 ```bash
-npm test                   # testes da camada de domínio (52 casos)
+npm test                   # testes da camada de domínio (61 casos)
 npm run typecheck
 npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
@@ -92,7 +93,9 @@ disso roda offline. O build sai com código 1 se encontrar erro no catálogo.
 | Mudar como o coeficiente de peso é escolhido | `scripts/build-catalog.mts` |
 | Ver o contrato do catálogo | `src/catalog/types.ts` |
 | Mudar uma regra de negócio | `src/domain/` — código puro, com teste |
-| Mexer no login, no cadastro ou na sessão | `src/auth/` (banco e hash), `src/domain/conta.ts` (regras) |
+| Mexer no login, no cadastro ou na sessão | `src/auth/` (Supabase Auth), `src/domain/conta.ts` (regras) |
+| Mexer em amigos e convites | `src/sync/amigos.ts`, `src/domain/convite.ts` e `supabase/migrations/0002_convites.sql` |
+| Mudar como o ranking é calculado | `src/domain/ranking.ts` (puro, com teste) |
 | Mudar como a foto entra ou é comprimida | `src/media/photo.ts` |
 | Mexer no enquadramento da foto | `src/domain/recorte.ts` (geometria) e `app/captura/enquadrar.tsx` (gestos) |
 | Mudar o desenho da carta de captura | `src/components/CartaCaptura.tsx` |
@@ -110,7 +113,7 @@ disso roda offline. O build sai com código 1 se encontrar erro no catálogo.
 
 ## Fotos das espécies
 
-83 das 84 espécies têm foto embarcada (5,6 MB), vindas do iNaturalist e do Wikimedia Commons.
+81 das 84 espécies têm foto embarcada (5,7 MB), vindas do iNaturalist e do Wikimedia Commons.
 Só entram fotos sob **CC0, domínio público ou CC BY** — o padrão do iNaturalist é CC BY-NC, que
 proíbe uso comercial e por isso é recusado, e CC BY-SA também é recusado porque o recorte 3:4 da
 carta é uma adaptação e o share-alike se propagaria para o app.
@@ -119,9 +122,11 @@ carta é uma adaptação e o share-alike se propagaria para o app.
 `src/catalog/creditos.ts`, gerado junto com as imagens. Se as fotos forem usadas, a tela precisa
 continuar alcançável.
 
-Falta revisar espécie por espécie: "research grade" no iNaturalist significa que a comunidade
-concordou com a identificação, não que a foto sirva para o app. A do **Tambacu** já é sabidamente
-suspeita — veio de busca textual no Wikimedia e casou com uma prancha de livro.
+As 83 fotos da primeira busca foram revisadas uma a uma e 29 foram trocadas: havia esqueletos,
+aves segurando o peixe, pranchas de livro e a mesma carpa em três espécies. A curadoria, com o
+motivo de cada troca, está em `scripts/fotos-escolhidas.json` e é aplicada por
+`npm run photos:apply`. Três espécies ficaram sem foto de propósito: cascudo-viola,
+tilápia-vermelha e surubim-do-Uruguai — foto errada é pior que ausência.
 
 A paleta vive em dois lugares: `src/theme/cores.ts` (para `ActivityIndicator`,
 `placeholderTextColor`, `Switch` e o cabeçalho, que recebem cor por propriedade) e
@@ -139,6 +144,8 @@ app/                  telas (Expo Router)
   album/              grade das cartas por álbum regional e ficha da espécie
   captura/            câmera/galeria → enquadrar → detalhes → seletor de espécie
   creditos.tsx        atribuição das fotos, exigida pela licença CC BY
+  amigos.tsx          seu código de convite, entrar no grupo de alguém, lista do grupo
+  ranking.tsx         coleção, espécies, capturas no mês e maior exemplar
 src/
   catalog/            species.json gerado, tipos e o índice de busca
   domain/             regras do PRD, sem React e sem I/O
@@ -184,7 +191,9 @@ Para ligar, é preciso um projeto Supabase, que só o dono da conta pode criar:
 2. Copiar `.env.example` para `.env` e preencher a URL e a **anon key**.
    A `service_role` nunca entra num app cliente — ela ignora o RLS.
 3. O bucket `catches` e as políticas de Storage saem na mesma migration.
-4. `npm run nuvem:check` confirma que a chave é aceita e que as quatro tabelas existem.
+4. Aplique também `supabase/migrations/0002_convites.sql`, que cria as funções de aceitar e
+   desfazer convite. Sem ela, a tela de Amigos avisa que o servidor ainda não aceita convites.
+5. `npm run nuvem:check` confirma que a chave é aceita e que as quatro tabelas existem.
 
 **Só a publishable key entra no `.env`** (`sb_publishable_`, sucessora da anon). A secret
 (`sb_secret_`, antiga `service_role`) ignora o RLS e é recusada pelo app de propósito.
@@ -207,6 +216,19 @@ mais barato e mais honesto, e o backoff cuida de não insistir à toa.
 O histórico mostra um indicador discreto de quantas capturas ainda não subiram. Nada ali é botão:
 a captura já está salva no aparelho, e subir é assunto do app.
 
-Ainda **não** existe: o convite por link e os rankings. As contas locais foram descartadas em vez
+**Amigos e ranking.** Cada conta tem um código de 6 caracteres, sem 0, O, 1, I nem L, porque vai
+ser lido em voz alta. Quem digita o código de alguém entra no grupo dessa pessoa, e os dois passam a
+ver as capturas um do outro. Não há busca por nome nem telefone, por decisão do PRD. A amizade é
+gravada nos dois sentidos por uma função no banco (`aceitar_convite`), porque a política de
+`friendships` só deixa cada um gravar as próprias linhas.
+
+O ranking tem quatro abas: coleção (pontos de raridade), espécies, capturas no mês e maior
+exemplar de cada espécie. O cálculo é puro e testado em `src/domain/ranking.ts`; quem pode ver o
+quê é decidido pelo RLS, não pelo app.
+
+O convite é por código, não por link: link que abre o app precisa de domínio próprio ou de build
+nativo, e no Expo Go o esquema `fisgados://` não funciona.
+
+As contas locais foram descartadas em vez
 de migradas (migration 0004 remove as tabelas `users` e `session`); capturas registradas antes
 disso continuam no banco, invisíveis, porque pertencem a ids que não existem mais.

@@ -9,7 +9,16 @@
 
 import assert from 'node:assert/strict';
 import { getSpecies, searchSpecies, SPECIES } from '../src/catalog/index.ts';
-import { personalBest, rankCatches, shouldRankByWeight } from '../src/domain/ranking.ts';
+import {
+  maioresPorEspecie,
+  mesNoFuso,
+  personalBest,
+  rankCatches,
+  rankingDeColecao,
+  rankingDeEspecies,
+  rankingDoMes,
+  shouldRankByWeight,
+} from '../src/domain/ranking.ts';
 import {
   checkMeasure,
   estimateWeightG,
@@ -617,6 +626,116 @@ teste('código do tamanho errado é recusado antes de gastar ida ao servidor', (
   assert.ok(!codigoValido('A2B3C'));
   assert.ok(!codigoValido('A2B3C45'));
   assert.ok(codigoValido('A2B3C4'));
+});
+
+// ──────────────────────────────────────────────── rankings do grupo (F11)
+
+/** Pontos de raridade de teste: o valor não importa, só que sejam distinguíveis. */
+const PONTOS: Record<string, number> = { traira: 1, dourado: 8, miraguaia: 20 };
+const pontosDe = (id: string) => PONTOS[id] ?? 0;
+
+function captura(userId: string, speciesId: string | null, lengthCm: number, caughtAt: string, weightG: number | null = null) {
+  return { id: `${userId}-${speciesId}-${caughtAt}`, userId, speciesId, lengthCm, weightG, caughtAt };
+}
+
+teste('coleção soma pontos de raridade, não quantidade de peixe', () => {
+  const r = rankingDeColecao(
+    [
+      { userId: 'ana', speciesId: 'traira' },
+      { userId: 'ana', speciesId: 'dourado' },
+      { userId: 'bia', speciesId: 'miraguaia' },
+    ],
+    pontosDe,
+  );
+  // Uma miraguaia (20) vale mais que traíra e dourado juntos (9): é o motivo de existir o ranking.
+  assert.deepEqual(r, [
+    { userId: 'bia', valor: 20 },
+    { userId: 'ana', valor: 9 },
+  ]);
+});
+
+teste('a mesma espécie repetida não conta em dobro na coleção', () => {
+  const r = rankingDeColecao(
+    [
+      { userId: 'ana', speciesId: 'dourado' },
+      { userId: 'ana', speciesId: 'dourado' },
+    ],
+    pontosDe,
+  );
+  assert.deepEqual(r, [{ userId: 'ana', valor: 8 }]);
+});
+
+teste('espécie fora do catálogo vale zero em vez de derrubar a conta', () => {
+  const r = rankingDeColecao([{ userId: 'ana', speciesId: 'peixe-que-nao-existe' }], pontosDe);
+  assert.deepEqual(r, [{ userId: 'ana', valor: 0 }]);
+});
+
+teste('empate é resolvido pelo id, para a lista não dançar entre aberturas', () => {
+  const a = rankingDeEspecies([
+    { userId: 'zeca', speciesId: 'traira' },
+    { userId: 'ana', speciesId: 'dourado' },
+  ]);
+  const b = rankingDeEspecies([
+    { userId: 'ana', speciesId: 'dourado' },
+    { userId: 'zeca', speciesId: 'traira' },
+  ]);
+  assert.deepEqual(a, b, 'a ordem de chegada mudou o resultado');
+  assert.equal(a[0]!.userId, 'ana');
+});
+
+/** Brasília: UTC-3, que é como o app grava — sempre em UTC, com Z. */
+const BRASILIA = -180;
+
+teste('ranking do mês conta só o mês pedido', () => {
+  const r = rankingDoMes(
+    [
+      captura('ana', 'traira', 40, '2026-09-02T09:00:00.000Z'),
+      captura('ana', 'traira', 41, '2026-09-10T09:00:00.000Z'),
+      captura('bia', 'traira', 42, '2026-09-12T09:00:00.000Z'),
+      captura('bia', 'traira', 43, '2026-08-30T09:00:00.000Z'),
+    ],
+    new Date('2026-09-18T12:00:00.000Z'),
+    BRASILIA,
+  );
+  assert.deepEqual(r, [
+    { userId: 'ana', valor: 2 },
+    { userId: 'bia', valor: 1 },
+  ]);
+});
+
+teste('o mês é o do fuso de quem pescou, não o de Greenwich', () => {
+  // 23h de 31 de agosto em Brasília é gravado como 1º de setembro às 2h em UTC. Ler o prefixo da
+  // string poria o peixe em setembro — o erro que a primeira versão desta função tinha.
+  const gravado = '2026-09-01T02:00:00.000Z';
+  const agosto = new Date('2026-08-15T12:00:00.000Z');
+  const setembro = new Date('2026-09-15T12:00:00.000Z');
+
+  assert.deepEqual(rankingDoMes([captura('ana', 'traira', 40, gravado)], agosto, BRASILIA), [
+    { userId: 'ana', valor: 1 },
+  ]);
+  assert.deepEqual(rankingDoMes([captura('ana', 'traira', 40, gravado)], setembro, BRASILIA), []);
+});
+
+teste('a virada do ano também respeita o fuso', () => {
+  // 22h de 31 de dezembro em Brasília: ainda é dezembro, embora em UTC já seja janeiro.
+  assert.equal(mesNoFuso('2027-01-01T01:00:00.000Z', BRASILIA), 2026 * 12 + 11);
+  assert.equal(mesNoFuso('2027-01-01T03:00:00.000Z', BRASILIA), 2027 * 12 + 0);
+});
+
+teste('maior exemplar por espécie usa a mesma régua do recorde pessoal', () => {
+  const r = maioresPorEspecie([
+    captura('ana', 'dourado', 60, '2026-09-01T06:00:00-03:00'),
+    captura('bia', 'dourado', 72, '2026-09-02T06:00:00-03:00'),
+    captura('ana', 'traira', 45, '2026-09-03T06:00:00-03:00'),
+  ]);
+  assert.equal(r.get('dourado')?.userId, 'bia');
+  assert.equal(r.get('dourado')?.lengthCm, 72);
+  assert.equal(r.get('traira')?.userId, 'ana');
+});
+
+teste('não identificado não disputa recorde de espécie', () => {
+  const r = maioresPorEspecie([captura('ana', null, 200, '2026-09-01T06:00:00-03:00')]);
+  assert.equal(r.size, 0);
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

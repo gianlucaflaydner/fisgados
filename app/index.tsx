@@ -84,6 +84,20 @@ export default function Home() {
               </Text>
               <Text className="pb-1 text-sm font-semibold text-cobalto">Ver álbum</Text>
             </Pressable>
+            <View className="mt-3 flex-row gap-2">
+              <Pressable
+                onPress={() => router.push('/ranking')}
+                className="rounded-full border border-borda px-3 py-1.5 active:opacity-60"
+              >
+                <Text className="text-sm font-semibold text-cobalto">Ranking</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => router.push('/amigos')}
+                className="rounded-full border border-borda px-3 py-1.5 active:opacity-60"
+              >
+                <Text className="text-sm font-semibold text-cobalto">Amigos</Text>
+              </Pressable>
+            </View>
             <Text className="mt-1 text-sm text-suave">
               {rows.length === 0
                 ? 'Nenhuma captura registrada ainda.'
