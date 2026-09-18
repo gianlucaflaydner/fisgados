@@ -46,7 +46,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "O Fisgados registra onde você pescou. A coordenada exata nunca é compartilhada com ninguém."
         }
-      ]
+      ],
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true

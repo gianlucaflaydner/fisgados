@@ -10,12 +10,28 @@ desenhada como carta, e dois temas — **Papel** de dia, **Água Funda** de madr
 
 ## Rodar no celular
 
+1. Instale o **Expo Go** no celular, pela Play Store ou App Store.
+2. Na pasta do projeto:
+
 ```bash
 npm install
-npm start          # abre o Metro; escaneie o QR com o Expo Go
+npx expo start -c   # -c limpa o cache do Metro; escaneie o QR com o Expo Go
 ```
 
+No Android, escaneie o QR de dentro do Expo Go; no iPhone, com a câmera do próprio aparelho.
+
 Não precisa de Android Studio nem Xcode. Câmera, galeria, GPS e SQLite funcionam no Expo Go.
+
+**O projeto está no Expo SDK 57**, e o Expo Go da loja só roda o SDK mais recente. Quando a Expo
+lançar um SDK novo, o Expo Go da loja deixa de abrir este projeto até ele ser atualizado — a
+mensagem é "projeto incompatível com esta versão do Expo Go". Atualizar é
+`npx expo install expo@^<versão> --fix`, conferindo antes os `overrides` do `package.json`.
+
+**Se o celular não conectar** (firewall do Windows, ou celular e computador em redes diferentes),
+use `npx expo start --tunnel`.
+
+**Mudou o `.env`?** Rode com `-c`. As variáveis `EXPO_PUBLIC_` entram no bundle na hora de
+empacotar, então sem limpar o cache o app continua com os valores antigos.
 
 Na primeira abertura o app pede para criar uma conta, **no Supabase Auth**. Criar e entrar exigem
 internet uma vez; dali em diante a sessão fica no aparelho e o app abre e registra capturas sem
