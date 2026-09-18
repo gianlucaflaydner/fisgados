@@ -63,7 +63,10 @@ function traduzir(mensagem: string): string {
     return 'Muitas tentativas seguidas. Espere um minuto e tente de novo.';
   }
   if (m.includes('network') || m.includes('fetch')) {
-    return 'Sem conexão. Entrar exige rede na primeira vez; depois o app abre offline.';
+    // No aparelho, "Network request failed" é a mesma mensagem para celular sem internet e para
+    // servidor fora do ar — o React Native não diferencia. Afirmar "sem conexão" mandaria a pessoa
+    // mexer no wi-fi quando o problema pode ser o projeto pausado no Supabase.
+    return 'Não foi possível falar com o servidor. Confira a internet; se ela estiver funcionando, o servidor pode estar fora do ar.';
   }
   return mensagem;
 }

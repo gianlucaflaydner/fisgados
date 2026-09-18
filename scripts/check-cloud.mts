@@ -79,7 +79,30 @@ console.log(`Chave:   ${chave.slice(0, 15)}… (${chave.length} caracteres)\n`);
 // ── 2 e 3. servidor e esquema ───────────────────────────────────────────────────────
 
 const cabecalhos = { apikey: chave, Authorization: `Bearer ${chave}` };
+// ── antes das tabelas: o servidor existe? ───────────────────────────────────────────
+//
+// Conferir as quatro tabelas contra um endereço que não resolve produz quatro "fetch failed" e
+// nenhuma pista. O caso mais comum tem causa conhecida: projeto free do Supabase pausado por
+// inatividade, que tira o endereço do DNS até alguém reativar.
+try {
+  await fetch(`${url}/rest/v1/`, { headers: cabecalhos });
+} catch (erro) {
+  const causa = (erro as { cause?: { code?: string } }).cause?.code;
+  console.log('  ✗ o servidor não respondeu\n');
+  if (causa === 'ENOTFOUND') {
+    console.log('  O endereço do projeto não existe no DNS. Quase sempre é projeto free pausado por');
+    console.log('  inatividade: abra o painel do Supabase e toque em "Restore project". Se o projeto');
+    console.log('  tiver sido apagado, é preciso criar outro e trocar a URL e a chave no .env.\n');
+  } else {
+    console.log(`  Sem resposta (${causa ?? (erro instanceof Error ? erro.message : erro)}). Confira a internet`);
+    console.log('  desta máquina; se ela estiver ok, veja o status do projeto no painel.\n');
+  }
+  for (const a of avisos) console.log(`  ! ${a}`);
+  process.exit(1);
+}
+
 let falhou = false;
+let faltaTabela = false;
 
 for (const tabela of TABELAS) {
   try {
@@ -102,6 +125,7 @@ for (const tabela of TABELAS) {
     console.log(
       `  ✗ ${tabela.padEnd(12)} ${semTabela ? 'não existe — o esquema não foi aplicado' : `HTTP ${r.status}: ${corpo}`}`,
     );
+    if (semTabela) faltaTabela = true;
     falhou = true;
   } catch (erro) {
     console.log(`  ✗ ${tabela.padEnd(12)} sem resposta: ${erro instanceof Error ? erro.message : erro}`);
@@ -113,8 +137,14 @@ console.log('');
 for (const a of avisos) console.log(`  ! ${a}`);
 
 if (falhou) {
-  console.log('\nAplique supabase/migrations/0001_esquema.sql no SQL Editor do painel.\n');
+  // Só manda aplicar o esquema quando o problema é tabela faltando. Mandar fazer isso por causa
+  // de chave recusada ou erro de rede leva a pessoa a mexer no lugar errado.
+  if (faltaTabela) {
+    console.log('\nAplique as migrations de supabase/migrations/ no SQL Editor do painel, em ordem.\n');
+  } else {
+    console.log('\nO servidor respondeu, mas recusou. Confira a chave no .env e o status do projeto.\n');
+  }
   process.exit(1);
 }
 
-console.log('Nuvem pronta. Falta o worker que drena a fila — ainda não existe.\n');
+console.log('Nuvem pronta.\n');
