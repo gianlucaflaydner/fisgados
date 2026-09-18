@@ -19,6 +19,7 @@ import { getSpecies, type Species } from '@/catalog';
 import { Desbloqueio } from '@/components/Desbloqueio';
 import { saveCatch } from '@/db/queries';
 import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
+import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
 import { userIdAtual } from '@/stores/session';
 import { useCores } from '@/theme';
@@ -29,6 +30,38 @@ export default function Detalhes() {
   const draft = useDraft();
   const cores = useCores();
   const [salvando, setSalvando] = useState(false);
+  const [trocandoFoto, setTrocandoFoto] = useState(false);
+
+  /**
+   * Trocar a foto sem perder o resto do formulário.
+   *
+   * Foto da galeria reabre a galeria direto, e a escolhida segue para o enquadramento — foto nova
+   * precisa ser enquadrada de novo, senão a carta sai cortada no centro. Foto da câmera volta para
+   * a câmera. Nos dois casos espécie, medida, peso e local ficam no rascunho, intactos.
+   */
+  async function trocarFoto() {
+    if (salvando || trocandoFoto) return;
+    if (draft.origemFoto !== 'galeria') {
+      router.replace('/captura/camera');
+      return;
+    }
+
+    setTrocandoFoto(true);
+    try {
+      const foto = await fotoDaGaleria();
+      if (!foto) return;
+      draft.set({
+        fotoBruta: { uri: foto.uri, largura: foto.largura, altura: foto.altura },
+        origemFoto: 'galeria',
+        caughtAt: foto.capturadaEm ?? new Date(),
+      });
+      router.replace('/captura/enquadrar');
+    } catch {
+      Alert.alert('Não deu para abrir a galeria', 'Tente de novo.');
+    } finally {
+      setTrocandoFoto(false);
+    }
+  }
   // A cena de desbloqueio segura a navegação: sair antes de mostrá-la desperdiçaria o único
   // momento de recompensa do app.
   const [aberta, setAberta] = useState<{ species: Species; trofeu: boolean } | null>(null);
@@ -160,6 +193,17 @@ export default function Detalhes() {
               className="rounded-2xl bg-elevado"
               resizeMode="cover"
             />
+            <Pressable
+              onPress={trocarFoto}
+              disabled={salvando || trocandoFoto}
+              hitSlop={8}
+              accessibilityRole="button"
+              className="mt-3 rounded-full border border-borda px-4 py-1.5 active:opacity-60"
+            >
+              <Text className="text-sm font-semibold text-cobalto">
+                {trocandoFoto ? 'Abrindo a galeria...' : 'Trocar foto'}
+              </Text>
+            </Pressable>
           </View>
         ) : null}
 

@@ -108,7 +108,10 @@ export default function RootLayout() {
             <Stack.Screen name="captura/camera" options={{ title: 'Foto da captura' }} />
             <Stack.Screen
               name="captura/enquadrar"
-              options={{ title: 'Enquadrar', headerShown: false }}
+              // Sem gesto de voltar pela borda: ele disputa com o arrasto da foto e, como a câmera
+              // foi substituída por esta tela, levaria para a home jogando o rascunho fora. A
+              // tela tem os próprios botões de voltar e de trocar a foto.
+              options={{ title: 'Enquadrar', headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen name="captura/detalhes" options={{ title: 'Registrar captura' }} />
             <Stack.Screen name="captura/[id]" options={{ title: 'Corrigir captura' }} />

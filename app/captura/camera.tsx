@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { escolherDaGaleria, medirImagem } from '@/media/photo';
+import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
 import { useCores } from '@/theme';
 
@@ -28,21 +28,14 @@ export default function Camera() {
     if (ocupado) return;
     setOcupado(true);
     try {
-      const escolha = await escolherDaGaleria();
-      if (escolha.estado === 'cancelada') return;
-
-      const { uri, capturadaEm } = escolha.foto;
-      // A galeria às vezes devolve tamanho zerado, e sem ele o enquadramento não calcula nada.
-      const medida =
-        escolha.foto.largura > 0 && escolha.foto.altura > 0
-          ? { largura: escolha.foto.largura, altura: escolha.foto.altura }
-          : await medirImagem(uri);
+      const foto = await fotoDaGaleria();
+      if (!foto) return;
 
       setDraft({
-        fotoBruta: { uri, ...medida },
+        fotoBruta: { uri: foto.uri, largura: foto.largura, altura: foto.altura },
         origemFoto: 'galeria',
         // A data do EXIF é o dia da pescaria; sem ela, hoje é o melhor palpite disponível.
-        caughtAt: capturadaEm ?? new Date(),
+        caughtAt: foto.capturadaEm ?? new Date(),
       });
       router.replace('/captura/enquadrar');
     } catch {

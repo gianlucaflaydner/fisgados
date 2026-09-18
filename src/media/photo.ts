@@ -84,6 +84,23 @@ export async function medirImagem(uri: string): Promise<{ largura: number; altur
 }
 
 /**
+ * Abre a galeria e devolve a foto pronta para o enquadramento, com as dimensões reais. `null`
+ * quando a pessoa fecha a galeria sem escolher.
+ *
+ * Existe porque três telas abrem a galeria — câmera, enquadramento e detalhes — e o cuidado com
+ * a largura zerada que alguns aparelhos devolvem não pode ficar só em uma delas. Esquecer em uma
+ * tela quebraria o enquadramento exatamente para quem troca de foto.
+ */
+export async function fotoDaGaleria(): Promise<FotoBruta | null> {
+  const escolha = await escolherDaGaleria();
+  if (escolha.estado === 'cancelada') return null;
+
+  const { uri, capturadaEm, largura, altura } = escolha.foto;
+  const medida = largura > 0 && altura > 0 ? { largura, altura } : await medirImagem(uri);
+  return { uri, ...medida, capturadaEm };
+}
+
+/**
  * Aplica o enquadramento e entrega o arquivo final.
  *
  * A ordem importa: girar antes de recortar, porque o retângulo do recorte foi calculado sobre a

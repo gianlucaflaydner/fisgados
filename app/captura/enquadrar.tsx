@@ -1,7 +1,9 @@
-import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
+  BackHandler,
   Image,
   Pressable,
   Text,
@@ -21,7 +23,7 @@ import {
   PROPORCAO_CARTA,
   type Rotacao,
 } from '@/domain/recorte';
-import { finalizarFoto } from '@/media/photo';
+import { finalizarFoto, fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
 
 /**
@@ -34,16 +36,24 @@ import { useDraft } from '@/stores/draft';
  *
  * A imagem se move sob uma janela parada. É o inverso do que o código faz por dentro — lá o que
  * anda é o retângulo de recorte — mas é o que a mão espera: o dedo arrasta a foto.
+ *
+ * **Sempre dá para desistir da foto.** A câmera *substitui* a si mesma por esta tela, então o
+ * "voltar" do sistema levaria para a home e jogaria o rascunho fora. Por isso a tela tem as
+ * próprias saídas: voltar para escolher entre câmera e galeria, ou — quando a foto veio da
+ * galeria — reabrir a galeria direto, que é o que quem escolheu a foto errada quer fazer.
  */
 export default function Enquadrar() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const bruta = useDraft((s) => s.fotoBruta);
+  const origem = useDraft((s) => s.origemFoto);
   const setDraft = useDraft((s) => s.set);
 
   const [area, setArea] = useState({ largura: 0, altura: 0 });
   const [rotacao, setRotacao] = useState<Rotacao>(0);
   const [salvando, setSalvando] = useState(false);
+  const [trocando, setTrocando] = useState(false);
+  const ocupado = salvando || trocando;
 
   const escala = useSharedValue(1);
   const escalaSalva = useSharedValue(1);
@@ -92,6 +102,51 @@ export default function Enquadrar() {
     reposicionar();
   }
 
+  /** Volta para a tela da câmera, onde dá para fotografar de novo ou abrir a galeria. */
+  const voltar = useCallback(() => {
+    if (ocupado) return;
+    router.replace('/captura/camera');
+  }, [ocupado, router]);
+
+  /**
+   * Reabre a galeria no lugar, sem sair desta tela.
+   *
+   * Fechar a galeria sem escolher mantém a foto atual — quem abriu só para conferir não pode
+   * perder o que já tinha. Escolher outra zera giro e zoom, que valiam para a foto anterior.
+   */
+  async function escolherOutra() {
+    if (ocupado) return;
+    setTrocando(true);
+    try {
+      const foto = await fotoDaGaleria();
+      if (!foto) return;
+
+      setDraft({
+        fotoBruta: { uri: foto.uri, largura: foto.largura, altura: foto.altura },
+        origemFoto: 'galeria',
+        caughtAt: foto.capturadaEm ?? new Date(),
+      });
+      setRotacao(0);
+      reposicionar();
+    } catch {
+      Alert.alert('Não deu para abrir a galeria', 'Tente de novo ou volte e fotografe agora.');
+    } finally {
+      setTrocando(false);
+    }
+  }
+
+  // O botão "voltar" do Android faz o mesmo que "Voltar" na tela. Sem isto, ele saltaria a
+  // câmera — que foi substituída por esta tela — e cairia na home com o rascunho perdido.
+  useFocusEffect(
+    useCallback(() => {
+      const inscricao = BackHandler.addEventListener('hardwareBackPress', () => {
+        voltar();
+        return true;
+      });
+      return () => inscricao.remove();
+    }, [voltar]),
+  );
+
   const pinca = Gesture.Pinch()
     .onUpdate((e) => {
       escala.value = Math.min(ESCALA_MAX, Math.max(1, escalaSalva.value * e.scale));
@@ -124,7 +179,7 @@ export default function Enquadrar() {
   }));
 
   async function usar() {
-    if (salvando || !bruta || !pronto) return;
+    if (ocupado || !bruta || !pronto) return;
     setSalvando(true);
     try {
       const recorte = calcularRecorte({
@@ -161,6 +216,36 @@ export default function Enquadrar() {
 
   return (
     <View className="flex-1 bg-black">
+      <View
+        className="flex-row items-center justify-between px-5 pb-2"
+        style={{ paddingTop: insets.top + 10 }}
+      >
+        <Pressable
+          onPress={voltar}
+          disabled={ocupado}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar para escolher outra foto"
+          className="active:opacity-60"
+        >
+          <Text className="text-sm font-semibold text-white">‹ Voltar</Text>
+        </Pressable>
+
+        {origem === 'galeria' ? (
+          <Pressable
+            onPress={escolherOutra}
+            disabled={ocupado}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Escolher outra foto da galeria"
+            className="flex-row items-center active:opacity-60"
+          >
+            {trocando ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
+            <Text className="ml-2 text-sm font-semibold text-white">Escolher outra</Text>
+          </Pressable>
+        ) : null}
+      </View>
+
       <View className="flex-1" onLayout={medir}>
         {pronto ? (
           <GestureDetector gesture={Gesture.Simultaneous(pinca, arrasto)}>
@@ -224,17 +309,17 @@ export default function Enquadrar() {
         className="flex-row items-center justify-between px-6 pt-4"
         style={{ paddingBottom: insets.bottom + 16 }}
       >
-        <Pressable onPress={girar} disabled={salvando} hitSlop={10} className="active:opacity-60">
+        <Pressable onPress={girar} disabled={ocupado} hitSlop={10} className="active:opacity-60">
           <Text className="text-sm font-semibold text-white">Girar</Text>
         </Pressable>
 
-        <Pressable onPress={reposicionar} disabled={salvando} hitSlop={10} className="active:opacity-60">
+        <Pressable onPress={reposicionar} disabled={ocupado} hitSlop={10} className="active:opacity-60">
           <Text className="text-sm font-semibold text-white/60">Reenquadrar</Text>
         </Pressable>
 
         <Pressable
           onPress={usar}
-          disabled={salvando || !pronto}
+          disabled={ocupado || !pronto}
           className="rounded-2xl bg-destaque px-6 py-3 active:opacity-80"
         >
           {salvando ? (
