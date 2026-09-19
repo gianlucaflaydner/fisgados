@@ -1,7 +1,7 @@
 # Fisgados
 
-Álbum de capturas para pescadores do Sul. Veja [prd.md](prd.md) para o produto e
-[sdd.md](sdd.md) para a arquitetura.
+Álbum de capturas para pescadores do Sul. Veja [prd.md](prd.md) para o produto,
+[sdd.md](sdd.md) para a arquitetura e [PROXIMOS-PASSOS.md](PROXIMOS-PASSOS.md) para onde paramos.
 
 **Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues; 3 (nuvem e amigos)
 em andamento.
