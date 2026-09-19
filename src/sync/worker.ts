@@ -56,9 +56,19 @@ async function subirFoto(userId: string, catchId: string, uriLocal: string): Pro
   return caminho;
 }
 
-/** Converte a linha local para o formato do Postgres. A coordenada fica de fora (RN09). */
+/**
+ * Converte a linha local para o formato do Postgres. A coordenada fica de fora (RN09).
+ *
+ * As colunas da IA só vão quando há sugestão. Elas nascem na migration 0003; mandar a chave
+ * sempre, mesmo nula, travaria a fila inteira de quem ainda não aplicou a migration — e quem não
+ * aplicou também não tem a função de identificar, então nunca tem sugestão a mandar.
+ */
 function paraRemoto(payload: Record<string, unknown>, photoPath: string) {
+  const sugestao = typeof payload.aiSuggestion === 'string' ? jsonOuNulo(payload.aiSuggestion) : null;
+  const ia: { ai_suggestion?: unknown; ai_accepted?: unknown } =
+    sugestao !== null ? { ai_suggestion: sugestao, ai_accepted: payload.aiAccepted ?? null } : {};
   return {
+    ...ia,
     id: payload.id,
     user_id: payload.userId,
     species_id: payload.speciesId ?? null,
@@ -73,6 +83,15 @@ function paraRemoto(payload: Record<string, unknown>, photoPath: string) {
     updated_at: payload.updatedAt,
     deleted_at: payload.deletedAt ?? null,
   };
+}
+
+/** Telemetria corrompida não pode segurar a captura na fila: sem JSON válido, ela sobe sem. */
+function jsonOuNulo(texto: string): unknown {
+  try {
+    return JSON.parse(texto) as unknown;
+  } catch {
+    return null;
+  }
 }
 
 async function processar(item: {

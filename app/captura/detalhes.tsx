@@ -17,10 +17,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getSpecies, type Species } from '@/catalog';
 import { Desbloqueio } from '@/components/Desbloqueio';
+import { SugestoesIA } from '@/components/SugestoesIA';
 import { saveCatch } from '@/db/queries';
+import { aceitouPrimeira, apresentar, registroDaSugestao } from '@/domain/identificacao';
 import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
 import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
+import { useIdentificacao } from '@/stores/identificacao';
 import { userIdAtual } from '@/stores/session';
 import { useCores } from '@/theme';
 
@@ -125,9 +128,22 @@ export default function Detalhes() {
       if (!confirmou) return;
     }
 
+    // RN02: o que a IA disse vai para uma coluna própria, ao lado da escolha — nunca no lugar dela.
+    const ia = useIdentificacao.getState();
+    const sugestao =
+      ia.uri === draft.photoUri && ia.resultado.estado === 'pronta'
+        ? registroDaSugestao(
+            ia.resultado.modelo,
+            ia.resultado.sugestoes,
+            apresentar(ia.resultado.sugestoes, (id) => getSpecies(id)?.visuallySimilarTo ?? []).tipo,
+          )
+        : null;
+
     setSalvando(true);
     try {
       const r = await saveCatch({
+        aiSuggestion: sugestao ? JSON.stringify(sugestao) : null,
+        aiAccepted: aceitouPrimeira(sugestao, draft.speciesId),
         userId: userIdAtual(),
         speciesId: draft.speciesId,
         lengthCm: medida,
@@ -158,6 +174,7 @@ export default function Detalhes() {
   /** Fecha o rascunho e volta para a home. Único caminho de saída depois de salvar. */
   function concluir() {
     useDraft.getState().reset();
+    useIdentificacao.getState().limpar();
     router.dismissAll();
     router.replace('/');
   }
@@ -227,6 +244,12 @@ export default function Detalhes() {
                 <Text className="mt-0.5 text-xs italic text-suave">{species.scientificName}</Text>
               ) : null}
             </Pressable>
+            <SugestoesIA
+              photoUri={draft.photoUri}
+              escolhida={draft.speciesId}
+              onEscolher={(id) => draft.set({ speciesId: id })}
+              onAbrirLista={() => router.push('/captura/especie')}
+            />
           </Campo>
 
           <Campo rotulo={`${species ? measureLabel(species) : 'Comprimento'} (cm)`}>

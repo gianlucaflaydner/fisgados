@@ -564,7 +564,9 @@ Grade, silhuetas, desbloqueio, ficha, progresso, raridade.
 Supabase, auth, RLS, outbox, upload de fotos, convite por link, rankings.
 
 **Etapa 4 — IA**
-Edge Function, prompt de lista fechada, desambiguação, telemetria de acurácia.
+Edge Function, prompt de lista fechada, desambiguação, telemetria de acurácia. **Código entregue**
+(`supabase/functions/identificar`, `src/domain/identificacao.ts`); falta publicar a função e
+aplicar a migration 0003. Modelo padrão `gemini-3.5-flash`, trocável pelo secret `GEMINI_MODEL`.
 
 **Etapa 5 — Card compartilhável e insígnias** (seção 14)
 

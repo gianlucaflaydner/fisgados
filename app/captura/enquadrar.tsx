@@ -25,6 +25,7 @@ import {
 } from '@/domain/recorte';
 import { finalizarFoto, fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
+import { useIdentificacao } from '@/stores/identificacao';
 
 /**
  * Enquadramento — o passo entre a foto e o formulário.
@@ -191,6 +192,9 @@ export default function Enquadrar() {
       });
       const uri = await finalizarFoto(bruta.uri, { rotacao, recorte });
       setDraft({ photoUri: uri });
+      // A IA olha a foto já enquadrada — o peixe maior no quadro, sem o fundo que foi cortado —
+      // e começa agora, para a sugestão chegar enquanto a pessoa digita a medida.
+      useIdentificacao.getState().iniciar(uri);
       router.replace('/captura/detalhes');
     } finally {
       setSalvando(false);

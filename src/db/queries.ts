@@ -75,6 +75,10 @@ export interface NewCatchInput {
   released: boolean;
   caughtAt: Date;
   offlineOrigin: boolean;
+  /** JSON do que a IA sugeriu, quando sugeriu (RN02). Ver `domain/identificacao.ts`. */
+  aiSuggestion?: string | null;
+  /** A escolha foi a primeira sugestão? `null` quando não houve sugestão. */
+  aiAccepted?: boolean | null;
 }
 
 export interface SaveResult {
@@ -115,8 +119,8 @@ export async function saveCatch(input: NewCatchInput): Promise<SaveResult> {
     createdAt: agora,
     updatedAt: agora,
     deletedAt: null,
-    aiSuggestion: null,
-    aiAccepted: null,
+    aiSuggestion: input.aiSuggestion ?? null,
+    aiAccepted: input.aiAccepted ?? null,
     syncStatus: 'pending',
   };
 

@@ -48,6 +48,17 @@ import {
   limitesDeslocamento,
   PROPORCAO_CARTA,
 } from '../src/domain/recorte.ts';
+import {
+  aceitouPrimeira,
+  apresentar,
+  CONFIANCA_MINIMA,
+  porcentagem,
+  registroDaSugestao,
+  sanearSugestoes,
+  type Sugestao,
+} from '../src/domain/identificacao.ts';
+import { CATALOGO as LISTA_FECHADA } from '../supabase/functions/identificar/catalogo.ts';
+import { esquemaDeResposta, montarPrompt, sanearResposta } from '../supabase/functions/identificar/regras.ts';
 import { PALETA, type Paleta, type Tema } from '../src/theme/cores.ts';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -736,6 +747,105 @@ teste('maior exemplar por espécie usa a mesma régua do recorde pessoal', () =>
 teste('não identificado não disputa recorde de espécie', () => {
   const r = maioresPorEspecie([captura('ana', null, 200, '2026-09-01T06:00:00-03:00')]);
   assert.equal(r.size, 0);
+});
+
+// ─────────────────────────────────────────────────────────── identificação (IA)
+
+const IDS = new Set(SPECIES.map((s) => s.id));
+const parecidas = (id: string) => getSpecies(id)?.visuallySimilarTo ?? [];
+const sug = (speciesId: string, confianca: number, motivo = ''): Sugestao => ({ speciesId, confianca, motivo });
+
+teste('a lista fechada da função está em dia com o catálogo do app', () => {
+  // Falhou? Rode `npm run ia:catalogo` e publique a função de novo.
+  assert.deepEqual(
+    LISTA_FECHADA.map((e) => `${e.id}|${e.nome}|${e.cientifico}`),
+    [...SPECIES].sort((a, b) => a.id.localeCompare(b.id)).map((s) => `${s.id}|${s.commonName}|${s.scientificName}`),
+  );
+});
+
+teste('o prompt traz todas as espécies e proíbe resposta fora da lista (SDD 6.2)', () => {
+  const p = montarPrompt(LISTA_FECHADA);
+  for (const e of LISTA_FECHADA) assert.ok(p.includes(`${e.id} | ${e.nome}`), e.id);
+  assert.match(p, /SOMENTE/);
+});
+
+teste('o esquema de resposta fecha o id na lista', () => {
+  const e = esquemaDeResposta(['traira', 'dourado']);
+  assert.deepEqual(e.properties.candidatos.items.properties.speciesId.enum, ['traira', 'dourado']);
+});
+
+teste('servidor descarta espécie inventada e resposta que não é lista', () => {
+  const r = sanearResposta(
+    { candidatos: [sug('peixe-palhaco', 0.9), sug('traira', 0.6), { speciesId: 'dourado', confianca: 'alta' }] },
+    IDS,
+  );
+  assert.deepEqual(r.map((s) => s.speciesId), ['traira']);
+  assert.deepEqual(sanearResposta('traira', IDS), []);
+  assert.deepEqual(sanearResposta(null, IDS), []);
+  assert.deepEqual(sanearResposta({ candidatos: 'traira' }, IDS), []);
+});
+
+teste('servidor converte porcentagem, ordena, tira repetição e corta em três', () => {
+  const r = sanearResposta(
+    [sug('piava', 30), sug('grumata', 0.5), sug('piava', 0.1), sug('traira', 0.05), sug('dourado', 0.02)],
+    IDS,
+  );
+  assert.deepEqual(r.map((s) => [s.speciesId, s.confianca]), [
+    ['grumata', 0.5],
+    ['piava', 0.3],
+    ['traira', 0.05],
+  ]);
+});
+
+teste('app descarta id que não conhece e prende a confiança entre 0 e 1', () => {
+  const r = sanearSugestoes([sug('nao-existe', 0.9), sug('traira', 1.4), sug('traira', 0.2)], (id) => IDS.has(id));
+  assert.deepEqual(r, [sug('traira', 1)]);
+  assert.deepEqual(sanearSugestoes({ sugestoes: [] }, () => true), []);
+});
+
+teste('abaixo de 40% não há sugestão (RN03)', () => {
+  assert.equal(apresentar([sug('traira', 0.39)], parecidas).tipo, 'nenhuma');
+  assert.equal(apresentar([sug('traira', CONFIANCA_MINIMA)], parecidas).tipo, 'lista');
+  assert.equal(apresentar([], parecidas).tipo, 'nenhuma');
+});
+
+teste('parecidas quase empatadas viram dúvida, sem vencedor (SDD 6.3)', () => {
+  const a = apresentar([sug('piava', 0.5), sug('grumata', 0.42), sug('traira', 0.05)], parecidas);
+  assert.equal(a.tipo, 'duvida');
+  if (a.tipo === 'duvida') {
+    assert.deepEqual([a.primeira.speciesId, a.segunda.speciesId], ['piava', 'grumata']);
+    assert.deepEqual(a.demais.map((s) => s.speciesId), ['traira']);
+  }
+});
+
+teste('empate entre espécies que ninguém confunde é lista, não dúvida', () => {
+  assert.equal(apresentar([sug('traira', 0.5), sug('dourado', 0.45)], parecidas).tipo, 'lista');
+});
+
+teste('parecidas com distância larga também é lista', () => {
+  assert.equal(apresentar([sug('piava', 0.7), sug('grumata', 0.2)], parecidas).tipo, 'lista');
+});
+
+teste('a dúvida vale nos dois sentidos da semelhança', () => {
+  // O catálogo só marca num dos lados às vezes; a regra não pode depender de qual veio primeiro.
+  const soUmLado = (id: string) => (id === 'traira' ? ['dourado'] : []);
+  assert.equal(apresentar([sug('dourado', 0.5), sug('traira', 0.45)], soUmLado).tipo, 'duvida');
+});
+
+teste('aceitou a primeira: sim, não, e "não houve sugestão" (RN02)', () => {
+  const lista = registroDaSugestao('m', [sug('traira', 0.8), sug('trairao', 0.1)], 'lista');
+  assert.equal(aceitouPrimeira(lista, 'traira'), true);
+  assert.equal(aceitouPrimeira(lista, 'trairao'), false);
+  assert.equal(aceitouPrimeira(lista, null), false);
+  assert.equal(aceitouPrimeira(null, 'traira'), null);
+  // Sugestão que não apareceu na tela não pode contar como recusada.
+  assert.equal(aceitouPrimeira(registroDaSugestao('m', [sug('traira', 0.3)], 'nenhuma'), 'dourado'), null);
+});
+
+teste('o registro guarda o que foi mostrado, sem o texto do motivo', () => {
+  const r = registroDaSugestao('gemini-x', [sug('traira', 0.83456, 'boca grande')], 'lista');
+  assert.deepEqual(r, { v: 1, modelo: 'gemini-x', exibicao: 'lista', sugestoes: [{ speciesId: 'traira', confianca: 0.835 }] });
+  assert.equal(porcentagem(0.835), '84%');
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

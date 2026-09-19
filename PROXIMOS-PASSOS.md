@@ -1,6 +1,6 @@
 # Onde paramos e o que vem a seguir
 
-Atualizado em 18/09/2026. Último commit antes deste arquivo: `41a3754` (amigos por código e ranking).
+Atualizado em 19/09/2026.
 
 ## Retomar em outro PC
 
@@ -26,7 +26,7 @@ Atualizado em 18/09/2026. Último commit antes deste arquivo: `41a3754` (amigos 
 | 1 | Registro local: foto (câmera ou galeria) com enquadramento, espécie, medida, peso estimado | ✅ Entregue |
 | 2 | Álbum: grade, cartas acinzentadas quando bloqueadas, ficha da espécie, animação de desbloqueio, temas claro e escuro | ✅ Entregue |
 | 3 | Nuvem e amigos: login no Supabase, sincronização com fila offline, amigos por código, ranking | 🟡 Código pronto. Falta aplicar a migration 0002 e testar |
-| 4 | IA: identificar a espécie pela foto, com o seletor manual como alternativa | ⬜ Não começada |
+| 4 | IA: identificar a espécie pela foto, com o seletor manual como alternativa | 🟡 Código pronto. Falta a chave da Gemini, a migration 0003 e publicar a função |
 | 5 | Card compartilhável e insígnias | ⬜ Não começada |
 
 ### Fase 3, em detalhe
@@ -41,19 +41,54 @@ Atualizado em 18/09/2026. Último commit antes deste arquivo: `41a3754` (amigos 
 - ⏳ Teste de ponta a ponta dos convites (`npm run nuvem:convites`), que depende da migration
   acima.
 
+### Fase 4, em detalhe
+
+- ✅ Edge Function `supabase/functions/identificar`: confere o login, conta a cota diária (30 por
+  pessoa), manda a foto para a Gemini com a **lista fechada** das 84 espécies e valida a resposta.
+  Testada localmente com o Deno até o ponto da cota, que depende da migration 0003.
+- ✅ No app: a identificação começa quando o enquadramento termina e corre enquanto a pessoa
+  preenche o formulário. Até 3 sugestões embaixo do campo de espécie, com porcentagem; abaixo de
+  40% não aparece nada; duas espécies parecidas quase empatadas aparecem lado a lado.
+- ✅ Sem rede ou com falha, some sem mensagem de erro. O seletor manual continua igual.
+- ✅ Telemetria: cada captura guarda o que foi sugerido e se a pessoa ficou com a primeira sugestão.
+- ⏳ Chave da Gemini, migration `0003_identificacao.sql` e publicação da função.
+- ⬜ Não feito: sugerir depois uma captura registrada sem sinal (PRD 6.1). Hoje, sem rede, só o
+  seletor manual.
+
 ## Próximo passo
+
+**Fase 3: convites**
 
 1. No painel do Supabase, abra o **SQL Editor**, cole o conteúdo de
    `supabase/migrations/0002_convites.sql` e clique em *Run*.
 2. Rode `npm run nuvem:convites`. O teste cria três contas de teste (Ana, Bia e Caio) e confere
    16 pontos: aceitar convite, ver as capturas do amigo, o estranho não ver nada, desfazer a
    amizade. Todas as linhas devem começar com `ok`.
-3. Apague em *Authentication → Users* os usuários `@fisgados.app` que o teste listar no final,
-   junto com os que sobraram de testes anteriores.
-4. Teste no celular com duas contas: uma passa o código, a outra digita em Amigos, e o Ranking
+3. Teste no celular com duas contas: uma passa o código, a outra digita em Amigos, e o Ranking
    mostra as duas.
 
-Com isso a Fase 3 fecha. Depois vem a Fase 4 (IA).
+**Fase 4: IA**
+
+4. Crie uma chave da Gemini em <https://aistudio.google.com/apikey>. Ela **não** vai no `.env`.
+5. No SQL Editor, rode `supabase/migrations/0003_identificacao.sql`.
+6. Crie um access token em <https://supabase.com/dashboard/account/tokens> e anote o *project
+   ref* (o `xxxx` de `https://xxxx.supabase.co`). Depois:
+   ```bash
+   npx supabase login
+   npx supabase secrets set GEMINI_API_KEY=cole-a-chave --project-ref <ref>
+   npx supabase functions deploy identificar --no-verify-jwt --use-api --project-ref <ref>
+   npm run ia:check
+   ```
+   O `ia:check` manda fotos da traíra e do dourado e mostra as sugestões. Todas as linhas devem
+   começar com `ok`.
+7. No celular: registre uma captura e veja as sugestões aparecerem embaixo de "Espécie".
+
+**Limpeza**
+
+8. Apague em *Authentication → Users* os usuários `@fisgados.app` que os testes listarem, junto
+   com os que sobraram de testes anteriores (inclusive `ia-local-...`).
+
+Com isso as Fases 3 e 4 fecham. Depois vem a Fase 5 (card compartilhável e insígnias).
 
 ## Pendências que dependem de você
 
@@ -81,4 +116,5 @@ Com isso a Fase 3 fecha. Depois vem a Fase 4 (IA).
 - `prd.md`: produto (regras, insígnias, roadmap na seção 14).
 - `sdd.md`: arquitetura e plano de execução (seção 12).
 - `README.md`: como rodar, comandos e como ligar a nuvem.
-- `supabase/migrations/`: SQL do servidor (0001 aplicada, 0002 pendente).
+- `supabase/migrations/`: SQL do servidor (0001 aplicada, 0002 e 0003 pendentes).
+- `supabase/functions/identificar/`: a Edge Function da IA (`catalogo.ts` é gerado).

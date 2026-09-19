@@ -3,8 +3,8 @@
 Álbum de capturas para pescadores do Sul. Veja [prd.md](prd.md) para o produto,
 [sdd.md](sdd.md) para a arquitetura e [PROXIMOS-PASSOS.md](PROXIMOS-PASSOS.md) para onde paramos.
 
-**Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues; 3 (nuvem e amigos)
-em andamento.
+**Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues; 3 (nuvem e amigos) e 4
+(identificação por IA) com o código pronto, esperando migration e publicação no Supabase.
 91 cartas, 84 espécies, 79 com estimativa de peso.
 Conta no Supabase (F14), sincronização, amigos por código e ranking, foto da câmera ou da galeria com enquadramento em 3:4, captura
 desenhada como carta, e dois temas — **Papel** de dia, **Água Funda** de madrugada.
@@ -67,13 +67,16 @@ intacta na galeria — o app guarda só o pedaço escolhido.
 ## Outros comandos
 
 ```bash
-npm test                   # testes da camada de domínio (61 casos)
+npm test                   # testes da camada de domínio (74 casos)
 npm run typecheck
 npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
 npm run photos:fetch -- --baixar     # e baixa a primeira candidata de cada espécie
 npm run photos:prepare     # reduz, gera src/catalog/fotos.ts e creditos.ts
 npm run nuvem:check        # confere .env, chave e esquema do Supabase
+npm run nuvem:convites     # testa convites e visibilidade entre contas (migration 0002)
+npm run ia:catalogo        # regera a lista fechada da função identificar a partir do catálogo
+npm run ia:check           # testa a função identificar publicada (migration 0003 + secret)
 npm run catalog:inspect    # colunas das tabelas do FishBase
 npm run catalog:inspect -- Salminus brasiliensis   # + estudos daquela espécie
 npm run db:generate        # nova migration após mexer em src/db/schema.ts
@@ -101,6 +104,7 @@ disso roda offline. O build sai com código 1 se encontrar erro no catálogo.
 | Mudar o desenho da carta de captura | `src/components/CartaCaptura.tsx` |
 | Mudar o desenho da carta do álbum | `src/components/CartaAlbum.tsx` |
 | Mexer na cena de desbloqueio | `src/components/Desbloqueio.tsx` |
+| Mexer na identificação por IA | `src/domain/identificacao.ts` (quando mostrar o quê), `src/components/SugestoesIA.tsx` (tela), `supabase/functions/identificar/` (prompt e servidor) |
 | Mexer nas regras de sincronização | `src/domain/sincronizacao.ts` (puras, com teste) |
 | Mexer no esquema da nuvem | `supabase/migrations/0001_esquema.sql` |
 | Reordenar as cartas de um álbum | `ALBUM_LAYOUT` em `scripts/catalog/species-source.mts` |
@@ -232,3 +236,47 @@ nativo, e no Expo Go o esquema `fisgados://` não funciona.
 As contas locais foram descartadas em vez
 de migradas (migration 0004 remove as tabelas `users` e `session`); capturas registradas antes
 disso continuam no banco, invisíveis, porque pertencem a ids que não existem mais.
+
+## Identificação por IA (Etapa 4)
+
+Depois do enquadramento, o app manda a foto (600 × 800, JPEG) para a Edge Function
+`identificar`, que pergunta à Gemini qual espécie **da lista fechada do catálogo** aparece ali.
+O formulário já está na tela enquanto isso: a pessoa digita a medida, e as sugestões aparecem
+embaixo do campo de espécie.
+
+- Até três sugestões, com a porcentagem. Tocar numa só preenche o campo; quem decide é a pessoa (RN02).
+- Abaixo de 40% não aparece nada (RN03), só uma linha dizendo para escolher na lista.
+- Duas espécies parecidas (`visuallySimilarTo`) com menos de 15 pontos de diferença aparecem
+  lado a lado, com a foto do catálogo e o traço que o modelo viu, sem vencedor (SDD 6.3).
+- Sem rede, sem nuvem, função fora do ar ou demora maior que 9 s: some sem mensagem de erro
+  (SDD 6.5). O seletor manual continua sendo o caminho garantido.
+- Cota de 30 identificações por pessoa por dia; ao bater, um aviso discreto uma vez por dia.
+- O que foi sugerido fica em `ai_suggestion`, e `ai_accepted` diz se a pessoa ficou com a
+  primeira sugestão. É daí que sai a acurácia de verdade.
+
+**Para ligar** (uma vez):
+
+1. Crie uma chave da Gemini em <https://aistudio.google.com/apikey>. Ela **não** vai no `.env`
+   do app: fica só no Supabase, como secret da função.
+2. Aplique `supabase/migrations/0003_identificacao.sql` no SQL Editor.
+3. Pegue um access token em <https://supabase.com/dashboard/account/tokens> e o *project ref*
+   (o pedaço `xxxx` de `https://xxxx.supabase.co`), e rode:
+
+```bash
+npx supabase login                      # cola o access token
+npx supabase secrets set GEMINI_API_KEY=cole-a-chave --project-ref <ref>
+npx supabase functions deploy identificar --no-verify-jwt --use-api --project-ref <ref>
+npm run ia:check                        # manda duas fotos do catálogo e mostra as sugestões
+```
+
+O `--no-verify-jwt` não abre a função: ela confere o login por dentro, com `auth.getUser`,
+porque a verificação do gateway não funciona com as chaves novas de assinatura do Supabase.
+
+Opcionais, também por `secrets set`: `GEMINI_MODEL` (padrão `gemini-3.5-flash`) e
+`IDENTIFY_DAILY_LIMIT` (padrão 30).
+
+Mudou o catálogo? Rode `npm run ia:catalogo` e publique a função de novo — o `npm test` falha
+enquanto a lista da função estiver atrás da do app.
+
+**Ainda não feito:** o PRD 6.1 fala em identificar depois, quando a captura foi registrada sem
+sinal. Hoje a sugestão só existe no momento do registro; sem rede, vale o seletor manual.
