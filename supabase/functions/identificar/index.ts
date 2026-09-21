@@ -11,6 +11,8 @@
  * Secrets:
  *   GEMINI_API_KEY        obrigatório
  *   GEMINI_MODEL          opcional, padrão abaixo — trocar de modelo não é refatoração
+ *   GEMINI_THINKING       opcional, padrão minimal
+ *   GEMINI_TIMEOUT_MS     opcional, padrão 10000
  *   IDENTIFY_DAILY_LIMIT  opcional, padrão 30 por pessoa por dia
  *
  * Publicar: npx supabase functions deploy identificar --no-verify-jwt --use-api --project-ref <ref>
@@ -23,11 +25,21 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { CATALOGO } from './catalogo.ts';
 import { esquemaDeResposta, montarPrompt, sanearResposta } from './regras.ts';
 
-const MODELO = Deno.env.get('GEMINI_MODEL')?.trim() || 'gemini-3.5-flash';
+/**
+ * Flash-Lite, e não o Flash: no teste de 19/09/2026 o gemini-3.5-flash passou de 25 s e devolveu
+ * 503 de sobrecarga no free tier, enquanto o Flash-Lite respondeu em ~1,5 s e acertou as duas
+ * espécies. Escolher dentro de uma lista fechada não precisa do modelo maior.
+ */
+const MODELO = Deno.env.get('GEMINI_MODEL')?.trim() || 'gemini-3.5-flash-lite';
+const NIVEL_DE_RACIOCINIO = Deno.env.get('GEMINI_THINKING')?.trim() || 'minimal';
 const LIMITE_DIARIO = Number(Deno.env.get('IDENTIFY_DAILY_LIMIT') ?? '30') || 30;
 
-/** SDD 6.5: passou disso, o app segue pelo seletor manual. */
-const TIMEOUT_MODELO_MS = 6_000;
+/**
+ * Passou disso, o app segue pelo seletor manual (SDD 6.5). O SDD fala em 6 s; subiu para 10 porque
+ * o free tier da Gemini oscila entre 1,5 s e mais de 6 s na mesma foto, e o formulário não espera
+ * pela IA — um limite maior custa só uma sugestão que chega mais tarde, nunca um registro travado.
+ */
+const TIMEOUT_MODELO_MS = Number(Deno.env.get('GEMINI_TIMEOUT_MS') ?? '10000') || 10_000;
 
 /** Uma foto de 800 px em JPEG fica perto de 150 KB em base64. Isto é folga, não alvo. */
 const TAMANHO_MAX_B64 = 2_000_000;
@@ -93,6 +105,7 @@ Deno.serve(async (req) => {
     return responder(429, { erro: 'limite', limite: LIMITE_DIARIO });
   }
 
+  const inicio = Date.now();
   let resposta: Response;
   try {
     resposta = await fetch(
@@ -109,6 +122,9 @@ Deno.serve(async (req) => {
             },
           ],
           generationConfig: {
+            // Os Flash 3.x "pensam" em nível médio por padrão, e isso custa segundos que a
+            // pescaria não tem. Escolher numa lista fechada olhando a foto não precisa disso.
+            thinkingConfig: { thinkingLevel: NIVEL_DE_RACIOCINIO },
             temperature: 0,
             responseMimeType: 'application/json',
             responseSchema: ESQUEMA,
@@ -138,5 +154,6 @@ Deno.serve(async (req) => {
     // Resposta que não é JSON vale como "nenhuma sugestão": o seletor manual resolve.
   }
 
-  return responder(200, { modelo: MODELO, sugestoes: sanearResposta(bruto, IDS_VALIDOS) });
+  // `ms` é o tempo só da Gemini: separa lentidão do modelo de lentidão de rede no diagnóstico.
+  return responder(200, { modelo: MODELO, ms: Date.now() - inicio, sugestoes: sanearResposta(bruto, IDS_VALIDOS) });
 });

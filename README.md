@@ -248,7 +248,7 @@ embaixo do campo de espécie.
 - Abaixo de 40% não aparece nada (RN03), só uma linha dizendo para escolher na lista.
 - Duas espécies parecidas (`visuallySimilarTo`) com menos de 15 pontos de diferença aparecem
   lado a lado, com a foto do catálogo e o traço que o modelo viu, sem vencedor (SDD 6.3).
-- Sem rede, sem nuvem, função fora do ar ou demora maior que 9 s: some sem mensagem de erro
+- Sem rede, sem nuvem, função fora do ar ou demora maior que 12 s: some sem mensagem de erro
   (SDD 6.5). O seletor manual continua sendo o caminho garantido.
 - Cota de 30 identificações por pessoa por dia; ao bater, um aviso discreto uma vez por dia.
 - O que foi sugerido fica em `ai_suggestion`, e `ai_accepted` diz se a pessoa ficou com a
@@ -272,7 +272,7 @@ npm run ia:check                        # manda duas fotos do catálogo e mostra
 O `--no-verify-jwt` não abre a função: ela confere o login por dentro, com `auth.getUser`,
 porque a verificação do gateway não funciona com as chaves novas de assinatura do Supabase.
 
-Opcionais, também por `secrets set`: `GEMINI_MODEL` (padrão `gemini-3.5-flash`) e
+Opcionais, também por `secrets set`: `GEMINI_MODEL` (padrão `gemini-3.5-flash-lite`; o Flash normal passou de 25 s e deu 503 no free tier), `GEMINI_THINKING` (padrão `minimal`), `GEMINI_TIMEOUT_MS` (padrão 10000) e
 `IDENTIFY_DAILY_LIMIT` (padrão 30).
 
 Mudou o catálogo? Rode `npm run ia:catalogo` e publique a função de novo — o `npm test` falha

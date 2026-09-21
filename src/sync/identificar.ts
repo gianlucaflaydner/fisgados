@@ -20,10 +20,10 @@ export type ResultadoIdentificacao =
 const LARGURA_PX = 600;
 
 /**
- * O servidor desiste da Gemini em 6 s (SDD 6.5). Os 3 s a mais cobrem a subida da foto e a
+ * O servidor desiste da Gemini em 10 s. Os 2 s a mais cobrem a subida da foto e a
  * partida a frio da função. O formulário já está na tela: esperar aqui não trava ninguém.
  */
-const TIMEOUT_MS = 9_000;
+const TIMEOUT_MS = 12_000;
 
 async function fotoEmBase64(uri: string): Promise<string | null> {
   const r = await ImageManipulator.manipulateAsync(uri, [{ resize: { width: LARGURA_PX } }], {

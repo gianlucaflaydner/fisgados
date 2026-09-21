@@ -565,8 +565,9 @@ Supabase, auth, RLS, outbox, upload de fotos, convite por link, rankings.
 
 **Etapa 4 — IA**
 Edge Function, prompt de lista fechada, desambiguação, telemetria de acurácia. **Código entregue**
-(`supabase/functions/identificar`, `src/domain/identificacao.ts`); falta publicar a função e
-aplicar a migration 0003. Modelo padrão `gemini-3.5-flash`, trocável pelo secret `GEMINI_MODEL`.
+(`supabase/functions/identificar`, `src/domain/identificacao.ts`); função publicada e migration 0003 aplicada em 19/09/2026;
+testada com fotos do catálogo. Modelo padrão `gemini-3.5-flash-lite` (~1,5 s por foto), trocável pelo secret `GEMINI_MODEL`.
+Timeout de 10 s no servidor em vez dos 6 s da seção 6.5: o free tier oscila, e o formulário não espera.
 
 **Etapa 5 — Card compartilhável e insígnias** (seção 14)
 

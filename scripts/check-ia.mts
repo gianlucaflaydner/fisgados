@@ -80,9 +80,9 @@ for (const id of ['traira', 'dourado']) {
   }
   const sugestoes = (r.json.sugestoes ?? []) as { speciesId: string; confianca: number; motivo: string }[];
   ok(sugestoes.length <= 3, `${id}: no máximo três sugestões (${sugestoes.length})`);
-  ok(sugestoes.some((s) => s.speciesId === id), `${id}: a espécie certa está entre as sugestões (${r.json.modelo}, ${ms} ms)`);
+  ok(sugestoes.some((s) => s.speciesId === id), `${id}: a espécie certa está entre as sugestões (${r.json.modelo}, ${ms} ms no total, ${r.json.ms ?? "?"} ms na Gemini)`);
   for (const s of sugestoes) console.log(`      ${s.speciesId.padEnd(16)} ${Math.round(s.confianca * 100)}%  ${s.motivo}`);
-  ok(ms < 9_000, `${id}: respondeu dentro do tempo que o app espera (${ms} ms < 9000)`);
+  ok(ms < 12_000, `${id}: respondeu dentro do tempo que o app espera (${ms} ms < 12000)`);
 }
 
 console.log(`\n${falhas === 0 ? 'tudo certo' : `${falhas} falha(s)`}`);
