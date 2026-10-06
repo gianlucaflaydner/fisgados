@@ -1,0 +1,63 @@
+# Mantém o projeto Supabase acordado.
+#
+# O plano free pausa um projeto depois de uns dias sem nenhuma requisição, e um projeto pausado
+# tira o app do ar: o endereço deixa de existir no DNS, o login falha e a fila de sincronização
+# só acumula. Como a pescaria é esporádica — dez a vinte vezes por ano, diz o PRD —, passar uma
+# semana sem ninguém abrir o app é o caso normal, não a exceção.
+#
+# Então uma requisição de nada, de dois em dois dias, basta para o projeto continuar de pé.
+#
+# **Isto não é garantia.** Quem garante é o plano Pro; aqui é um paliativo que depende de a
+# contagem de inatividade do Supabase olhar requisições, e das regras do GitHub Actions. Duas
+# pegadinhas conhecidas:
+#
+#  - o GitHub desliga agendamentos de repositório sem nenhuma atividade por 60 dias, e manda
+#    e-mail avisando. Basta reativar na aba Actions;
+#  - agendamento no GitHub não é pontual: pode atrasar algumas horas quando a fila está cheia.
+#    Por isso o intervalo é de dois dias, e não de seis.
+#
+# Precisa de dois secrets no repositório (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       https://xxxx.supabase.co
+#   SUPABASE_ANON_KEY  a publishable key (sb_publishable_...)
+#
+# A publishable key é pública por desenho — quem protege os dados é o RLS —, mas vai como secret
+# para não ficar à mão de quem varre repositório em busca de chave para gastar cota alheia.
+
+name: Manter o Supabase acordado
+
+on:
+  schedule:
+    # 12:00 UTC (9h de Brasília) a cada dois dias.
+    - cron: '0 12 */2 * *'
+  # Permite rodar na mão pelo botão "Run workflow", que é como se testa isto.
+  workflow_dispatch:
+
+jobs:
+  acordar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Uma requisição à API do projeto
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          CHAVE: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$CHAVE" ]; then
+            echo "Faltam os secrets SUPABASE_URL e SUPABASE_ANON_KEY no repositório."
+            exit 1
+          fi
+
+          # Uma leitura qualquer da Data API. O RLS devolve lista vazia para quem não está logado,
+          # e é isso que se quer: o que conta é a requisição ter chegado ao projeto.
+          codigo=$(curl -s -o /tmp/resposta -w '%{http_code}' --max-time 30 \
+            -H "apikey: $CHAVE" \
+            "${URL%/}/rest/v1/profiles?select=id&limit=1")
+
+          echo "HTTP $codigo"
+          head -c 300 /tmp/resposta; echo
+
+          # 200 é o esperado. 401 e 403 também servem: a requisição chegou, o projeto está de pé.
+          case "$codigo" in
+            200|401|403) echo "Projeto acordado." ;;
+            000) echo "Não foi possível falar com o projeto — pode estar pausado ou apagado."; exit 1 ;;
+            *) echo "Resposta inesperada do projeto."; exit 1 ;;
+          esac

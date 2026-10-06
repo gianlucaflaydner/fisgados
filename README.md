@@ -3,8 +3,8 @@
 Álbum de capturas para pescadores do Sul. Veja [prd.md](prd.md) para o produto,
 [sdd.md](sdd.md) para a arquitetura e [PROXIMOS-PASSOS.md](PROXIMOS-PASSOS.md) para onde paramos.
 
-**Estado:** Etapas 0 (catálogo), 1 (registro local) e 2 (álbum) entregues; 3 (nuvem e amigos) e 4
-(identificação por IA) com o código pronto, esperando migration e publicação no Supabase.
+**Estado:** Etapas 0 (catálogo), 1 (registro local), 2 (álbum), 3 (nuvem e amigos) e 4
+(identificação por IA) entregues e no ar; falta o teste no celular. A 5 (card e insígnias) não começou.
 91 cartas, 84 espécies, 79 com estimativa de peso.
 Conta no Supabase (F14), sincronização, amigos por código e ranking, foto da câmera ou da galeria com enquadramento em 3:4, captura
 desenhada como carta, e dois temas — **Papel** de dia, **Água Funda** de madrugada.
@@ -280,3 +280,28 @@ enquanto a lista da função estiver atrás da do app.
 
 **Ainda não feito:** o PRD 6.1 fala em identificar depois, quando a captura foi registrada sem
 sinal. Hoje a sugestão só existe no momento do registro; sem rede, vale o seletor manual.
+
+## Manter o projeto Supabase de pé
+
+O plano free pausa o projeto depois de alguns dias sem requisição, e projeto pausado derruba o
+app: o endereço sai do DNS, o login falha e a sincronização só acumula. Pescaria é esporádica, e
+uma semana sem ninguém abrir o app é o caso normal.
+
+Para subir de novo: painel do Supabase → **Restore project**. Leva uns minutos, e `npm run
+nuvem:check` confirma.
+
+Para não cair, `.github/workflows/manter-supabase-acordado.yml` faz uma requisição à Data API a
+cada dois dias. Precisa de dois secrets no repositório, em *Settings → Secrets and variables →
+Actions*:
+
+| Secret | Valor |
+|---|---|
+| `SUPABASE_URL` | `https://xxxx.supabase.co` |
+| `SUPABASE_ANON_KEY` | a publishable key (`sb_publishable_...`) |
+
+Depois, na aba **Actions**, abra "Manter o Supabase acordado" e clique em **Run workflow** para
+testar. Deve terminar em verde dizendo "Projeto acordado".
+
+**Isto é paliativo, não garantia.** O GitHub desliga agendamentos de repositório parado por 60
+dias (manda e-mail, e basta reativar), e os horários atrasam quando a fila está cheia — daí o
+intervalo de dois dias em vez de seis. Garantia de verdade é o plano Pro, que não pausa.

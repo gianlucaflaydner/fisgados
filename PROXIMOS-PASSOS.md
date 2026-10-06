@@ -82,8 +82,11 @@ Secrets* no painel e **não** vai no `.env`.
 - **Trocar a senha do banco.** Ela apareceu numa conversa anterior. Troque em *Project Settings →
   Database → Reset database password* e guarde num gerenciador de senhas, fora do `.env`.
 - **Pausa do Supabase free.** O projeto pausa depois de uns dias sem uso, e o app mostra "não foi
-  possível falar com o servidor". Há três saídas: plano Pro, um "keep-alive" agendado ou
-  restaurar à mão quando acontecer. A escolha ainda está em aberto.
+  possível falar com o servidor". Para subir: painel do Supabase → **Restore project**.
+  Já existe um despertador em `.github/workflows/manter-supabase-acordado.yml`, que pinga o
+  projeto a cada dois dias — **falta cadastrar os dois secrets no GitHub** (`SUPABASE_URL` e
+  `SUPABASE_ANON_KEY`, em *Settings → Secrets and variables → Actions*). É paliativo: garantia
+  de verdade só com o plano Pro, que não pausa.
 - **Arte das cartas.** São 84 ilustrações, e as fotos atuais servem de referência.
 - **Fotos com ressalva.** Carpa-espelho, tilápia-vermelha, cascudo-viola e surubim-do-Uruguai
   estão sem foto. A savelha usa uma ilustração, e os híbridos precisam ser revistos.
