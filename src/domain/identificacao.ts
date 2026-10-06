@@ -14,8 +14,24 @@ export interface Sugestao {
   motivo: string;
 }
 
+/** A estimativa de tamanho pela foto. Sempre com a referência que o modelo diz ter usado. */
+export interface MedidaEstimada {
+  cmMin: number;
+  cmMax: number;
+  referencia: string;
+  confianca: number;
+}
+
 /** RN03: abaixo disso não há sugestão. Sugestão ruim é pior que nenhuma. */
 export const CONFIANCA_MINIMA = 0.4;
+
+/**
+ * Faixa mais larga que isso não é estimativa, é chute.
+ *
+ * "Entre 20 e 60 cm" não ajuda quem está com o peixe na mão: o que ele faz com isso? O limite é
+ * o dobro — "entre 30 e 55" passa, "entre 20 e 60" não aparece.
+ */
+export const LARGURA_MAXIMA_DA_FAIXA = 2;
 
 /** SDD 6.3: as duas primeiras mais perto que isso, e parecidas entre si, viram dúvida. */
 export const DISTANCIA_DE_DUVIDA = 0.15;
@@ -75,6 +91,61 @@ export function apresentar(
   return { tipo: 'lista', sugestoes: [...sugestoes] };
 }
 
+/**
+ * A estimativa de tamanho vale a tela? — e qual número oferecer.
+ *
+ * Três filtros, e qualquer um derruba a estimativa inteira: referência nomeada (sem objeto de
+ * tamanho conhecido na foto não existe medida, só palpite), confiança mínima igual à da espécie
+ * (RN03) e faixa estreita o bastante para servir de algo.
+ *
+ * O valor oferecido é o meio da faixa, arredondado. A faixa continua à vista na tela: o número
+ * redondo é para a pessoa tocar, a faixa é para ela saber o quanto aquilo é um chute.
+ *
+ * `faixaDaEspecie` entra quando a espécie já está escolhida. O catálogo sabe que traíra não passa
+ * de 100 cm; uma estimativa de 180 cm de traíra é erro de leitura da foto, e some.
+ */
+export type Estimativa =
+  | { tipo: 'nenhuma' }
+  | { tipo: 'faixa'; cmMin: number; cmMax: number; sugerido: number; referencia: string };
+
+export function estimativaDeMedida(
+  medida: MedidaEstimada | null,
+  faixaDaEspecie?: { minLengthCm: number; maxLengthCm: number },
+): Estimativa {
+  if (!medida) return { tipo: 'nenhuma' };
+  if (medida.referencia.trim().length === 0) return { tipo: 'nenhuma' };
+  if (medida.confianca < CONFIANCA_MINIMA) return { tipo: 'nenhuma' };
+  if (medida.cmMin <= 0 || medida.cmMax < medida.cmMin) return { tipo: 'nenhuma' };
+  if (medida.cmMax / medida.cmMin > LARGURA_MAXIMA_DA_FAIXA) return { tipo: 'nenhuma' };
+
+  const meio = (medida.cmMin + medida.cmMax) / 2;
+  if (faixaDaEspecie) {
+    // Uma folga de 20% acima do máximo do catálogo: a faixa é regional e o peixe da vida de
+    // alguém pode passar dela. O que não pode é o dobro.
+    if (meio < faixaDaEspecie.minLengthCm * 0.8 || meio > faixaDaEspecie.maxLengthCm * 1.2) {
+      return { tipo: 'nenhuma' };
+    }
+  }
+
+  return {
+    tipo: 'faixa',
+    cmMin: medida.cmMin,
+    cmMax: medida.cmMax,
+    sugerido: Math.round(meio),
+    referencia: medida.referencia,
+  };
+}
+
+/** Confere a estimativa que veio do servidor. Mesma regra do servidor, repetida de propósito. */
+export function sanearMedidaEstimada(bruto: unknown): MedidaEstimada | null {
+  if (!bruto || typeof bruto !== 'object') return null;
+  const { cmMin, cmMax, referencia, confianca } = bruto as Record<string, unknown>;
+  if (typeof cmMin !== 'number' || typeof cmMax !== 'number') return null;
+  if (typeof referencia !== 'string' || typeof confianca !== 'number') return null;
+  if (![cmMin, cmMax, confianca].every(Number.isFinite)) return null;
+  return { cmMin, cmMax, referencia: referencia.trim(), confianca: Math.min(Math.max(confianca, 0), 1) };
+}
+
 /** Porcentagem para a tela: inteira, porque "73,4%" finge uma precisão que o modelo não tem. */
 export function porcentagem(confianca: number): string {
   return `${Math.round(confianca * 100)}%`;
@@ -91,15 +162,38 @@ export interface RegistroDaSugestao {
   modelo: string;
   exibicao: Apresentacao['tipo'];
   sugestoes: { speciesId: string; confianca: number }[];
+  /** A estimativa de tamanho que apareceu na tela, quando apareceu. */
+  medida?: { cmMin: number; cmMax: number; referencia: string };
+  /**
+   * A medida salva veio da estimativa?
+   *
+   * Importa mais do que parece: é o que permite, depois, separar o recorde medido na régua do
+   * recorde que saiu de um palpite aceito com uma tocada — e decidir se o ranking devia ou não
+   * misturar os dois (RN06, RN21).
+   */
+  medidaAceita?: boolean;
 }
 
-export function registroDaSugestao(modelo: string, sugestoes: readonly Sugestao[], exibicao: Apresentacao['tipo']): RegistroDaSugestao {
-  return {
+export function registroDaSugestao(
+  modelo: string,
+  sugestoes: readonly Sugestao[],
+  exibicao: Apresentacao['tipo'],
+  medida?: { estimativa: Estimativa; cmSalvo: number },
+): RegistroDaSugestao {
+  const registro: RegistroDaSugestao = {
     v: 1,
     modelo,
     exibicao,
     sugestoes: sugestoes.map((s) => ({ speciesId: s.speciesId, confianca: Math.round(s.confianca * 1000) / 1000 })),
   };
+
+  if (medida && medida.estimativa.tipo === 'faixa') {
+    const { cmMin, cmMax, referencia, sugerido } = medida.estimativa;
+    registro.medida = { cmMin, cmMax, referencia };
+    registro.medidaAceita = medida.cmSalvo === sugerido;
+  }
+
+  return registro;
 }
 
 /**

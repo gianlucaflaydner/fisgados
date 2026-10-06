@@ -16,10 +16,18 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getSpecies, type Species } from '@/catalog';
+import { CampoLocal } from '@/components/CampoLocal';
 import { Desbloqueio } from '@/components/Desbloqueio';
+import { SugestaoDeMedida } from '@/components/SugestaoDeMedida';
 import { SugestoesIA } from '@/components/SugestoesIA';
-import { saveCatch } from '@/db/queries';
-import { aceitouPrimeira, apresentar, registroDaSugestao } from '@/domain/identificacao';
+import { countAtPlace, saveCatch } from '@/db/queries';
+import { nomeDaConquista, subiuDeGrau } from '@/domain/conquistas';
+import {
+  aceitouPrimeira,
+  apresentar,
+  estimativaDeMedida,
+  registroDaSugestao,
+} from '@/domain/identificacao';
 import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
 import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
@@ -67,7 +75,12 @@ export default function Detalhes() {
   }
   // A cena de desbloqueio segura a navegação: sair antes de mostrá-la desperdiçaria o único
   // momento de recompensa do app.
-  const [aberta, setAberta] = useState<{ species: Species; trofeu: boolean } | null>(null);
+  const [aberta, setAberta] = useState<{
+    species: Species;
+    trofeu: boolean;
+    /** Conquista de local a anunciar depois que a cena de desbloqueio fechar. */
+    conquista: string | null;
+  } | null>(null);
 
   const species = draft.speciesId ? getSpecies(draft.speciesId) : undefined;
   const medida = Number(draft.lengthCm.replace(',', '.'));
@@ -105,6 +118,16 @@ export default function Detalhes() {
 
   const pesoReal = draft.weightG.trim().length > 0 ? Number(draft.weightG.replace(',', '.')) : null;
 
+  /*
+   * A estimativa de tamanho da IA, filtrada pela espécie escolhida quando já há uma: o catálogo
+   * sabe a faixa de cada peixe, e dourado de 8 cm é erro de leitura da foto, não captura.
+   */
+  const ia = useIdentificacao((s) => (s.uri === draft.photoUri ? s.resultado : null));
+  const estimativa = useMemo(() => {
+    if (!ia || ia.estado !== 'pronta') return { tipo: 'nenhuma' } as const;
+    return estimativaDeMedida(ia.medida, species ?? undefined);
+  }, [ia, species]);
+
   async function salvar() {
     if (salvando) return;
     if (!draft.photoUri) {
@@ -129,15 +152,21 @@ export default function Detalhes() {
     }
 
     // RN02: o que a IA disse vai para uma coluna própria, ao lado da escolha — nunca no lugar dela.
-    const ia = useIdentificacao.getState();
+    const estado = useIdentificacao.getState();
     const sugestao =
-      ia.uri === draft.photoUri && ia.resultado.estado === 'pronta'
+      estado.uri === draft.photoUri && estado.resultado.estado === 'pronta'
         ? registroDaSugestao(
-            ia.resultado.modelo,
-            ia.resultado.sugestoes,
-            apresentar(ia.resultado.sugestoes, (id) => getSpecies(id)?.visuallySimilarTo ?? []).tipo,
+            estado.resultado.modelo,
+            estado.resultado.sugestoes,
+            apresentar(estado.resultado.sugestoes, (id) => getSpecies(id)?.visuallySimilarTo ?? []).tipo,
+            { estimativa, cmSalvo: medida },
           )
         : null;
+
+    // Contado antes de salvar: é a diferença entre o antes e o depois que diz se esta captura
+    // fechou um grau naquele lugar.
+    const local = draft.placeLabel.trim();
+    const noLocalAntes = local ? await countAtPlace(userIdAtual(), local) : 0;
 
     setSalvando(true);
     try {
@@ -157,8 +186,19 @@ export default function Detalhes() {
         offlineOrigin: false,
         });
 
+      // Subiu de grau naquele lugar? É o reconhecimento de quem pesca sempre no mesmo canto —
+      // justamente quem o álbum, que premia variedade, nunca premia.
+      const degrau = local ? subiuDeGrau(noLocalAntes) : null;
+      const conquista = degrau ? nomeDaConquista(degrau.titulo, local) : null;
+
       if (r.unlocked && species) {
-        setAberta({ species, trofeu: r.trophy });
+        // A carta nova vem primeiro: é a cena de recompensa do app. A conquista do lugar espera
+        // a cortina fechar, em vez de disputar a tela com ela.
+        setAberta({ species, trofeu: r.trophy, conquista });
+        return;
+      }
+      if (conquista) {
+        Alert.alert('Conquista no seu ponto', conquista, [{ text: 'Boa!', onPress: concluir }]);
         return;
       }
       if (r.trophy && species) {
@@ -188,7 +228,13 @@ export default function Detalhes() {
         <Desbloqueio
           species={aberta.species}
           trofeu={aberta.trofeu}
-          onFechar={concluir}
+          onFechar={() => {
+            if (aberta.conquista) {
+              Alert.alert('Conquista no seu ponto', aberta.conquista, [{ text: 'Boa!', onPress: concluir }]);
+              return;
+            }
+            concluir();
+          }}
           onVerCarta={() => {
             const id = aberta.species.id;
             useDraft.getState().reset();
@@ -268,6 +314,16 @@ export default function Detalhes() {
                 Sem estimativa de peso para esta espécie — informe o peso real se quiser registrar.
               </Text>
             ) : null}
+            {/*
+              A estimativa fica embaixo do campo e do peso: o peso aparece sozinho a partir do que
+              estiver digitado, então aceitar a estimativa já mostra o quilo estimado na linha de
+              cima — sem pedir nada a mais de quem está com o peixe na mão.
+            */}
+            <SugestaoDeMedida
+              estimativa={estimativa}
+              valorAtual={draft.lengthCm}
+              onUsar={(cm) => draft.set({ lengthCm: String(cm) })}
+            />
           </Campo>
 
           <Campo rotulo="Peso real (kg) — opcional">
@@ -282,16 +338,11 @@ export default function Detalhes() {
           </Campo>
 
           <Campo rotulo="Local — opcional">
-            <TextInput
-              value={draft.placeLabel}
-              onChangeText={(v) => draft.set({ placeLabel: v })}
-              placeholder="Pesqueiro Recanto, Rio Paranhana..."
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
+            <CampoLocal
+              valor={draft.placeLabel}
+              onChange={(v) => draft.set({ placeLabel: v })}
+              userId={userIdAtual()}
             />
-            <Text className="mt-2 text-xs text-suave">
-              A coordenada exata fica só no seu aparelho. Amigos veem apenas este rótulo.
-            </Text>
           </Campo>
 
           <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-borda bg-superficie px-4 py-3">

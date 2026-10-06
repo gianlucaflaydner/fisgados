@@ -9,9 +9,10 @@
  * compilação, e não um histórico que mostra o peixe de outra pessoa.
  */
 
-import { and, asc, desc, eq, isNull, lte, max, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, isNull, lte, max, or, sql } from 'drizzle-orm';
 import { db } from './index';
 import { appPrefs, catches, syncOutbox, unlocks, type CatchRow, type NewCatch } from './schema';
+import { agruparLocais, chaveDeLocal, type Local } from '../domain/locais';
 import { estimateWeightG, isTrophy } from '../domain/weight';
 import { getSpecies } from '../catalog';
 import { atrasoDaTentativa, type EntidadeSync, type OperacaoSync } from '../domain/sincronizacao';
@@ -241,6 +242,40 @@ export async function listCatches(userId: string, limit = 200): Promise<CatchRow
     .where(and(eq(catches.userId, userId), isNull(catches.deletedAt)))
     .orderBy(desc(catches.caughtAt))
     .limit(limit);
+}
+
+/**
+ * Os lugares que já apareceram no histórico, com quantas capturas e quantas espécies em cada um.
+ *
+ * O agrupamento por nome equivalente ("Recanto" e "recanto ") é do domínio, não do SQL: a
+ * normalização mexe com acento e pontuação, e o SQLite do aparelho não tem `unaccent`. São
+ * dezenas de linhas por conta — ler e agrupar em memória é mais barato que inventar SQL que não
+ * dá para testar sem emulador. Ver `src/domain/locais.ts`.
+ */
+export async function listPlaces(userId: string): Promise<Local[]> {
+  const linhas = await db
+    .select({
+      placeLabel: catches.placeLabel,
+      speciesId: catches.speciesId,
+      caughtAt: catches.caughtAt,
+    })
+    .from(catches)
+    .where(and(eq(catches.userId, userId), isNull(catches.deletedAt), isNotNull(catches.placeLabel)));
+
+  return agruparLocais(linhas);
+}
+
+/**
+ * Quantas capturas já havia naquele lugar — para saber se esta subiu um grau.
+ *
+ * Conta antes de salvar: assim a tela de registro compara o antes com o depois sem reler o
+ * histórico inteiro (`subiuDeGrau`, em `src/domain/conquistas.ts`).
+ */
+export async function countAtPlace(userId: string, placeLabel: string): Promise<number> {
+  const chave = chaveDeLocal(placeLabel);
+  if (chave.length === 0) return 0;
+  const locais = await listPlaces(userId);
+  return locais.find((l) => l.chave === chave)?.capturas ?? 0;
 }
 
 export async function listCatchesOfSpecies(userId: string, speciesId: string): Promise<CatchRow[]> {

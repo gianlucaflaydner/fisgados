@@ -57,8 +57,23 @@ import {
   sanearSugestoes,
   type Sugestao,
 } from '../src/domain/identificacao.ts';
+import { estimativaDeMedida, sanearMedidaEstimada } from '../src/domain/identificacao.ts';
+import { agruparLocais, chaveDeLocal, sugerirLocais, type Local } from '../src/domain/locais.ts';
+import {
+  conquistaDoLocal,
+  conquistasDeLocal,
+  DEGRAUS_DE_LOCAL,
+  nomeDaConquista,
+  pontosDeLocal,
+  subiuDeGrau,
+} from '../src/domain/conquistas.ts';
 import { CATALOGO as LISTA_FECHADA } from '../supabase/functions/identificar/catalogo.ts';
-import { esquemaDeResposta, montarPrompt, sanearResposta } from '../supabase/functions/identificar/regras.ts';
+import {
+  esquemaDeResposta,
+  montarPrompt,
+  sanearMedida,
+  sanearResposta,
+} from '../supabase/functions/identificar/regras.ts';
 import { PALETA, type Paleta, type Tema } from '../src/theme/cores.ts';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -846,6 +861,200 @@ teste('o registro guarda o que foi mostrado, sem o texto do motivo', () => {
   const r = registroDaSugestao('gemini-x', [sug('traira', 0.83456, 'boca grande')], 'lista');
   assert.deepEqual(r, { v: 1, modelo: 'gemini-x', exibicao: 'lista', sugestoes: [{ speciesId: 'traira', confianca: 0.835 }] });
   assert.equal(porcentagem(0.835), '84%');
+});
+
+// ────────────────────────────────────── estimativa de tamanho pela foto (IA)
+
+const medida = (cmMin: number, cmMax: number, referencia = 'a mão de quem segura', confianca = 0.7) => ({
+  cmMin,
+  cmMax,
+  referencia,
+  confianca,
+});
+
+teste('sem referência na foto não há estimativa de tamanho', () => {
+  assert.equal(sanearMedida(medida(30, 40, '')), null);
+  assert.equal(estimativaDeMedida({ ...medida(30, 40), referencia: '' }).tipo, 'nenhuma');
+  assert.equal(estimativaDeMedida(null).tipo, 'nenhuma');
+});
+
+teste('o servidor recusa medida fora da faixa da RN04 e confiança zerada', () => {
+  assert.equal(sanearMedida(medida(2, 40)), null);
+  assert.equal(sanearMedida(medida(30, 300)), null);
+  assert.equal(sanearMedida(medida(50, 30)), null);
+  assert.equal(sanearMedida(medida(30, 40, 'a vara', 0)), null);
+  assert.equal(sanearMedida('40 cm'), null);
+  assert.deepEqual(sanearMedida(medida(30.44, 40.06, 'a vara', 85)), {
+    cmMin: 30.4,
+    cmMax: 40.1,
+    referencia: 'a vara',
+    confianca: 0.85,
+  });
+});
+
+teste('faixa larga demais não aparece — é chute, não estimativa', () => {
+  assert.equal(estimativaDeMedida(medida(20, 60)).tipo, 'nenhuma');
+  const boa = estimativaDeMedida(medida(30, 55));
+  assert.equal(boa.tipo, 'faixa');
+  if (boa.tipo === 'faixa') assert.equal(boa.sugerido, 43);
+});
+
+teste('confiança baixa derruba a estimativa, como na espécie (RN03)', () => {
+  assert.equal(estimativaDeMedida(medida(30, 40, 'a mão', 0.39)).tipo, 'nenhuma');
+  assert.equal(estimativaDeMedida(medida(30, 40, 'a mão', 0.4)).tipo, 'faixa');
+});
+
+teste('estimativa incompatível com a faixa da espécie some', () => {
+  const traira = getSpecies('traira')!;
+  // Traíra de 1,8 m é erro de leitura da foto, não peixe da vida de alguém.
+  assert.equal(estimativaDeMedida(medida(170, 190), traira).tipo, 'nenhuma');
+  assert.equal(estimativaDeMedida(medida(38, 46), traira).tipo, 'faixa');
+});
+
+teste('o app refaz a conferência do que veio do servidor', () => {
+  assert.deepEqual(sanearMedidaEstimada({ cmMin: 30, cmMax: 40, referencia: ' a mão ', confianca: 2 }), {
+    cmMin: 30,
+    cmMax: 40,
+    referencia: 'a mão',
+    confianca: 1,
+  });
+  assert.equal(sanearMedidaEstimada({ cmMin: 'trinta', cmMax: 40, referencia: 'a mão', confianca: 0.5 }), null);
+  assert.equal(sanearMedidaEstimada(null), null);
+});
+
+teste('o registro guarda se a medida salva veio da estimativa', () => {
+  const est = estimativaDeMedida(medida(40, 46));
+  const aceita = registroDaSugestao('m', [sug('traira', 0.9)], 'lista', { estimativa: est, cmSalvo: 43 });
+  assert.deepEqual(aceita.medida, { cmMin: 40, cmMax: 46, referencia: 'a mão de quem segura' });
+  assert.equal(aceita.medidaAceita, true);
+
+  const digitada = registroDaSugestao('m', [sug('traira', 0.9)], 'lista', { estimativa: est, cmSalvo: 41 });
+  assert.equal(digitada.medidaAceita, false);
+
+  // Sem estimativa na tela, o campo não existe: "não ofereci" é diferente de "ofereci e recusou".
+  const sem = registroDaSugestao('m', [sug('traira', 0.9)], 'lista', {
+    estimativa: { tipo: 'nenhuma' },
+    cmSalvo: 41,
+  });
+  assert.equal('medida' in sem, false);
+  assert.equal(sem.medidaAceita, undefined);
+});
+
+// ─────────────────────────────────────────── pontos de pesca e conquistas
+
+const capturaEm = (local: string | null, speciesId: string | null, caughtAt: string) => ({
+  placeLabel: local,
+  speciesId,
+  caughtAt,
+});
+
+teste('o mesmo lugar escrito de três formas é um lugar só', () => {
+  const locais = agruparLocais([
+    capturaEm('Pesqueiro Recanto', 'tilapia', '2026-09-01T10:00:00.000Z'),
+    capturaEm('pesqueiro recanto', 'traira', '2026-09-08T10:00:00.000Z'),
+    capturaEm('  Pesqueiro  Recanto ', 'tilapia', '2026-09-15T10:00:00.000Z'),
+  ]);
+  assert.equal(locais.length, 1);
+  assert.equal(locais[0]!.capturas, 3);
+  assert.equal(locais[0]!.especies, 2);
+});
+
+teste('a grafia que fica é a da captura mais recente', () => {
+  const locais = agruparLocais([
+    capturaEm('acude do tio', 'tilapia', '2026-09-01T10:00:00.000Z'),
+    capturaEm('Açude do Tio', 'tilapia', '2026-09-20T10:00:00.000Z'),
+  ]);
+  assert.equal(locais[0]!.nome, 'Açude do Tio');
+  assert.equal(chaveDeLocal('Açude do Tio'), chaveDeLocal('acude do tio'));
+});
+
+teste('lugares diferentes não são juntados por palavra em comum', () => {
+  const locais = agruparLocais([
+    capturaEm('Rio Grande', null, '2026-09-01T10:00:00.000Z'),
+    capturaEm('Grande', null, '2026-09-02T10:00:00.000Z'),
+  ]);
+  assert.equal(locais.length, 2);
+});
+
+teste('captura sem local não inventa ponto de pesca', () => {
+  assert.deepEqual(agruparLocais([capturaEm(null, 'traira', '2026-09-01T10:00:00.000Z'), capturaEm('   ', null, '2026-09-02T10:00:00.000Z')]), []);
+});
+
+teste('a lista do formulário começa pelo lugar da última pescaria', () => {
+  const locais = agruparLocais([
+    capturaEm('Rio Paranhana', null, '2026-09-01T10:00:00.000Z'),
+    capturaEm('Rio Paranhana', null, '2026-09-02T10:00:00.000Z'),
+    capturaEm('Lagoa dos Patos', null, '2026-09-19T10:00:00.000Z'),
+  ]);
+  assert.deepEqual(locais.map((l) => l.nome), ['Lagoa dos Patos', 'Rio Paranhana']);
+});
+
+teste('a busca do campo casa com começo de qualquer palavra', () => {
+  const locais = agruparLocais([
+    capturaEm('Pesqueiro Recanto', null, '2026-09-03T10:00:00.000Z'),
+    capturaEm('Represa do Lobo', null, '2026-09-02T10:00:00.000Z'),
+    capturaEm('Rio Paranhana', null, '2026-09-01T10:00:00.000Z'),
+  ]);
+  assert.deepEqual(sugerirLocais(locais, 'rec').map((l) => l.nome), ['Pesqueiro Recanto']);
+  assert.deepEqual(sugerirLocais(locais, 're').map((l) => l.nome), ['Represa do Lobo', 'Pesqueiro Recanto']);
+  // Já escrito por inteiro não é sugestão.
+  assert.deepEqual(sugerirLocais(locais, 'Rio Paranhana'), []);
+  assert.equal(sugerirLocais(locais, '').length, 3);
+});
+
+teste('o grau do lugar sai da contagem de capturas', () => {
+  const local = (capturas: number): Local => ({
+    chave: 'x',
+    nome: 'Pesqueiro Recanto',
+    capturas,
+    especies: 1,
+    ultimaEm: '2026-09-01T10:00:00.000Z',
+  });
+
+  assert.equal(conquistaDoLocal(local(2)).atual, null);
+  assert.equal(conquistaDoLocal(local(2)).faltam, 1);
+  assert.equal(conquistaDoLocal(local(3)).atual?.titulo, 'Iniciante');
+  assert.equal(conquistaDoLocal(local(9)).atual?.titulo, 'Iniciante');
+  assert.equal(conquistaDoLocal(local(10)).atual?.titulo, 'Frequentador');
+  assert.equal(conquistaDoLocal(local(120)).atual?.titulo, 'Lenda do Lugar');
+  assert.equal(conquistaDoLocal(local(120)).proximo, null);
+  assert.equal(conquistaDoLocal(local(120)).faltam, 0);
+});
+
+teste('os degraus sobem em exigência e em pontos, na escala do PRD', () => {
+  assert.deepEqual(DEGRAUS_DE_LOCAL.map((d) => d.pontos), [1, 3, 8, 20, 50]);
+  for (let i = 1; i < DEGRAUS_DE_LOCAL.length; i++) {
+    assert.ok(DEGRAUS_DE_LOCAL[i]!.exige > DEGRAUS_DE_LOCAL[i - 1]!.exige);
+  }
+});
+
+teste('a captura que fecha um degrau é anunciada, e só ela', () => {
+  assert.equal(subiuDeGrau(2)?.titulo, 'Iniciante');
+  assert.equal(subiuDeGrau(3), null);
+  assert.equal(subiuDeGrau(9)?.titulo, 'Frequentador');
+  assert.equal(subiuDeGrau(99)?.titulo, 'Lenda do Lugar');
+  assert.equal(subiuDeGrau(100), null);
+});
+
+teste('o nome da conquista concorda com o lugar', () => {
+  assert.equal(nomeDaConquista('Iniciante', 'Pesqueiro Recanto'), 'Iniciante no Pesqueiro Recanto');
+  assert.equal(nomeDaConquista('Frequentador', 'Lagoa dos Patos'), 'Frequentador na Lagoa dos Patos');
+  assert.equal(nomeDaConquista('De Casa', 'Açude do Tio'), 'De Casa no Açude do Tio');
+  assert.equal(nomeDaConquista('Iniciante', 'Represa do Lobo'), 'Iniciante na Represa do Lobo');
+  // Fora da lista de gênero, "em" — desengonçado, nunca errado.
+  assert.equal(nomeDaConquista('Iniciante', 'Pontal das Pedras'), 'Iniciante no Pontal das Pedras');
+  assert.equal(nomeDaConquista('Iniciante', 'Tramandaí'), 'Iniciante em Tramandaí');
+});
+
+teste('a vitrine começa pelo melhor grau e só o maior grau pontua (RN20)', () => {
+  const locais = agruparLocais([
+    ...Array.from({ length: 12 }, (_, i) => capturaEm('Rio Paranhana', 'traira', `2026-08-${String(i + 1).padStart(2, '0')}T10:00:00.000Z`)),
+    ...Array.from({ length: 4 }, (_, i) => capturaEm('Lagoa dos Patos', 'corvina', `2026-09-${String(i + 1).padStart(2, '0')}T10:00:00.000Z`)),
+  ]);
+  const conquistas = conquistasDeLocal(locais);
+  assert.deepEqual(conquistas.map((c) => c.local), ['Rio Paranhana', 'Lagoa dos Patos']);
+  // Prata (3) + bronze (1): os graus anteriores da mesma linha não somam.
+  assert.equal(pontosDeLocal(conquistas), 4);
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

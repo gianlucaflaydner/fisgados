@@ -23,7 +23,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { CATALOGO } from './catalogo.ts';
-import { esquemaDeResposta, montarPrompt, sanearResposta } from './regras.ts';
+import { esquemaDeResposta, montarPrompt, sanearMedida, sanearResposta } from './regras.ts';
 
 /**
  * Flash-Lite, e não o Flash: no teste de 19/09/2026 o gemini-3.5-flash passou de 25 s e devolveu
@@ -154,6 +154,13 @@ Deno.serve(async (req) => {
     // Resposta que não é JSON vale como "nenhuma sugestão": o seletor manual resolve.
   }
 
+  const medida = bruto && typeof bruto === 'object' ? (bruto as { medida?: unknown }).medida : null;
+
   // `ms` é o tempo só da Gemini: separa lentidão do modelo de lentidão de rede no diagnóstico.
-  return responder(200, { modelo: MODELO, ms: Date.now() - inicio, sugestoes: sanearResposta(bruto, IDS_VALIDOS) });
+  return responder(200, {
+    modelo: MODELO,
+    ms: Date.now() - inicio,
+    sugestoes: sanearResposta(bruto, IDS_VALIDOS),
+    medida: sanearMedida(medida),
+  });
 });

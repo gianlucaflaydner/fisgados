@@ -12,13 +12,13 @@
 import { create } from 'zustand';
 
 import { getPref, setPref } from '../db/queries';
-import type { Sugestao } from '../domain/identificacao';
+import type { MedidaEstimada, Sugestao } from '../domain/identificacao';
 import { identificarFoto, type ResultadoIdentificacao } from '../sync/identificar';
 
 export type EstadoIdentificacao =
   | { estado: 'ociosa' }
   | { estado: 'buscando' }
-  | { estado: 'pronta'; modelo: string; sugestoes: Sugestao[] }
+  | { estado: 'pronta'; modelo: string; sugestoes: Sugestao[]; medida: MedidaEstimada | null }
   /** `avisar` só é verdadeiro na primeira vez do dia em que o limite bate (SDD 6.5). */
   | { estado: 'falhou'; motivo: Extract<ResultadoIdentificacao, { ok: false }>['motivo']; avisar: boolean };
 
@@ -53,7 +53,7 @@ export const useIdentificacao = create<IdentificacaoStore>((set, get) => ({
     void (async () => {
       const r = await identificarFoto(uri);
       const resultado: EstadoIdentificacao = r.ok
-        ? { estado: 'pronta', modelo: r.modelo, sugestoes: r.sugestoes }
+        ? { estado: 'pronta', modelo: r.modelo, sugestoes: r.sugestoes, medida: r.medida }
         : { estado: 'falhou', motivo: r.motivo, avisar: r.motivo === 'limite' && (await primeiroAvisoDoDia()) };
       if (get().uri === uri) set({ resultado });
     })();

@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getSpecies, type Species } from '@/catalog';
+import { CampoLocal } from '@/components/CampoLocal';
 import { Desbloqueio } from '@/components/Desbloqueio';
 import { deleteCatch, getCatch, updateCatch } from '@/db/queries';
 import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
@@ -230,12 +231,10 @@ export default function EditarCaptura() {
           </Campo>
 
           <Campo rotulo="Local — opcional">
-            <TextInput
-              value={edicao.placeLabel}
-              onChangeText={(v) => edicao.set({ placeLabel: v })}
-              placeholder="Pesqueiro Recanto, Rio Paranhana..."
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
+            <CampoLocal
+              valor={edicao.placeLabel}
+              onChange={(v) => edicao.set({ placeLabel: v })}
+              userId={user?.id}
             />
           </Campo>
 

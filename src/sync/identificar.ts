@@ -2,7 +2,12 @@ import { FunctionsHttpError } from '@supabase/supabase-js';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 import { getSpecies } from '../catalog';
-import { sanearSugestoes, type Sugestao } from '../domain/identificacao';
+import {
+  sanearMedidaEstimada,
+  sanearSugestoes,
+  type MedidaEstimada,
+  type Sugestao,
+} from '../domain/identificacao';
 import { supabase } from './cliente';
 
 /**
@@ -13,7 +18,7 @@ import { supabase } from './cliente';
  */
 
 export type ResultadoIdentificacao =
-  | { ok: true; modelo: string; sugestoes: Sugestao[] }
+  | { ok: true; modelo: string; sugestoes: Sugestao[]; medida: MedidaEstimada | null }
   | { ok: false; motivo: 'sem-nuvem' | 'sem-sessao' | 'limite' | 'indisponivel' };
 
 /** 600 × 800: sobra para o modelo ver mancha e boca, e a foto sobe em menos de um segundo no 4G. */
@@ -45,7 +50,11 @@ export async function identificarFoto(uri: string): Promise<ResultadoIdentificac
     const foto = await fotoEmBase64(uri);
     if (!foto) return { ok: false, motivo: 'indisponivel' };
 
-    const { data, error } = await sb.functions.invoke<{ modelo?: unknown; sugestoes?: unknown }>('identificar', {
+    const { data, error } = await sb.functions.invoke<{
+      modelo?: unknown;
+      sugestoes?: unknown;
+      medida?: unknown;
+    }>('identificar', {
       body: { foto },
       timeout: TIMEOUT_MS,
     });
@@ -61,6 +70,7 @@ export async function identificarFoto(uri: string): Promise<ResultadoIdentificac
       ok: true,
       modelo: typeof data?.modelo === 'string' ? data.modelo : 'desconhecido',
       sugestoes: sanearSugestoes(data?.sugestoes, (id) => getSpecies(id) !== undefined),
+      medida: sanearMedidaEstimada(data?.medida),
     };
   } catch {
     // Sem rede, DNS do projeto pausado, timeout: tudo cai aqui, e tudo significa a mesma coisa

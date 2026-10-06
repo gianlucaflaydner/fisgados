@@ -21,8 +21,33 @@ export interface Sugestao {
   motivo: string;
 }
 
+/**
+ * A estimativa de tamanho — e o que ela deliberadamente não é.
+ *
+ * Medir um peixe numa foto, sem saber a distância da lente, é impossível em geral: o mesmo
+ * retângulo de pixels é uma tilápia perto ou um dourado longe. O que torna a conta possível é
+ * haver na foto um objeto de tamanho conhecido — a mão, a vara, o molinete, a régua, a bota.
+ *
+ * Por isso o modelo é obrigado a **nomear a referência que usou**. Sem referência, sem palpite:
+ * uma medida inventada entraria no histórico, viraria recorde pessoal e disputaria o ranking de
+ * maior exemplar com peixes medidos na régua (RN06). O campo de medida continua obrigatório e
+ * continua sendo digitado por quem pescou; isto é um atalho que a pessoa confirma, nada mais.
+ *
+ * O peso **não** é pedido ao modelo. Ele sai de `P = a × C^b`, com os coeficientes do FishBase que
+ * o catálogo já carrega (RN05): dada a espécie e o comprimento, a fórmula é melhor que o olho do
+ * modelo, e é a mesma conta para medida digitada ou estimada.
+ */
+export interface MedidaEstimada {
+  cmMin: number;
+  cmMax: number;
+  /** O objeto de tamanho conhecido que o modelo diz ter usado. Vazio = não estimar. */
+  referencia: string;
+  confianca: number;
+}
+
 export const SUGESTOES_MAX = 3;
 const MOTIVO_MAX = 140;
+const REFERENCIA_MAX = 60;
 
 /**
  * O prompt — SDD 6.2: **nunca** identificar em aberto, sempre escolher dentro da lista.
@@ -47,6 +72,13 @@ export function montarPrompt(lista: readonly EspecieDaLista[]): string {
     'motivo: em português, até 90 caracteres, o traço VISÍVEL NESTA FOTO que sustenta a escolha',
     '(mancha, formato da boca, nadadeira, cor, barbilhão). Não cite traço que não aparece na foto.',
     'Se a foto não mostrar um peixe, ou o peixe não estiver na lista, devolva candidatos vazio.',
+    '',
+    'Em medida, estime o comprimento total do peixe em centímetros, como uma faixa (cmMin a cmMax).',
+    'Só estime se houver na foto um objeto de tamanho conhecido para comparar, e escreva qual em',
+    'referencia: mão, dedo, vara, molinete, régua, trena, bota, isopor, balde, banco do barco.',
+    'Sem objeto de comparação, devolva referencia vazia e confianca 0 — não adivinhe pelo',
+    'enquadramento, que não diz nada sobre distância da câmera.',
+    'A faixa deve ser honesta: se a comparação for grosseira, devolva uma faixa larga.',
     '',
     'id | nome popular | nome científico | observações',
     ...linhas,
@@ -73,8 +105,42 @@ export function esquemaDeResposta(ids: readonly string[]) {
           required: ['speciesId', 'confianca', 'motivo'],
         },
       },
+      medida: {
+        type: 'OBJECT',
+        properties: {
+          cmMin: { type: 'NUMBER' },
+          cmMax: { type: 'NUMBER' },
+          referencia: { type: 'STRING' },
+          confianca: { type: 'NUMBER' },
+        },
+        required: ['cmMin', 'cmMax', 'referencia', 'confianca'],
+      },
     },
-    required: ['candidatos'],
+    required: ['candidatos', 'medida'],
+  };
+}
+
+/**
+ * Valida a estimativa de tamanho. `null` quando não há nada aproveitável.
+ *
+ * Os limites de 5 a 250 cm são os da RN04 — a mesma faixa que o formulário aceita de quem digita.
+ * Fora dela não é estimativa ruim, é leitura errada da foto.
+ */
+export function sanearMedida(bruto: unknown, limites = { min: 5, max: 250 }): MedidaEstimada | null {
+  if (!bruto || typeof bruto !== 'object') return null;
+  const { cmMin, cmMax, referencia, confianca } = bruto as Record<string, unknown>;
+
+  if (typeof referencia !== 'string' || referencia.trim().length === 0) return null;
+  if (typeof cmMin !== 'number' || typeof cmMax !== 'number' || typeof confianca !== 'number') return null;
+  if (![cmMin, cmMax, confianca].every(Number.isFinite)) return null;
+  if (cmMin < limites.min || cmMax > limites.max || cmMax < cmMin) return null;
+  if (confianca <= 0) return null;
+
+  return {
+    cmMin: Math.round(cmMin * 10) / 10,
+    cmMax: Math.round(cmMax * 10) / 10,
+    referencia: referencia.trim().slice(0, REFERENCIA_MAX),
+    confianca: Math.min(confianca > 1 && confianca <= 100 ? confianca / 100 : confianca, 1),
   };
 }
 

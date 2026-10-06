@@ -92,6 +92,12 @@ export default function Home() {
                 <Text className="text-sm font-semibold text-cobalto">Ranking</Text>
               </Pressable>
               <Pressable
+                onPress={() => router.push('/locais')}
+                className="rounded-full border border-borda px-3 py-1.5 active:opacity-60"
+              >
+                <Text className="text-sm font-semibold text-cobalto">Meus pontos</Text>
+              </Pressable>
+              <Pressable
                 onPress={() => router.push('/amigos')}
                 className="rounded-full border border-borda px-3 py-1.5 active:opacity-60"
               >

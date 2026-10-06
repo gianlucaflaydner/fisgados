@@ -120,6 +120,7 @@ export default function RootLayout() {
               options={{ title: 'Qual espécie?', presentation: 'modal' }}
             />
             <Stack.Screen name="creditos" options={{ title: 'Créditos das fotos' }} />
+            <Stack.Screen name="locais" options={{ title: 'Meus pontos de pesca' }} />
             <Stack.Screen name="amigos" options={{ title: 'Amigos' }} />
             <Stack.Screen name="ranking" options={{ title: 'Ranking do grupo' }} />
           </Stack.Protected>
