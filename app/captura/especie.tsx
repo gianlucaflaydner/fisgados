@@ -54,7 +54,7 @@ export default function SeletorEspecie() {
           placeholderTextColor={paleta.suave}
           autoCorrect={false}
           autoCapitalize="none"
-          className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
+          className="h-[54px] rounded-campo border-[1.5px] border-borda bg-campo px-4 font-corpo text-[16px] text-texto"
         />
       </View>
 
@@ -67,10 +67,10 @@ export default function SeletorEspecie() {
           <View>
             <Pressable
               onPress={() => escolher(null)}
-              className="mx-5 mt-4 rounded-2xl border border-dashed border-borda p-4 active:opacity-70"
+              className="mx-5 mt-4 rounded-carta border border-dashed border-borda-forte p-4 active:opacity-70"
             >
-              <Text className="text-base font-semibold text-texto">Não identificado</Text>
-              <Text className="mt-1 text-sm text-suave">
+              <Text className="font-display text-[17px] text-texto">Não identificado</Text>
+              <Text className="mt-1 font-corpo text-[13.5px] leading-[19px] text-suave">
                 Registra no histórico com foto e medida, mas não desbloqueia carta.
               </Text>
             </Pressable>
@@ -79,21 +79,21 @@ export default function SeletorEspecie() {
               onPress={() => router.push('/creditos')}
               className="mx-5 mt-4 items-center py-2 active:opacity-60"
             >
-              <Text className="text-xs text-suave">Fotos de terceiros · ver créditos</Text>
+              <Text className="font-corpo text-[12px] text-apoio">Fotos de terceiros · ver créditos</Text>
             </Pressable>
           </View>
         }
         renderItem={({ item }) => (
           <Pressable
             onPress={() => escolher(item.id)}
-            className="mx-5 mt-2 flex-row items-center rounded-2xl border border-borda bg-superficie p-2.5 active:opacity-70"
+            className="mx-5 mt-2 flex-row items-center rounded-carta border border-borda bg-superficie p-2.5 active:opacity-70"
           >
             <Foto id={item.id} cor={cores[item.rarity]} />
             <View className="ml-3 flex-1">
-              <Text className="text-base font-semibold text-texto" numberOfLines={1}>
+              <Text className="font-display text-[17px] text-texto" numberOfLines={1}>
                 {item.commonName}
               </Text>
-              <Text className="mt-0.5 text-xs italic text-suave" numberOfLines={1}>
+              <Text className="mt-0.5 font-cientifico text-[14px] text-suave" numberOfLines={1}>
                 {item.scientificName}
               </Text>
             </View>
@@ -102,7 +102,7 @@ export default function SeletorEspecie() {
                 className="mr-1.5 h-2 w-2 rounded-full"
                 style={{ backgroundColor: cores[item.rarity] }}
               />
-              <Text className="text-xs" style={{ color: cores[item.rarity] }}>
+              <Text className="font-corpo-forte text-[12px]" style={{ color: cores[item.rarity] }}>
                 {RARITY_LABEL[item.rarity]}
               </Text>
             </View>
@@ -125,7 +125,7 @@ function Foto({ id, cor }: { id: string; cor: string }) {
 
   return (
     <View
-      className="h-14 w-14 overflow-hidden rounded-xl bg-elevado"
+      className="h-14 w-14 overflow-hidden rounded-selo bg-elevado"
       style={{ borderWidth: 1.5, borderColor: cor }}
     >
       {fonte ? <Image source={fonte} className="h-full w-full" resizeMode="cover" /> : null}

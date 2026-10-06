@@ -4,53 +4,61 @@
 
 /*
  * Tokens de cor — dois temas. Espelham `src/theme/cores.ts`, que é a fonte de verdade para as
- * cores entregues por propriedade (ActivityIndicator, placeholderTextColor, Switch, cabeçalho).
- * Um teste em `scripts/test-domain.mts` compara os dois lados a cada `npm test`: dois arquivos
- * com a mesma paleta é justamente o tipo de coisa que desanda em silêncio.
+ * cores entregues por propriedade (ActivityIndicator, placeholderTextColor, Switch, SVG). Um teste
+ * em `scripts/test-domain.mts` compara os dois lados a cada `npm test`: dois arquivos com a mesma
+ * paleta é justamente o tipo de coisa que desanda em silêncio.
  *
  * Os valores são triplas RGB separadas por espaço, e não hexadecimais, para que o Tailwind consiga
  * aplicar modificador de opacidade (`bg-fundo/50`) sobre a variável.
  */
 :root {
-  --cor-fundo: 244 247 255;
+  --cor-fundo: 241 245 241;
   --cor-superficie: 255 255 255;
-  --cor-elevado: 231 238 255;
-  --cor-borda: 210 221 247;
-  --cor-texto: 11 26 61;
-  --cor-suave: 88 106 146;
-  --cor-cobalto: 27 69 216;
-  --cor-destaque: 255 90 46;
-  --cor-destaque-texto: 43 12 2;
-  --cor-perigo: 194 31 73;
+  --cor-elevado: 227 235 229;
+  --cor-campo: 255 255 255;
+  --cor-borda: 210 222 214;
+  --cor-borda-forte: 180 197 188;
+  --cor-texto: 7 20 23;
+  --cor-suave: 72 97 92;
+  --cor-apoio: 88 113 108;
+  --cor-destaque: 255 138 61;
+  --cor-destaque-texto: 28 13 3;
+  --cor-destaque-baixo: 185 83 26;
+  --cor-acao: 164 72 15;
+  --cor-perigo: 179 18 59;
   --cor-comum: 95 124 113;
-  --cor-incomum: 30 138 85;
-  --cor-raro: 112 64 201;
-  --cor-lendario: 168 114 12;
-  --cor-bronze: 161 92 47;
-  --cor-prata: 138 151 165;
-  --cor-ouro: 168 114 12;
-  --cor-platina: 110 143 160;
-  --cor-diamante: 44 127 168;
+  --cor-incomum: 16 107 64;
+  --cor-raro: 20 87 184;
+  --cor-lendario: 138 100 5;
+  --cor-bronze: 140 76 35;
+  --cor-prata: 95 107 117;
+  --cor-ouro: 138 100 5;
+  --cor-platina: 76 111 125;
+  --cor-diamante: 31 94 133;
 }
 
 .dark:root {
-  --cor-fundo: 7 24 39;
-  --cor-superficie: 14 35 52;
-  --cor-elevado: 22 48 70;
-  --cor-borda: 31 64 89;
-  --cor-texto: 232 241 248;
-  --cor-suave: 143 170 192;
-  --cor-cobalto: 91 132 255;
-  --cor-destaque: 255 106 61;
-  --cor-destaque-texto: 10 21 32;
-  --cor-perigo: 255 92 124;
-  --cor-comum: 143 168 160;
-  --cor-incomum: 63 190 126;
-  --cor-raro: 185 140 240;
-  --cor-lendario: 240 190 74;
+  --cor-fundo: 7 20 23;
+  --cor-superficie: 14 34 38;
+  --cor-elevado: 19 41 46;
+  --cor-campo: 11 28 32;
+  --cor-borda: 35 66 72;
+  --cor-borda-forte: 44 80 89;
+  --cor-texto: 238 242 234;
+  --cor-suave: 167 186 181;
+  --cor-apoio: 143 166 161;
+  --cor-destaque: 255 138 61;
+  --cor-destaque-texto: 28 13 3;
+  --cor-destaque-baixo: 185 83 26;
+  --cor-acao: 255 138 61;
+  --cor-perigo: 255 128 137;
+  --cor-comum: 185 198 193;
+  --cor-incomum: 92 211 148;
+  --cor-raro: 88 169 255;
+  --cor-lendario: 244 199 67;
   --cor-bronze: 200 131 79;
   --cor-prata: 195 205 216;
-  --cor-ouro: 240 190 74;
-  --cor-platina: 191 224 236;
-  --cor-diamante: 127 211 240;
+  --cor-ouro: 244 199 67;
+  --cor-platina: 207 228 232;
+  --cor-diamante: 138 182 255;
 }

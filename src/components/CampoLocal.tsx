@@ -63,20 +63,20 @@ export function CampoLocal({ valor, onChange, userId }: Props) {
               <Pressable
                 key={l.chave}
                 onPress={() => onChange(l.nome)}
-                className="flex-row items-center rounded-full border border-borda px-3 py-1.5 active:opacity-60"
+                className="h-9 flex-row items-center rounded-full border border-borda-forte bg-elevado px-3 active:opacity-60"
               >
-                <Text className="text-sm font-semibold text-cobalto">{l.nome}</Text>
-                <Text className="ml-1.5 text-xs text-suave" style={{ fontVariant: ['tabular-nums'] }}>
+                <Text className="font-corpo-forte text-[13px] text-acao">{l.nome}</Text>
+                <Text className="ml-1.5 font-display-medio text-[12px] text-suave" style={{ fontVariant: ['tabular-nums'] }}>
                   {l.capturas}
                 </Text>
-                {c.atual ? <Text className="ml-1 text-xs text-suave">· {c.atual.titulo}</Text> : null}
+                {c.atual ? <Text className="ml-1 font-corpo text-[12px] text-apoio">· {c.atual.titulo}</Text> : null}
               </Pressable>
             );
           })}
         </ScrollView>
       ) : null}
 
-      <Text className="mt-1 text-xs text-suave">
+      <Text className="mt-1 font-corpo text-[12px] leading-[17px] text-apoio">
         A coordenada exata fica só no seu aparelho. Amigos veem apenas este rótulo.
       </Text>
     </>

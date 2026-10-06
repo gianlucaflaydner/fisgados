@@ -1,43 +1,32 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { Alert, Pressable, Text, View } from 'react-native';
 
 import { getSpecies, type Species } from '@/catalog';
-import { CampoLocal } from '@/components/CampoLocal';
 import { Desbloqueio } from '@/components/Desbloqueio';
+import { FormularioDeCaptura } from '@/components/FormularioDeCaptura';
+import { BotaoPrincipal } from '@/components/ui';
 import { deleteCatch, getCatch, updateCatch } from '@/db/queries';
-import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
+import { checkMeasure } from '@/domain/weight';
 import { useEdicao } from '@/stores/edicao';
 import { userIdAtual, useSession } from '@/stores/session';
-import { useCores } from '@/theme';
 
 /**
  * Corrigir ou apagar uma captura registrada — PRD 7.2.
  *
  * Registrar acontece com o peixe se debatendo na mão, de pé, com pressa. Errar a medida ou a
- * espécie é o caso normal, não a exceção, e até agora não havia como consertar: um 420 no lugar
- * de 42 ficava no histórico para sempre e a carta errada abria sem volta.
+ * espécie é o caso normal, não a exceção: um 420 no lugar de 42 não pode ficar no histórico para
+ * sempre, nem a carta errada abrir sem volta.
  *
- * Os campos são os mesmos de `captura/detalhes`, na mesma ordem, de propósito — quem corrige está
- * relendo a tela que preencheu. As duas telas precisam andar juntas: campo novo lá entra aqui.
+ * Os campos são literalmente os mesmos do registro — `FormularioDeCaptura`, o mesmo componente.
+ * Quem corrige está relendo a tela que preencheu.
+ *
+ * Foto e data não se corrigem aqui: a foto é o documento da captura e a data vem dela. Foto errada
+ * é outra captura, e o aviso em cima do formulário diz isso.
  */
 export default function EditarCaptura() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const cores = useCores();
   const user = useSession((s) => s.user);
   const edicao = useEdicao();
 
@@ -78,11 +67,6 @@ export default function EditarCaptura() {
   const medida = Number(edicao.lengthCm.replace(',', '.'));
   const pesoReal = edicao.weightG.trim().length > 0 ? Number(edicao.weightG.replace(',', '.')) : null;
 
-  const pesoEstimado = useMemo(() => {
-    if (!species || !Number.isFinite(medida) || medida <= 0) return null;
-    return estimateWeightG(medida, species);
-  }, [species, medida]);
-
   async function salvar() {
     if (salvando || !edicao.id) return;
 
@@ -116,11 +100,15 @@ export default function EditarCaptura() {
         return;
       }
 
-      useEdicao.getState().reset();
-      router.back();
+      sair();
     } finally {
       setSalvando(false);
     }
+  }
+
+  function sair() {
+    useEdicao.getState().reset();
+    router.back();
   }
 
   function excluir() {
@@ -136,8 +124,7 @@ export default function EditarCaptura() {
           onPress: () => {
             void (async () => {
               await deleteCatch(userIdAtual(), edicao.id!);
-              useEdicao.getState().reset();
-              router.back();
+              sair();
             })();
           },
         },
@@ -152,141 +139,50 @@ export default function EditarCaptura() {
   if (!edicao.id) {
     return (
       <View className="flex-1 items-center justify-center bg-fundo px-8">
-        <Text className="text-center text-base text-suave">Captura não encontrada.</Text>
+        <Text className="text-center font-corpo text-[16px] text-suave">Captura não encontrada.</Text>
       </View>
     );
   }
 
+  if (aberta) {
+    return (
+      <Desbloqueio
+        species={aberta}
+        onFechar={sair}
+        onVerCarta={() => {
+          const especie = aberta.id;
+          useEdicao.getState().reset();
+          router.replace({ pathname: '/album/[especie]', params: { especie } });
+        }}
+      />
+    );
+  }
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-fundo"
-    >
-      {aberta ? (
-        <Desbloqueio
-          species={aberta}
-          onFechar={() => {
-            useEdicao.getState().reset();
-            router.back();
-          }}
-          onVerCarta={() => {
-            const id = aberta.id;
-            useEdicao.getState().reset();
-            router.replace({ pathname: '/album/[especie]', params: { especie: id } });
-          }}
-        />
-      ) : null}
-      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 160 }}>
-        {foto ? (
-          <Image source={{ uri: foto }} className="h-56 w-full bg-elevado" resizeMode="cover" />
-        ) : null}
-
-        <View className="px-5 pt-4">
-          {caughtAt ? (
-            <Text className="text-xs text-suave">{dataLonga(new Date(caughtAt))}</Text>
-          ) : null}
-          <Text className="mt-1 text-xs text-suave">
-            A foto e a data não mudam aqui — registre outra captura se a foto estiver errada.
-          </Text>
-        </View>
-
-        <View className="px-5 pt-1">
-          <Campo rotulo="Espécie">
-            <Pressable
-              onPress={() => router.push({ pathname: '/captura/especie', params: { alvo: 'edicao' } })}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 active:opacity-70"
-            >
-              <Text className={species ? 'text-base text-texto' : 'text-base text-suave'}>
-                {species ? species.commonName : 'Não identificado'}
-              </Text>
-              {species ? (
-                <Text className="mt-0.5 text-xs italic text-suave">{species.scientificName}</Text>
-              ) : null}
-            </Pressable>
-          </Campo>
-
-          <Campo rotulo={`${species ? measureLabel(species) : 'Comprimento'} (cm)`}>
-            <TextInput
-              value={edicao.lengthCm}
-              onChangeText={(v) => edicao.set({ lengthCm: v })}
-              keyboardType="decimal-pad"
-              placeholder="0"
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-2xl font-semibold text-texto"
-            />
-            {pesoEstimado !== null ? (
-              <Text className="mt-2 text-sm text-suave">{weightLabel(null, pesoEstimado)}</Text>
-            ) : null}
-          </Campo>
-
-          <Campo rotulo="Peso real (kg) — opcional">
-            <TextInput
-              value={edicao.weightG}
-              onChangeText={(v) => edicao.set({ weightG: v })}
-              keyboardType="decimal-pad"
-              placeholder="0,0"
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
-            />
-          </Campo>
-
-          <Campo rotulo="Local — opcional">
-            <CampoLocal
-              valor={edicao.placeLabel}
-              onChange={(v) => edicao.set({ placeLabel: v })}
-              userId={user?.id}
-            />
-          </Campo>
-
-          <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-borda bg-superficie px-4 py-3">
-            <Text className="text-base text-texto">Pescado e solto</Text>
-            <Switch
-              value={edicao.released}
-              onValueChange={(v) => edicao.set({ released: v })}
-              trackColor={{ true: cores.destaque, false: cores.borda }}
-              thumbColor={cores.superficie}
-            />
-          </View>
-
-          <Pressable onPress={excluir} className="mt-8 items-center py-3 active:opacity-70">
-            <Text className="text-sm font-semibold text-perigo">Excluir captura</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-
-      <View
-        className="absolute inset-x-0 bottom-0 border-t border-borda bg-fundo px-5 pt-3"
-        style={{ paddingBottom: insets.bottom + 12 }}
-      >
-        <Pressable
-          onPress={salvar}
-          disabled={salvando}
-          className="items-center rounded-2xl bg-destaque py-4 active:opacity-80"
-        >
-          <Text className="text-base font-bold text-destaque-texto">
-            {salvando ? 'Salvando...' : 'Salvar alterações'}
-          </Text>
+    <FormularioDeCaptura
+      titulo="Corrigir captura"
+      fotoUri={foto}
+      quando={caughtAt ? new Date(caughtAt) : null}
+      species={species}
+      lengthCm={edicao.lengthCm}
+      weightG={edicao.weightG}
+      placeLabel={edicao.placeLabel}
+      released={edicao.released}
+      userId={user?.id}
+      onVoltar={sair}
+      onEscolherEspecie={() => router.push({ pathname: '/captura/especie', params: { alvo: 'edicao' } })}
+      onMudar={(patch) => edicao.set(patch)}
+      sobreAFoto={
+        <Text className="font-corpo text-[13px] leading-[18px] text-apoio">
+          Foto e data ficam como estão. Se a foto estiver errada, registre outra captura.
+        </Text>
+      }
+      acoes={<BotaoPrincipal titulo="Salvar alterações" carregando={salvando} onPress={() => void salvar()} />}
+      rodape={
+        <Pressable onPress={excluir} className="mt-2 self-start py-2 active:opacity-60">
+          <Text className="font-corpo-forte text-[15px] text-perigo">Excluir captura</Text>
         </Pressable>
-      </View>
-    </KeyboardAvoidingView>
-  );
-}
-
-function dataLonga(d: Date): string {
-  return d.toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function Campo({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
-  return (
-    <View className="mt-5">
-      <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-suave">{rotulo}</Text>
-      {children}
-    </View>
+      }
+    />
   );
 }

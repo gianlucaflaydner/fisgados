@@ -205,9 +205,9 @@ export default function Enquadrar() {
   if (!bruta) {
     return (
       <View className="flex-1 items-center justify-center bg-black px-8">
-        <Text className="text-center text-base text-white">Nenhuma foto para enquadrar.</Text>
+        <Text className="text-center font-corpo text-[16px] text-white">Nenhuma foto para enquadrar.</Text>
         <Pressable onPress={() => router.back()} className="mt-6 px-6 py-3 active:opacity-70">
-          <Text className="font-bold text-white">Voltar</Text>
+          <Text className="font-corpo-negrito text-[15px] text-white">Voltar</Text>
         </Pressable>
       </View>
     );
@@ -232,7 +232,7 @@ export default function Enquadrar() {
           accessibilityLabel="Voltar para escolher outra foto"
           className="active:opacity-60"
         >
-          <Text className="text-sm font-semibold text-white">‹ Voltar</Text>
+          <Text className="font-corpo-forte text-[14px] text-white">‹ Voltar</Text>
         </Pressable>
 
         {origem === 'galeria' ? (
@@ -245,7 +245,7 @@ export default function Enquadrar() {
             className="flex-row items-center active:opacity-60"
           >
             {trocando ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
-            <Text className="ml-2 text-sm font-semibold text-white">Escolher outra</Text>
+            <Text className="ml-2 font-corpo-forte text-[14px] text-white">Escolher outra</Text>
           </Pressable>
         ) : null}
       </View>
@@ -304,7 +304,7 @@ export default function Enquadrar() {
           </View>
         )}
 
-        <Text className="absolute inset-x-0 bottom-3 text-center text-xs font-semibold text-white/80">
+        <Text className="absolute inset-x-0 bottom-3 text-center font-corpo-forte text-[12px] text-white/80">
           Assim a carta vai ficar
         </Text>
       </View>
@@ -314,22 +314,22 @@ export default function Enquadrar() {
         style={{ paddingBottom: insets.bottom + 16 }}
       >
         <Pressable onPress={girar} disabled={ocupado} hitSlop={10} className="active:opacity-60">
-          <Text className="text-sm font-semibold text-white">Girar</Text>
+          <Text className="font-corpo-forte text-[14px] text-white">Girar</Text>
         </Pressable>
 
         <Pressable onPress={reposicionar} disabled={ocupado} hitSlop={10} className="active:opacity-60">
-          <Text className="text-sm font-semibold text-white/60">Reenquadrar</Text>
+          <Text className="font-corpo-forte text-[14px] text-white/60">Reenquadrar</Text>
         </Pressable>
 
         <Pressable
           onPress={usar}
           disabled={ocupado || !pronto}
-          className="rounded-2xl bg-destaque px-6 py-3 active:opacity-80"
+          className="rounded-botao bg-destaque px-7 py-3.5 active:opacity-80"
         >
           {salvando ? (
             <ActivityIndicator color="#0A1520" />
           ) : (
-            <Text className="text-sm font-bold text-destaque-texto">Usar foto</Text>
+            <Text className="font-corpo-negrito text-[15px] text-destaque-texto">Usar foto</Text>
           )}
         </Pressable>
       </View>

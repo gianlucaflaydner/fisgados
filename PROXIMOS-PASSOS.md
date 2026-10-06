@@ -1,6 +1,6 @@
 # Onde paramos e o que vem a seguir
 
-Atualizado em 19/09/2026.
+Atualizado em 06/10/2026.
 
 ## Retomar em outro PC
 
@@ -55,10 +55,20 @@ Atualizado em 19/09/2026.
 - ⬜ Não feito: sugerir depois uma captura registrada sem sinal (PRD 6.1). Hoje, sem rede, só o
   seletor manual.
 
+## Redesenho (06/10/2026)
+
+O layout todo foi reconstruído sobre o style guide "Álbum de águas profundas" do canvas de design:
+paleta nova nos dois temas, três fontes (Bricolage Grotesque, Instrument Sans, Instrument Serif),
+peças compartilhadas em `src/components/ui.tsx`, cartas redesenhadas e **navegação por abas** com
+o botão de registrar no meio da barra inferior. O guia desenhou só o tema escuro; o claro foi
+refeito a partir dele. Detalhes no README, seção "O desenho".
+
 ## Próximo passo
 
 1. **Testar no celular.** Rode `npx expo start -c` e:
+   - veja o layout novo: abas embaixo, cartão do álbum na home, cartas com moldura de raridade;
    - registre uma captura e veja as sugestões aparecerem embaixo de "Espécie";
+   - troque o tema (botão da lua, na home) e confira o Papel no claro;
    - com uma segunda conta (outro celular), passe o código de convite em Amigos e confira o Ranking.
 2. **Limpeza:** apague em *Authentication → Users* os usuários de teste `@fisgados.app`
    (`ana-`, `bia-`, `caio-`, `ia-`, `ia-local-`...).
@@ -96,8 +106,8 @@ Secrets* no painel e **não** vai no `.env`.
 
 ## Dívidas técnicas conhecidas
 
-- `app/captura/detalhes.tsx` e `app/captura/[id].tsx` têm o mesmo formulário duplicado. Vale
-  extrair um componente antes de acrescentar qualquer campo novo.
+- O tema claro (Papel) foi refeito a partir do guia, que só desenhou o escuro. Vale conferir no
+  sol se os tons de papel ficaram bons — os contrastes passam no teste, mas o olho decide.
 - O fuso horário original da captura não é salvo. O ranking "no mês" usa o fuso do aparelho de
   quem olha. Vale gravar o fuso junto quando chegar a Fase 5.
 

@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BotaoPrincipal, BotaoSecundario, BotaoTexto, Rotulo, TituloDaTela } from '@/components/ui';
 import { TAMANHO_CODIGO } from '@/domain/convite';
 import { useSession } from '@/stores/session';
 import { aceitarConvite, listarAmigos, removerAmigo, type Amigo } from '@/sync/amigos';
@@ -28,11 +29,15 @@ import { useCores } from '@/theme';
  *
  * O código aparece grande e espaçado porque vai ser lido em voz alta, na beira do açude, para
  * alguém digitar no próprio celular.
+ *
+ * Sair da conta mora no fim desta tela. Era um "Sair" no cabeçalho de toda tela, que é onde se
+ * aperta por engano; aqui fica junto do que é de conta — e com o aviso de que o histórico fica.
  */
 export default function Amigos() {
   const insets = useSafeAreaInsets();
   const cores = useCores();
   const user = useSession((s) => s.user);
+  const encerrar = useSession((s) => s.encerrar);
 
   const [amigos, setAmigos] = useState<Amigo[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -108,41 +113,43 @@ export default function Amigos() {
     );
   }
 
+  function confirmarSaida() {
+    Alert.alert('Sair da conta?', 'Suas capturas continuam guardadas neste aparelho.', [
+      { text: 'Ficar', style: 'cancel' },
+      { text: 'Sair', style: 'destructive', onPress: () => void encerrar() },
+    ]);
+  }
+
   const cabecalho = (
-    <View className="px-5 pt-4">
-      <View className="rounded-2xl border border-borda bg-superficie p-5">
-        <Text className="text-xs font-semibold uppercase tracking-wide text-suave">Seu código</Text>
+    <View className="gap-4 px-5" style={{ paddingTop: insets.top + 12 }}>
+      <TituloDaTela acima="Quem pesca com você">Amigos</TituloDaTela>
+
+      <View className="gap-3 rounded-painel border border-borda bg-superficie p-5">
+        <Rotulo>Seu código</Rotulo>
         {user?.codigoConvite ? (
           <>
             <Text
               selectable
-              className="mt-2 text-4xl font-extrabold text-cobalto"
+              className="font-display text-[40px] leading-[42px] text-acao"
               style={{ letterSpacing: 6, fontVariant: ['tabular-nums'] }}
             >
               {user.codigoConvite}
             </Text>
-            <Text className="mt-2 text-sm leading-5 text-suave">
+            <Text className="font-corpo text-[14px] leading-5 text-suave">
               Quem digitar este código entra no seu grupo, e vocês passam a ver as capturas um do
               outro. A localização exata continua só no aparelho de cada um.
             </Text>
-            <Pressable
-              onPress={() => void enviarConvite()}
-              className="mt-4 items-center rounded-2xl bg-destaque py-3 active:opacity-80"
-            >
-              <Text className="text-base font-bold text-destaque-texto">Enviar convite</Text>
-            </Pressable>
+            <BotaoPrincipal titulo="Enviar convite" icone="compartilhar" onPress={() => void enviarConvite()} />
           </>
         ) : (
-          <Text className="mt-2 text-sm leading-5 text-suave">
+          <Text className="font-corpo text-[14px] leading-5 text-suave">
             Seu código aparece quando o app conseguir falar com o servidor.
           </Text>
         )}
       </View>
 
-      <View className="mt-4 rounded-2xl border border-borda bg-superficie p-5">
-        <Text className="text-xs font-semibold uppercase tracking-wide text-suave">
-          Recebeu um código?
-        </Text>
+      <View className="gap-3 rounded-painel border border-borda bg-superficie p-5">
+        <Rotulo>Recebeu um código?</Rotulo>
         <TextInput
           value={codigo}
           onChangeText={(v) => {
@@ -150,65 +157,85 @@ export default function Amigos() {
             setErroCodigo(null);
           }}
           placeholder="ABC234"
-          placeholderTextColor={cores.suave}
+          placeholderTextColor={cores.apoio}
           autoCapitalize="characters"
           autoCorrect={false}
           maxLength={TAMANHO_CODIGO + 2}
           onSubmitEditing={() => void entrar()}
           returnKeyType="go"
-          className="mt-3 rounded-2xl border border-borda bg-fundo px-4 py-3 text-2xl font-bold text-texto"
-          style={{ letterSpacing: 4 }}
+          className="rounded-campo px-4 py-3 font-display text-[28px] text-texto"
+          style={{ letterSpacing: 5, backgroundColor: cores.campo, borderWidth: 1.5, borderColor: cores.borda }}
         />
-        {erroCodigo ? <Text className="mt-2 text-sm text-perigo">{erroCodigo}</Text> : null}
-        <Pressable
-          onPress={() => void entrar()}
-          disabled={entrando || codigo.trim().length === 0}
-          className="mt-3 items-center rounded-2xl border border-cobalto py-3 active:opacity-70"
-        >
-          {entrando ? (
-            <ActivityIndicator color={cores.cobalto} />
-          ) : (
-            <Text className="text-base font-semibold text-cobalto">Entrar no grupo</Text>
-          )}
-        </Pressable>
+        {erroCodigo ? <Text className="font-corpo text-[13px] text-perigo">{erroCodigo}</Text> : null}
+        {entrando ? (
+          <ActivityIndicator color={cores.destaque} />
+        ) : (
+          <BotaoSecundario
+            titulo="Entrar no grupo"
+            largura="cheia"
+            desabilitado={codigo.trim().length === 0}
+            onPress={() => void entrar()}
+          />
+        )}
       </View>
 
-      <Text className="mb-1 mt-6 text-xs font-semibold uppercase tracking-wide text-suave">
-        No seu grupo{amigos.length > 0 ? ` · ${amigos.length}` : ''}
-      </Text>
-      {erroLista ? <Text className="text-sm text-perigo">{erroLista}</Text> : null}
+      <View className="mt-1">
+        <Rotulo>{`No seu grupo${amigos.length > 0 ? ` · ${amigos.length}` : ''}`}</Rotulo>
+        {erroLista ? <Text className="mt-2 font-corpo text-[13px] text-perigo">{erroLista}</Text> : null}
+      </View>
     </View>
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-fundo"
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1 bg-fundo">
       <FlatList
         data={amigos}
         keyExtractor={(a) => a.id}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
         ListHeaderComponent={cabecalho}
         ListEmptyComponent={
           carregando ? (
-            <ActivityIndicator className="mt-4" color={cores.cobalto} />
+            <ActivityIndicator className="mt-4" color={cores.destaque} />
           ) : erroLista ? null : (
-            <Text className="mx-5 mt-2 text-sm leading-5 text-suave">
+            <Text className="mx-5 mt-2 font-corpo text-[14px] leading-5 text-suave">
               Ninguém ainda. Envie seu código para quem pesca com você.
             </Text>
           )
         }
+        ListFooterComponent={
+          <View className="mx-5 mt-8 items-start gap-1 border-t border-borda pt-5">
+            <BotaoTexto titulo="Sair da conta" onPress={confirmarSaida} />
+            <Text className="font-corpo text-[12.5px] leading-[18px] text-apoio">
+              O histórico fica neste aparelho. Entrar de novo traz tudo de volta.
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => (
-          <View className="mx-5 mt-2 flex-row items-center justify-between rounded-2xl border border-borda bg-superficie px-4 py-3">
-            <Text className="text-base font-semibold text-texto">{item.nome}</Text>
-            <Pressable onPress={() => confirmarRemocao(item)} hitSlop={8} className="active:opacity-60">
-              <Text className="text-sm text-suave">Remover</Text>
+          <View className="mx-5 mt-2 flex-row items-center gap-3 rounded-carta border border-borda bg-superficie px-4 py-3">
+            <View
+              className="h-10 w-10 items-center justify-center rounded-full"
+              style={{ backgroundColor: cores.elevado, borderWidth: 2, borderColor: cores.bordaForte }}
+            >
+              <Text className="font-display text-[14px] text-texto">{iniciais(item.nome)}</Text>
+            </View>
+            <Text className="flex-1 font-display-medio text-[17px] text-texto" numberOfLines={1}>
+              {item.nome}
+            </Text>
+            <Pressable onPress={() => confirmarRemocao(item)} hitSlop={10} className="py-1 active:opacity-60">
+              <Text className="font-corpo-forte text-[13px] text-suave">Remover</Text>
             </Pressable>
           </View>
         )}
       />
     </KeyboardAvoidingView>
   );
+}
+
+/** Duas letras para o avatar: a primeira de cada palavra, ou as duas primeiras do nome único. */
+export function iniciais(nome: string): string {
+  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+  if (partes.length === 1) return partes[0]!.slice(0, 2).toUpperCase();
+  return (partes[0]![0]! + partes[partes.length - 1]![0]!).toUpperCase();
 }

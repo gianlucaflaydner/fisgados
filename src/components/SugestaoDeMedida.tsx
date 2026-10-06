@@ -25,24 +25,24 @@ export function SugestaoDeMedida({ estimativa, valorAtual, onUsar }: Props) {
   if (Number(valorAtual.replace(',', '.')) === estimativa.sugerido) return null;
 
   return (
-    <View className="mt-2 rounded-2xl border border-dashed border-borda p-3">
-      <Text className="text-sm leading-5 text-suave">
+    <View className="mt-2 rounded-carta border border-dashed border-borda-forte p-3">
+      <Text className="font-corpo text-[13.5px] leading-[19px] text-suave">
         Pela foto, algo entre{' '}
-        <Text className="font-semibold text-texto">
+        <Text className="font-corpo-negrito text-texto">
           {formatar(estimativa.cmMin)} e {formatar(estimativa.cmMax)} cm
         </Text>
         , comparando com {estimativa.referencia}.
       </Text>
       <View className="mt-2 flex-row items-center justify-between">
-        <Text className="flex-1 pr-2 text-xs leading-4 text-suave">
+        <Text className="flex-1 pr-2 font-corpo text-[12px] leading-[17px] text-apoio">
           Estimativa, não medida. Se tiver régua ou trena, ela ganha.
         </Text>
         <Pressable
           onPress={() => onUsar(estimativa.sugerido)}
           accessibilityRole="button"
-          className="rounded-full bg-elevado px-3 py-1.5 active:opacity-70"
+          className="h-9 justify-center rounded-full border border-borda-forte bg-elevado px-3 active:opacity-70"
         >
-          <Text className="text-sm font-bold text-cobalto" style={{ fontVariant: ['tabular-nums'] }}>
+          <Text className="font-display text-[14px] text-acao" style={{ fontVariant: ['tabular-nums'] }}>
             Usar {estimativa.sugerido} cm
           </Text>
         </Pressable>

@@ -396,9 +396,13 @@ teste('o texto se lê nos dois temas, no sol e na madrugada', () => {
   const pares: Array<[keyof Paleta, keyof Paleta, number]> = [
     ['texto', 'fundo', 7],
     ['texto', 'superficie', 7],
+    ['texto', 'campo', 7],
     ['suave', 'fundo', 4.5],
     ['suave', 'superficie', 4.5],
-    ['cobalto', 'fundo', 4.5],
+    ['apoio', 'fundo', 4.5],
+    // A isca como texto: é ela que marca link e número do contador.
+    ['acao', 'fundo', 4.5],
+    ['acao', 'superficie', 4.5],
     ['perigo', 'fundo', 4.5],
     ['destaqueTexto', 'destaque', 4.5],
   ];
@@ -411,6 +415,16 @@ teste('o texto se lê nos dois temas, no sol e na madrugada', () => {
         `${tema}: ${frente} sobre ${fundo} dá ${r.toFixed(2)}:1, abaixo de ${minimo}:1`,
       );
     }
+  }
+});
+
+teste('o degrau do botão principal é mais escuro que a isca, nos dois temas', () => {
+  // O "degrau" é a sombra sólida de 6 px embaixo do botão. Não tem texto em cima: o que ele
+  // precisa é parecer profundidade. Mais claro que a isca, o botão pareceria flutuar de cabeça
+  // para baixo.
+  for (const tema of ['claro', 'escuro'] as const) {
+    const p = PALETA[tema];
+    assert.ok(luminancia(p.destaqueBaixo) < luminancia(p.destaque), `${tema}: degrau não é mais escuro`);
   }
 });
 

@@ -1,47 +1,47 @@
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Text, View } from 'react-native';
 
 import { getSpecies, type Species } from '@/catalog';
-import { CampoLocal } from '@/components/CampoLocal';
 import { Desbloqueio } from '@/components/Desbloqueio';
+import { FormularioDeCaptura } from '@/components/FormularioDeCaptura';
 import { SugestaoDeMedida } from '@/components/SugestaoDeMedida';
 import { SugestoesIA } from '@/components/SugestoesIA';
+import { BotaoPrincipal, BotaoTexto } from '@/components/ui';
 import { countAtPlace, saveCatch } from '@/db/queries';
 import { nomeDaConquista, subiuDeGrau } from '@/domain/conquistas';
-import {
-  aceitouPrimeira,
-  apresentar,
-  estimativaDeMedida,
-  registroDaSugestao,
-} from '@/domain/identificacao';
-import { checkMeasure, estimateWeightG, measureLabel, weightLabel } from '@/domain/weight';
+import { aceitouPrimeira, apresentar, estimativaDeMedida, registroDaSugestao } from '@/domain/identificacao';
+import { checkMeasure } from '@/domain/weight';
 import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
 import { useIdentificacao } from '@/stores/identificacao';
 import { userIdAtual } from '@/stores/session';
-import { useCores } from '@/theme';
 
+/**
+ * Registrar a captura — o fim do fluxo de 30 segundos do PRD.
+ *
+ * Os campos vivem em `FormularioDeCaptura`, compartilhado com a tela de correção. Aqui ficam só
+ * as decisões do registro: GPS silencioso, trocar a foto, salvar, desbloqueio e conquista de
+ * local.
+ */
 export default function Detalhes() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const draft = useDraft();
-  const cores = useCores();
   const [salvando, setSalvando] = useState(false);
   const [trocandoFoto, setTrocandoFoto] = useState(false);
+
+  // A cena de desbloqueio segura a navegação: sair antes de mostrá-la desperdiçaria o único
+  // momento de recompensa do app.
+  const [aberta, setAberta] = useState<{
+    species: Species;
+    trofeu: boolean;
+    /** Conquista de local a anunciar depois que a cena de desbloqueio fechar. */
+    conquista: string | null;
+  } | null>(null);
+
+  const species = draft.speciesId ? getSpecies(draft.speciesId) : undefined;
+  const medida = Number(draft.lengthCm.replace(',', '.'));
 
   /**
    * Trocar a foto sem perder o resto do formulário.
@@ -73,17 +73,6 @@ export default function Detalhes() {
       setTrocandoFoto(false);
     }
   }
-  // A cena de desbloqueio segura a navegação: sair antes de mostrá-la desperdiçaria o único
-  // momento de recompensa do app.
-  const [aberta, setAberta] = useState<{
-    species: Species;
-    trofeu: boolean;
-    /** Conquista de local a anunciar depois que a cena de desbloqueio fechar. */
-    conquista: string | null;
-  } | null>(null);
-
-  const species = draft.speciesId ? getSpecies(draft.speciesId) : undefined;
-  const medida = Number(draft.lengthCm.replace(',', '.'));
 
   /*
    * GPS em segundo plano, sob demanda e silencioso (F06 e requisito de bateria).
@@ -111,13 +100,6 @@ export default function Detalhes() {
     };
   }, [draft.origemFoto]);
 
-  const pesoEstimado = useMemo(() => {
-    if (!species || !Number.isFinite(medida) || medida <= 0) return null;
-    return estimateWeightG(medida, species);
-  }, [species, medida]);
-
-  const pesoReal = draft.weightG.trim().length > 0 ? Number(draft.weightG.replace(',', '.')) : null;
-
   /*
    * A estimativa de tamanho da IA, filtrada pela espécie escolhida quando já há uma: o catálogo
    * sabe a faixa de cada peixe, e dourado de 8 cm é erro de leitura da foto, não captura.
@@ -127,6 +109,8 @@ export default function Detalhes() {
     if (!ia || ia.estado !== 'pronta') return { tipo: 'nenhuma' } as const;
     return estimativaDeMedida(ia.medida, species ?? undefined);
   }, [ia, species]);
+
+  const pesoReal = draft.weightG.trim().length > 0 ? Number(draft.weightG.replace(',', '.')) : null;
 
   async function salvar() {
     if (salvando) return;
@@ -180,11 +164,11 @@ export default function Detalhes() {
         photoLocal: draft.photoUri,
         lat: draft.lat,
         lng: draft.lng,
-        placeLabel: draft.placeLabel.trim() || null,
+        placeLabel: local || null,
         released: draft.released,
         caughtAt: draft.caughtAt,
         offlineOrigin: false,
-        });
+      });
 
       // Subiu de grau naquele lugar? É o reconhecimento de quem pesca sempre no mesmo canto —
       // justamente quem o álbum, que premia variedade, nunca premia.
@@ -219,178 +203,74 @@ export default function Detalhes() {
     router.replace('/');
   }
 
+  if (aberta) {
+    return (
+      <Desbloqueio
+        species={aberta.species}
+        trofeu={aberta.trofeu}
+        onFechar={() => {
+          if (aberta.conquista) {
+            Alert.alert('Conquista no seu ponto', aberta.conquista, [{ text: 'Boa!', onPress: concluir }]);
+            return;
+          }
+          concluir();
+        }}
+        onVerCarta={() => {
+          const id = aberta.species.id;
+          useDraft.getState().reset();
+          useIdentificacao.getState().limpar();
+          router.dismissAll();
+          router.replace({ pathname: '/album/[especie]', params: { especie: id } });
+        }}
+      />
+    );
+  }
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-fundo"
-    >
-      {aberta ? (
-        <Desbloqueio
-          species={aberta.species}
-          trofeu={aberta.trofeu}
-          onFechar={() => {
-            if (aberta.conquista) {
-              Alert.alert('Conquista no seu ponto', aberta.conquista, [{ text: 'Boa!', onPress: concluir }]);
-              return;
-            }
-            concluir();
-          }}
-          onVerCarta={() => {
-            const id = aberta.species.id;
-            useDraft.getState().reset();
-            router.dismissAll();
-            router.replace({ pathname: '/album/[especie]', params: { especie: id } });
-          }}
+    <FormularioDeCaptura
+      titulo="Registrar captura"
+      fotoUri={draft.photoUri}
+      quando={draft.caughtAt}
+      species={species}
+      lengthCm={draft.lengthCm}
+      weightG={draft.weightG}
+      placeLabel={draft.placeLabel}
+      released={draft.released}
+      userId={userIdAtual()}
+      onVoltar={trocarFoto}
+      onEscolherEspecie={() => router.push('/captura/especie')}
+      onMudar={(patch) => draft.set(patch)}
+      sobreAFoto={
+        <View className="flex-row items-center justify-between">
+          <Text className="font-corpo text-[13px] text-apoio">
+            {draft.origemFoto === 'galeria' ? 'Foto da galeria' : 'Foto de agora'}
+          </Text>
+          <BotaoTexto titulo={trocandoFoto ? 'Abrindo a galeria...' : 'Trocar foto'} onPress={trocarFoto} />
+        </View>
+      }
+      sugestaoDeEspecie={
+        <SugestoesIA
+          photoUri={draft.photoUri}
+          escolhida={draft.speciesId}
+          onEscolher={(id) => draft.set({ speciesId: id })}
+          onAbrirLista={() => router.push('/captura/especie')}
         />
-      ) : null}
-      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}>
-        {/*
-          A prévia respeita o 3:4 do enquadramento. Uma faixa "cover" de largura cheia recortaria
-          de novo o que a pessoa acabou de enquadrar — e o peixe sairia pela metade outra vez.
-        */}
-        {draft.photoUri ? (
-          <View className="items-center pt-4">
-            <Image
-              source={{ uri: draft.photoUri }}
-              style={{ aspectRatio: 3 / 4, height: 240 }}
-              className="rounded-2xl bg-elevado"
-              resizeMode="cover"
-            />
-            <Pressable
-              onPress={trocarFoto}
-              disabled={salvando || trocandoFoto}
-              hitSlop={8}
-              accessibilityRole="button"
-              className="mt-3 rounded-full border border-borda px-4 py-1.5 active:opacity-60"
-            >
-              <Text className="text-sm font-semibold text-cobalto">
-                {trocandoFoto ? 'Abrindo a galeria...' : 'Trocar foto'}
-              </Text>
-            </Pressable>
-          </View>
-        ) : null}
-
-        <View className="px-5 pt-4">
-          <Text className="text-xs text-suave">
-            {dataLonga(draft.caughtAt)}
-            {draft.origemFoto === 'galeria' ? ' · foto da galeria' : ''}
-          </Text>
-        </View>
-
-        <View className="px-5 pt-1">
-          <Campo rotulo="Espécie">
-            <Pressable
-              onPress={() => router.push('/captura/especie')}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 active:opacity-70"
-            >
-              <Text className={species ? 'text-base text-texto' : 'text-base text-suave'}>
-                {species ? species.commonName : draft.speciesId === null && draft.lengthCm ? 'Não identificado' : 'Escolher espécie'}
-              </Text>
-              {species ? (
-                <Text className="mt-0.5 text-xs italic text-suave">{species.scientificName}</Text>
-              ) : null}
-            </Pressable>
-            <SugestoesIA
-              photoUri={draft.photoUri}
-              escolhida={draft.speciesId}
-              onEscolher={(id) => draft.set({ speciesId: id })}
-              onAbrirLista={() => router.push('/captura/especie')}
-            />
-          </Campo>
-
-          <Campo rotulo={`${species ? measureLabel(species) : 'Comprimento'} (cm)`}>
-            <TextInput
-              value={draft.lengthCm}
-              onChangeText={(v) => draft.set({ lengthCm: v })}
-              keyboardType="decimal-pad"
-              placeholder="0"
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-2xl font-semibold text-texto"
-            />
-            {pesoEstimado !== null ? (
-              <Text className="mt-2 text-sm text-suave">{weightLabel(null, pesoEstimado)}</Text>
-            ) : species && !species.lengthWeight ? (
-              <Text className="mt-2 text-sm text-suave">
-                Sem estimativa de peso para esta espécie — informe o peso real se quiser registrar.
-              </Text>
-            ) : null}
-            {/*
-              A estimativa fica embaixo do campo e do peso: o peso aparece sozinho a partir do que
-              estiver digitado, então aceitar a estimativa já mostra o quilo estimado na linha de
-              cima — sem pedir nada a mais de quem está com o peixe na mão.
-            */}
-            <SugestaoDeMedida
-              estimativa={estimativa}
-              valorAtual={draft.lengthCm}
-              onUsar={(cm) => draft.set({ lengthCm: String(cm) })}
-            />
-          </Campo>
-
-          <Campo rotulo="Peso real (kg) — opcional">
-            <TextInput
-              value={draft.weightG}
-              onChangeText={(v) => draft.set({ weightG: v })}
-              keyboardType="decimal-pad"
-              placeholder="0,0"
-              placeholderTextColor={cores.suave}
-              className="rounded-2xl border border-borda bg-superficie px-4 py-3 text-base text-texto"
-            />
-          </Campo>
-
-          <Campo rotulo="Local — opcional">
-            <CampoLocal
-              valor={draft.placeLabel}
-              onChange={(v) => draft.set({ placeLabel: v })}
-              userId={userIdAtual()}
-            />
-          </Campo>
-
-          <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-borda bg-superficie px-4 py-3">
-            <Text className="text-base text-texto">Pescado e solto</Text>
-            <Switch
-              value={draft.released}
-              onValueChange={(v) => draft.set({ released: v })}
-              trackColor={{ true: cores.destaque, false: cores.borda }}
-              thumbColor={cores.superficie}
-            />
-          </View>
-        </View>
-      </ScrollView>
-
-      <View
-        className="absolute inset-x-0 bottom-0 border-t border-borda bg-fundo px-5 pt-3"
-        style={{ paddingBottom: insets.bottom + 12 }}
-      >
-        <Pressable
-          onPress={salvar}
-          disabled={salvando}
-          className="items-center rounded-2xl bg-destaque py-4 active:opacity-80"
-        >
-          <Text className="text-base font-bold text-destaque-texto">
-            {salvando ? 'Salvando...' : 'Salvar captura'}
-          </Text>
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
-  );
-}
-
-/** Data por extenso, com hora: a hora importa para as insígnias e é o que o usuário confere. */
-function dataLonga(d: Date): string {
-  return d.toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function Campo({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
-  return (
-    <View className="mt-5">
-      <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-suave">{rotulo}</Text>
-      {children}
-    </View>
+      }
+      sugestaoDeMedida={
+        <SugestaoDeMedida
+          estimativa={estimativa}
+          valorAtual={draft.lengthCm}
+          onUsar={(cm) => draft.set({ lengthCm: String(cm) })}
+        />
+      }
+      acoes={
+        <BotaoPrincipal
+          titulo="Salvar captura"
+          icone="camera"
+          carregando={salvando}
+          onPress={() => void salvar()}
+        />
+      }
+    />
   );
 }

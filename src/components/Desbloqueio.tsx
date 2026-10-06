@@ -68,7 +68,7 @@ export function Desbloqueio({
     <Modal transparent animationType="fade" onRequestClose={onFechar} statusBarTranslucent>
       <View className="flex-1 items-center justify-center bg-black/80 px-8">
         <Text
-          className="mb-5 text-xs font-extrabold uppercase tracking-widest"
+          className="mb-5 font-display text-[12px] uppercase tracking-[0.14em]"
           style={{ color: paleta.destaque }}
         >
           Nova no álbum
@@ -88,7 +88,7 @@ export function Desbloqueio({
           />
 
           <View
-            className="w-44 overflow-hidden rounded-2xl bg-superficie"
+            className="w-44 overflow-hidden rounded-carta bg-superficie"
             style={{ aspectRatio: 3 / 4, borderWidth: 2, borderColor: rar }}
           >
             <View className="flex-1 bg-elevado">
@@ -103,23 +103,23 @@ export function Desbloqueio({
                 </>
               ) : (
                 <View className="h-full w-full items-center justify-center">
-                  <Text className="text-xs text-suave">sem foto</Text>
+                  <Text className="font-corpo text-[12px] text-apoio">sem foto</Text>
                 </View>
               )}
             </View>
 
             <View className="border-t border-borda bg-superficie px-2 py-1.5">
-              <Text className="text-xs font-bold text-texto" numberOfLines={1}>
+              <Text className="font-display text-[13px] text-texto" numberOfLines={1}>
                 {species.commonName}
               </Text>
             </View>
           </View>
         </Animated.View>
 
-        <Text className="mt-6 text-center text-xl font-extrabold tracking-tight text-texto">
+        <Text className="mt-6 text-center font-display text-[24px] tracking-[-0.02em] text-texto">
           {species.commonName} desbloqueado
         </Text>
-        <Text className="mt-1 text-center text-sm text-suave">
+        <Text className="mt-1 text-center font-cientifico text-[16px] text-suave">
           Carta {numero} de {total} · {albumNome}
         </Text>
         <Text className="mt-1 text-center text-sm" style={{ color: rar }}>

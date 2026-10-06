@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Icone } from '@/components/Icone';
 import { fotoDaGaleria } from '@/media/photo';
 import { useDraft } from '@/stores/draft';
 import { useCores } from '@/theme';
@@ -78,21 +79,21 @@ export default function Camera() {
   if (!permissao.granted) {
     return (
       <View className="flex-1 items-center justify-center bg-fundo px-8">
-        <Text className="text-center text-base text-texto">
+        <Text className="text-center font-corpo text-[16px] leading-[23px] text-texto">
           O Fisgados precisa da câmera para fotografar a captura agora.
         </Text>
         <Pressable
           onPress={pedirPermissao}
-          className="mt-6 w-full items-center rounded-2xl bg-destaque px-6 py-3 active:opacity-80"
+          className="mt-6 w-full items-center rounded-botao bg-destaque px-6 py-4 active:opacity-80"
         >
-          <Text className="font-bold text-destaque-texto">Permitir câmera</Text>
+          <Text className="font-corpo-negrito text-[17px] text-destaque-texto">Permitir câmera</Text>
         </Pressable>
         <Pressable
           onPress={daGaleria}
           disabled={ocupado}
-          className="mt-3 w-full items-center rounded-2xl border border-borda px-6 py-3 active:opacity-70"
+          className="mt-3 w-full items-center rounded-campo border border-borda-forte bg-elevado px-6 py-3.5 active:opacity-70"
         >
-          <Text className="font-semibold text-texto">Escolher da galeria</Text>
+          <Text className="font-corpo-forte text-[15px] text-texto">Escolher da galeria</Text>
         </Pressable>
       </View>
     );
@@ -111,8 +112,8 @@ export default function Camera() {
           accessibilityLabel="Escolher foto da galeria"
           className="h-16 w-16 items-center justify-center rounded-2xl border border-white/40 bg-black/40 active:opacity-70"
         >
-          <Text className="text-2xl">🖼️</Text>
-          <Text className="mt-0.5 text-[10px] font-semibold text-white">Galeria</Text>
+          <Icone nome="album" tamanho={24} cor="#FFFFFF" />
+          <Text className="mt-1 font-corpo-forte text-[10px] text-white">Galeria</Text>
         </Pressable>
 
         <Pressable

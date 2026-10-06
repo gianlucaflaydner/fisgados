@@ -6,7 +6,8 @@
 **Estado:** Etapas 0 (catálogo), 1 (registro local), 2 (álbum), 3 (nuvem e amigos) e 4
 (identificação por IA) entregues e no ar; falta o teste no celular. A 5 (card e insígnias) não começou.
 91 cartas, 84 espécies, 79 com estimativa de peso.
-Conta no Supabase (F14), sincronização, amigos por código e ranking, foto da câmera ou da galeria com enquadramento em 3:4, captura
+Conta no Supabase (F14), sincronização, amigos por código, ranking, identificação por IA, pontos de
+pesca com conquistas, foto da câmera ou da galeria com enquadramento em 3:4, captura
 desenhada como carta, e dois temas — **Papel** de dia, **Água Funda** de madrugada.
 
 ## Rodar no celular
@@ -142,25 +143,29 @@ temas.
 
 ```
 app/                  telas (Expo Router)
-  _layout.tsx         migrations, sessão e o guard que decide login vs. app
+  _layout.tsx         migrations, fontes, sessão e o guard que decide login vs. app
   (auth)/             entrar e criar conta — única árvore visível sem sessão
-  index.tsx           home: contador do álbum + histórico + botão de registrar
-  album/              grade das cartas por álbum regional e ficha da espécie
+  (tabs)/             as quatro abas e a barra inferior com o botão de registrar
+    index.tsx         início: cartão do álbum + histórico em cartas
+    album.tsx         grade das cartas por álbum regional
+    ranking.tsx       coleção, espécies, capturas no mês e maior exemplar
+    amigos.tsx        código de convite, entrar num grupo, lista e sair da conta
+  album/[especie].tsx ficha da espécie
   captura/            câmera/galeria → enquadrar → detalhes → seletor de espécie
+  locais.tsx          seus pontos de pesca e as conquistas de cada um
   creditos.tsx        atribuição das fotos, exigida pela licença CC BY
-  amigos.tsx          seu código de convite, entrar no grupo de alguém, lista do grupo
-  ranking.tsx         coleção, espécies, capturas no mês e maior exemplar
 src/
   catalog/            species.json gerado, tipos e o índice de busca
   domain/             regras do PRD, sem React e sem I/O
   db/                 schema Drizzle, migrations e queries
   auth/               contas no Supabase Auth, perfil e vínculo com o aparelho
-  sync/               cliente Supabase, upload de foto e o worker da fila
-  theme/              a paleta dos dois temas, para o que não aceita classe
+  sync/               cliente Supabase, upload de foto, worker da fila e a chamada da IA
+  theme/              paleta dos dois temas, fontes e raios — o style guide em código
   media/              entrada e compressão da foto
-  components/         pedaços de tela reaproveitados
-  stores/             rascunho da captura, sessão ativa e tema
+  components/         ui.tsx (as peças do guia), as cartas, o formulário de captura, ícones
+  stores/             rascunho da captura, sessão, tema e identificação em andamento
 scripts/              geração e auditoria do catálogo, testes
+supabase/             migrations do Postgres e a Edge Function da IA
 ```
 
 ## Próximos passos
@@ -305,3 +310,45 @@ testar. Deve terminar em verde dizendo "Projeto acordado".
 **Isto é paliativo, não garantia.** O GitHub desliga agendamentos de repositório parado por 60
 dias (manda e-mail, e basta reativar), e os horários atrasam quando a fila está cheia — daí o
 intervalo de dois dias em vez de seis. Garantia de verdade é o plano Pro, que não pausa.
+
+## O desenho (style guide v1)
+
+O layout segue o guia **"Álbum de águas profundas"**, desenhado no canvas do projeto. Em uma
+frase: fundo verde-abismo, uma única ação laranja de isca, e a carta como objeto central.
+
+**Cores** — `src/theme/cores.ts` e `src/global.css`, sempre os dois. Água Funda (escuro) é o tema
+de origem; Papel (claro) é o mesmo desenho virado para o dia.
+
+| Papel | Token | Escuro | Claro |
+|---|---|---|---|
+| Fundo da tela | `fundo` | `#071417` | `#F1F5F1` |
+| Painéis e cartas | `superficie` | `#0E2226` | `#FFFFFF` |
+| Chips e botões de apoio | `elevado` | `#13292E` | `#E3EBE5` |
+| Fundo de campo | `campo` | `#0B1C20` | `#FFFFFF` |
+| Bordas | `borda` / `borda-forte` | `#234248` / `#2C5059` | `#D2DED6` / `#B4C5BC` |
+| Texto | `texto` / `suave` / `apoio` | `#EEF2EA` / `#A7BAB5` / `#8FA6A1` | `#071417` / `#48615C` / `#58716C` |
+| **A ação** | `destaque` | `#FF8A3D` nos dois temas, texto `#1C0D03`, degrau `#B9531A` |
+| Raridade | `comum` `incomum` `raro` `lendario` | prata, musgo, água, ouro |
+
+Duas regras que o guia impõe e o teste cobra: **uma ação laranja por tela**, e **cor nunca sozinha**
+— a moldura da carta, a gema e o rótulo escrito dizem a mesma raridade.
+
+**Tipografia** — três famílias, embarcadas via `@expo-google-fonts`:
+
+- **Bricolage Grotesque** (`font-display`, `font-display-medio`): números, medidas, nomes de
+  espécie, títulos. É a voz do álbum.
+- **Instrument Sans** (`font-corpo`, `-medio`, `-forte`, `-negrito`): texto, campos, botões.
+- **Instrument Serif itálico** (`font-cientifico`): **só** o nome científico. Usá-lo em outro
+  lugar gasta o efeito de guia de campo.
+
+**Medidas** — base 4; margem lateral 20; raios 8 (selo), 14 (campo), 16 (botão), 18 (carta),
+24 (painel); alvos de toque de 44 px ou mais; botão principal de 56 px com degrau sólido de 6 px,
+que afunda 4 px no toque. Só cartas têm sombra.
+
+**As peças** ficam em `src/components/ui.tsx`: botões, campo, campo de medida com −1/+1,
+segmentado, pílulas, selos inclinados, etiquetas com ícone, gema de raridade, painel e progresso.
+Tela nova monta com elas; a nona variante de botão é o que desfaz um desenho.
+
+**Navegação** — quatro abas numa barra flutuante (Início, Álbum, Ranking, Amigos) e o botão
+laranja de registrar no meio, 30 px acima da barra. Antes álbum, ranking e amigos eram pílulas no
+topo da home, e só se chegava a eles passando por ela.

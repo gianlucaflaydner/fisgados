@@ -48,7 +48,7 @@ export default function Ficha() {
   if (!species) {
     return (
       <View className="flex-1 items-center justify-center bg-fundo px-8">
-        <Text className="text-center text-base text-suave">Espécie não encontrada no catálogo.</Text>
+        <Text className="text-center font-corpo text-[16px] text-suave">Espécie não encontrada no catálogo.</Text>
       </View>
     );
   }
@@ -65,24 +65,24 @@ export default function Ficha() {
     >
       <View className="items-center px-5 pt-4">
         <View
-          className="w-full overflow-hidden rounded-2xl bg-elevado"
-          style={{ aspectRatio: 3 / 4, maxHeight: 300, borderWidth: 2, borderColor: rar }}
+          className="w-full overflow-hidden rounded-carta bg-elevado"
+          style={{ aspectRatio: 3 / 4, maxHeight: 300, borderWidth: 4, borderColor: rar }}
         >
           {foto ? (
             <Image source={foto} className="h-full w-full" resizeMode="cover" />
           ) : (
             <View className="h-full w-full items-center justify-center">
-              <Text className="text-sm text-suave">Sem foto desta espécie</Text>
+              <Text className="font-corpo text-[14px] text-suave">Sem foto desta espécie</Text>
             </View>
           )}
         </View>
       </View>
 
       <View className="px-5 pt-4">
-        <Text className="text-2xl font-extrabold tracking-tight text-texto">
+        <Text className="font-display text-[28px] leading-[32px] tracking-[-0.02em] text-texto">
           {species.commonName}
         </Text>
-        <Text className="text-sm italic text-suave">{species.scientificName}</Text>
+        <Text className="font-cientifico text-[17px] text-suave">{species.scientificName}</Text>
 
         <View className="mt-3 flex-row flex-wrap gap-1.5">
           <Etiqueta cor={rar}>
@@ -94,12 +94,12 @@ export default function Ficha() {
         </View>
 
         {species.fact ? (
-          <Text className="mt-4 max-w-[620px] text-[15px] leading-6 text-suave">
+          <Text className="mt-4 max-w-[620px] font-corpo text-[16px] leading-[24px] text-suave">
             {species.fact}
           </Text>
         ) : null}
 
-        <View className="mt-5 rounded-2xl border border-borda bg-superficie px-4">
+        <View className="mt-5 rounded-painel border border-borda bg-superficie px-4">
           <Linha rotulo="Eixo de medida" valor={measureLabel(species)} />
           <Linha rotulo="Tamanho típico" valor={`${species.avgLengthCm} cm`} />
           <Linha rotulo="Máximo registrado" valor={`${species.maxLengthCm} cm`} />
@@ -120,8 +120,8 @@ export default function Ficha() {
         </View>
 
         {capturas.length === 0 ? (
-          <View className="mt-4 rounded-2xl border border-dashed border-borda p-4">
-            <Text className="text-sm leading-5 text-suave">
+          <View className="mt-4 rounded-painel border border-dashed border-borda-forte p-4">
+            <Text className="font-corpo text-[14px] leading-[20px] text-suave">
               Carta ainda trancada. Ela abre na primeira captura confirmada desta espécie — e não
               volta a fechar, mesmo se você apagar o registro depois.
             </Text>
@@ -165,9 +165,9 @@ function Linha({
           : 'flex-row items-center justify-between border-b border-borda py-2.5'
       }
     >
-      <Text className="text-sm text-suave">{rotulo}</Text>
+      <Text className="font-corpo text-[14px] text-suave">{rotulo}</Text>
       <Text
-        className={destaque ? 'text-sm font-bold text-cobalto' : 'text-sm font-semibold text-texto'}
+        className={destaque ? 'font-display text-[15px] text-acao' : 'font-display-medio text-[15px] text-texto'}
         style={{ fontVariant: ['tabular-nums'] }}
       >
         {valor}
@@ -179,11 +179,11 @@ function Linha({
 function Etiqueta({ children, cor }: { children: React.ReactNode; cor?: string }) {
   return (
     <View
-      className="rounded-full border border-borda px-2.5 py-0.5"
+      className="h-7 justify-center rounded-full border border-borda-forte bg-elevado px-2.5"
       style={cor ? { borderColor: cor } : undefined}
     >
       <Text
-        className="text-[11px] font-semibold text-suave"
+        className="font-corpo-forte text-[12px] text-suave"
         style={cor ? { color: cor } : undefined}
       >
         {children}

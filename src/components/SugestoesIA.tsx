@@ -38,7 +38,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
     return (
       <View className="mt-3 flex-row items-center">
         <ActivityIndicator size="small" color={cores.suave} />
-        <Text className="ml-2 text-sm text-suave">Olhando a foto para sugerir a espécie...</Text>
+        <Text className="ml-2 font-corpo text-[13px] text-suave">Olhando a foto para sugerir a espécie...</Text>
       </View>
     );
   }
@@ -46,7 +46,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
   if (resultado.estado === 'falhou') {
     if (resultado.motivo !== 'limite' || !resultado.avisar) return null;
     return (
-      <Text className="mt-3 text-xs leading-4 text-suave">
+      <Text className="mt-3 font-corpo text-[12.5px] leading-[18px] text-apoio">
         As sugestões pela foto de hoje acabaram. Amanhã elas voltam; até lá, escolha na lista.
       </Text>
     );
@@ -58,7 +58,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
 
   if (a.tipo === 'nenhuma') {
     return (
-      <Text className="mt-3 text-xs leading-4 text-suave">
+      <Text className="mt-3 font-corpo text-[12.5px] leading-[18px] text-apoio">
         Pela foto não deu para ter certeza da espécie. Escolha na lista.
       </Text>
     );
@@ -68,7 +68,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
     <View className="mt-3">
       {a.tipo === 'duvida' ? (
         <>
-          <Text className="mb-2 text-sm leading-5 text-texto">
+          <Text className="mb-2 font-corpo-forte text-[14px] leading-5 text-texto">
             Fica entre estes dois. Compare com o seu peixe:
           </Text>
           <View className="flex-row gap-2">
@@ -82,7 +82,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
         </>
       ) : (
         <>
-          <Text className="mb-1 text-xs font-semibold uppercase tracking-wide text-suave">Pela foto, parece</Text>
+          <Text className="mb-1 font-corpo-forte text-[12px] uppercase tracking-[0.12em] text-suave">Pela foto, parece</Text>
           {a.sugestoes.map((s) => (
             <Linha key={s.speciesId} s={s} ativa={s.speciesId === escolhida} onPress={() => onEscolher(s.speciesId)} />
           ))}
@@ -90,7 +90,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
       )}
 
       <Pressable onPress={onAbrirLista} hitSlop={8} className="mt-2 self-start py-1 active:opacity-60">
-        <Text className="text-sm font-semibold text-cobalto">Nenhuma dessas? Ver a lista toda</Text>
+        <Text className="font-corpo-forte text-[14px] text-acao">Nenhuma dessas? Ver a lista toda</Text>
       </Pressable>
     </View>
   );
@@ -107,23 +107,23 @@ function Linha({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPress: ()
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: ativa }}
-      className="mt-2 flex-row items-center rounded-2xl border bg-superficie p-2.5 active:opacity-70"
-      style={{ borderColor: ativa ? cores.cobalto : cores.borda, borderWidth: ativa ? 2 : 1 }}
+      className="mt-2 flex-row items-center rounded-carta border bg-superficie p-2.5 active:opacity-70"
+      style={{ borderColor: ativa ? cores.destaque : cores.borda, borderWidth: ativa ? 2 : 1 }}
     >
-      <View className="h-12 w-12 overflow-hidden rounded-xl bg-elevado">
+      <View className="h-12 w-12 overflow-hidden rounded-selo bg-elevado">
         {foto ? <Image source={foto} className="h-full w-full" resizeMode="cover" /> : null}
       </View>
       <View className="ml-3 flex-1">
-        <Text className="text-base font-semibold text-texto" numberOfLines={1}>
+        <Text className="font-display text-[17px] text-texto" numberOfLines={1}>
           {especie.commonName}
         </Text>
         {s.motivo ? (
-          <Text className="mt-0.5 text-xs leading-4 text-suave" numberOfLines={2}>
+          <Text className="mt-0.5 font-corpo text-[12px] leading-[17px] text-suave" numberOfLines={2}>
             {s.motivo}
           </Text>
         ) : null}
       </View>
-      <Text className="ml-2 text-sm font-bold text-cobalto" style={{ fontVariant: ['tabular-nums'] }}>
+      <Text className="ml-2 font-display text-[15px] text-acao" style={{ fontVariant: ['tabular-nums'] }}>
         {porcentagem(s.confianca)}
       </Text>
     </Pressable>
@@ -145,22 +145,22 @@ function CartaoDuvida({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPr
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: ativa }}
-      className="flex-1 overflow-hidden rounded-2xl border bg-superficie active:opacity-70"
-      style={{ borderColor: ativa ? cores.cobalto : cores.borda, borderWidth: ativa ? 2 : 1 }}
+      className="flex-1 overflow-hidden rounded-carta border bg-superficie active:opacity-70"
+      style={{ borderColor: ativa ? cores.destaque : cores.borda, borderWidth: ativa ? 2 : 1 }}
     >
       <View className="bg-elevado" style={{ aspectRatio: 4 / 3 }}>
         {foto ? <Image source={foto} className="h-full w-full" resizeMode="cover" /> : null}
       </View>
       <View className="p-2.5">
         <View className="flex-row items-baseline justify-between">
-          <Text className="flex-1 text-sm font-semibold text-texto" numberOfLines={1}>
+          <Text className="flex-1 font-display text-[14px] text-texto" numberOfLines={1}>
             {especie.commonName}
           </Text>
-          <Text className="ml-1 text-xs font-bold text-cobalto" style={{ fontVariant: ['tabular-nums'] }}>
+          <Text className="ml-1 font-display text-[12px] text-acao" style={{ fontVariant: ['tabular-nums'] }}>
             {porcentagem(s.confianca)}
           </Text>
         </View>
-        {s.motivo ? <Text className="mt-1 text-xs leading-4 text-suave">{s.motivo}</Text> : null}
+        {s.motivo ? <Text className="mt-1 font-corpo text-[12px] leading-[17px] text-suave">{s.motivo}</Text> : null}
       </View>
     </Pressable>
   );
