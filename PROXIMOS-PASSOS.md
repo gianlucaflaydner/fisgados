@@ -97,7 +97,9 @@ Secrets* no painel e **não** vai no `.env`.
   projeto a cada dois dias — **falta cadastrar os dois secrets no GitHub** (`SUPABASE_URL` e
   `SUPABASE_ANON_KEY`, em *Settings → Secrets and variables → Actions*). É paliativo: garantia
   de verdade só com o plano Pro, que não pausa.
-- **Arte das cartas.** São 84 ilustrações, e as fotos atuais servem de referência.
+- **Arte das cartas.** ✅ As 84 ilustrações entraram em 07/10/2026. Vale olhar carta por carta no
+  celular: se alguma espécie ficou com forma ou cor estranha, dá para redesenhar só ela em
+  `scripts/ilustracoes/params.py`.
 - **Fotos com ressalva.** Carpa-espelho, tilápia-vermelha, cascudo-viola e surubim-do-Uruguai
   estão sem foto. A savelha usa uma ilustração, e os híbridos precisam ser revistos.
 - **Validação do catálogo em campo.** Mostre a tabela do `catalog-report.md` para 2 ou 3

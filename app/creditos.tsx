@@ -23,8 +23,10 @@ export default function Creditos() {
       ListHeaderComponent={
         <View className="px-5 pb-2 pt-4">
           <Text className="font-corpo text-[14px] leading-[20px] text-suave">
-            As fotos das espécies são de terceiros, publicadas sob licença que permite uso com
-            crédito ao autor. Toque num item para abrir a página original.
+            As cartas do álbum são ilustrações originais do projeto. Estas fotos serviram de
+            referência para desenhá-las e seguem no app, na ficha de cada espécie. São de
+            terceiros, publicadas sob licença que permite uso com crédito ao autor — toque num item
+            para abrir a página original.
           </Text>
           <Text className="mt-3 font-corpo text-[12px] leading-[17px] text-apoio">
             {CREDITOS.length} fotos · iNaturalist e Wikimedia Commons

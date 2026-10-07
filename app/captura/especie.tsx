@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { FlatList, Image, Pressable, Text, TextInput, View } from 'react-native';
 
 import { RARITY_LABEL, searchSpecies, SPECIES } from '@/catalog';
-import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { useDraft } from '@/stores/draft';
 import { useEdicao } from '@/stores/edicao';
 import { coresDeRaridade, useCores } from '@/theme';
@@ -116,19 +116,19 @@ export default function SeletorEspecie() {
 /**
  * Miniatura da espécie, com a moldura na cor da raridade — a mesma linguagem da carta do álbum.
  *
- * Nem toda espécie tem foto: híbridos não existem em base taxonômica e algumas do Sul não têm
- * nenhuma imagem bem licenciada. Nesses casos fica um quadrado vazio da mesma medida, para a
- * lista não desalinhar e para a ausência não parecer defeito.
+ * A miniatura é a ilustração, a mesma arte da carta do álbum: quem procura na lista está
+ * comparando o peixe na mão com um desenho de espécie, e não com a foto de um exemplar específico
+ * em cima de uma pedra. A foto de verdade continua na ficha, como referência.
  */
 function Foto({ id, cor }: { id: string; cor: string }) {
-  const fonte = getFoto(id);
+  const fonte = getIlustracao(id);
 
   return (
     <View
       className="h-14 w-14 overflow-hidden rounded-selo bg-elevado"
       style={{ borderWidth: 1.5, borderColor: cor }}
     >
-      {fonte ? <Image source={fonte} className="h-full w-full" resizeMode="cover" /> : null}
+      {fonte ? <Image source={fonte} className="h-full w-full" resizeMode="contain" /> : null}
     </View>
   );
 }

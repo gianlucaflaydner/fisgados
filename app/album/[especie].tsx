@@ -1,10 +1,12 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getSpecies, RARITY_LABEL, RARITY_POINTS } from '@/catalog';
+import { CREDITOS } from '@/catalog/creditos';
 import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { listCatchesOfSpecies } from '@/db/queries';
 import type { CatchRow } from '@/db/schema';
 import { measureLabel, weightLabel } from '@/domain/weight';
@@ -24,6 +26,7 @@ import { coresDeRaridade, useCores } from '@/theme';
  */
 export default function Ficha() {
   const { especie } = useLocalSearchParams<{ especie: string }>();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const paleta = useCores();
   const cores = coresDeRaridade(paleta);
@@ -53,7 +56,9 @@ export default function Ficha() {
     );
   }
 
+  const arte = getIlustracao(species.id);
   const foto = getFoto(species.id);
+  const credito = CREDITOS.find((c) => c.especie === species.commonName);
   const rar = cores[species.rarity];
   const melhor = personalBest(capturas);
   const primeira = capturas.length > 0 ? capturas[capturas.length - 1] : undefined;
@@ -63,17 +68,19 @@ export default function Ficha() {
       className="flex-1 bg-fundo"
       contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
     >
+      {/*
+        A ilustração primeiro, grande, com a moldura da raridade: é a carta do álbum em tamanho de
+        ficha. A foto de verdade vem depois, como referência — ver o painel no fim da tela.
+      */}
       <View className="items-center px-5 pt-4">
         <View
-          className="w-full overflow-hidden rounded-carta bg-elevado"
-          style={{ aspectRatio: 3 / 4, maxHeight: 300, borderWidth: 4, borderColor: rar }}
+          className="w-full items-center justify-center overflow-hidden rounded-carta bg-elevado"
+          style={{ aspectRatio: 16 / 10, borderWidth: 4, borderColor: rar }}
         >
-          {foto ? (
-            <Image source={foto} className="h-full w-full" resizeMode="cover" />
+          {arte ? (
+            <Image source={arte} className="h-full w-full" resizeMode="contain" />
           ) : (
-            <View className="h-full w-full items-center justify-center">
-              <Text className="font-corpo text-[14px] text-suave">Sem foto desta espécie</Text>
-            </View>
+            <Text className="font-corpo text-[14px] text-suave">Sem ilustração desta espécie</Text>
           )}
         </View>
       </View>
@@ -118,6 +125,33 @@ export default function Ficha() {
             ultima
           />
         </View>
+
+        {/*
+          A foto de referência — o lugar onde a foto de verdade continua existindo.
+
+          Ela sai da carta e fica aqui porque serve a outra coisa: a ilustração diz "é esta espécie
+          do álbum", a foto diz "é com isto que o bicho se parece na água". Quem abre a ficha com o
+          peixe na mão está justamente comparando, e é por isso que ela vem em cor mesmo com a
+          carta trancada.
+        */}
+        {foto ? (
+          <View className="mt-5 overflow-hidden rounded-painel border border-borda bg-superficie">
+            <View className="flex-row items-center justify-between px-4 pb-2 pt-3">
+              <Text className="font-corpo-forte text-[12px] uppercase tracking-[0.12em] text-suave">
+                Foto de referência
+              </Text>
+              <Pressable onPress={() => router.push('/creditos')} hitSlop={8} className="active:opacity-60">
+                <Text className="font-corpo-forte text-[12px] text-acao">Créditos</Text>
+              </Pressable>
+            </View>
+            <Image source={foto} style={{ width: '100%', aspectRatio: 4 / 3 }} resizeMode="cover" />
+            {credito ? (
+              <Text className="px-4 pb-3 pt-2 font-corpo text-[11.5px] leading-[16px] text-apoio">
+                {credito.autor} · {credito.licenca}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
 
         {capturas.length === 0 ? (
           <View className="mt-4 rounded-painel border border-dashed border-borda-forte p-4">

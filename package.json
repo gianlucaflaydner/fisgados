@@ -18,6 +18,7 @@
     "photos:apply": "tsx scripts/apply-photo-choices.mts",
     "nuvem:check": "tsx scripts/check-cloud.mts",
     "nuvem:convites": "tsx scripts/check-convites.mts",
+    "ilustracoes:prepare": "tsx scripts/prepare-ilustracoes.mts",
     "ia:catalogo": "tsx scripts/build-lista-fechada.mts",
     "ia:check": "tsx scripts/check-ia.mts"
   },

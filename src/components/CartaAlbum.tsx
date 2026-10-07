@@ -1,7 +1,7 @@
 import { Image, Pressable, Text, View } from 'react-native';
 
 import type { Species } from '@/catalog';
-import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { Silhueta } from './Icone';
 import { Gema } from './ui';
 import { coresDeRaridade, useCores } from '@/theme';
@@ -9,14 +9,17 @@ import { coresDeRaridade, useCores } from '@/theme';
 /**
  * A carta da grade do álbum.
  *
- * Aberta e trancada são **objetos diferentes**, e isso é a mudança que o guia pede: a aberta tem
- * moldura na cor da raridade, foto e sombra, como figurinha colada; a trancada é um espaço vazio
- * de borda pontilhada, com a silhueta do peixe e o nome visível. Antes as duas eram a mesma arte
- * em escala de cinza, o que deixava a página inteira parecendo uma grade de fotos apagadas em vez
- * de um álbum com lacunas.
+ * A arte é a **ilustração** da espécie, não a foto. Foto de peixe é foto de um peixe específico,
+ * numa mão específica, com um fundo qualquer; a ilustração é a espécie — é o que cabe numa carta
+ * de álbum e o que fica igual para todo mundo. A foto continua no app, na ficha da espécie, como
+ * referência de campo.
  *
- * O nome fica legível na trancada de propósito: a carta vazia precisa dizer **o que procurar** —
- * é ela que puxa para a próxima pescaria.
+ * Trancada e aberta são a **mesma arte**, e é isso que faz o desbloqueio valer: a ilustração tem
+ * fundo transparente, então pintada de uma cor só ela vira a silhueta exata daquele peixe. Dá para
+ * ver o formato — bagre de barbilhão, traíra de cabeça grande, arraia de disco — sem ver a cor.
+ * Desbloquear é literalmente a cor voltando ao desenho.
+ *
+ * O nome fica legível na trancada de propósito: a carta vazia precisa dizer **o que procurar**.
  *
  * O número ("Nº 07") é a posição no álbum, igual para todo mundo, para que "me falta a 47" queira
  * dizer alguma coisa.
@@ -36,7 +39,7 @@ export function CartaAlbum({
 }) {
   const paleta = useCores();
   const rar = coresDeRaridade(paleta)[species.rarity];
-  const foto = getFoto(species.id);
+  const arte = getIlustracao(species.id);
   const n = String(numero).padStart(2, '0');
 
   if (!aberta) {
@@ -47,8 +50,19 @@ export function CartaAlbum({
         className="flex-1 rounded-[14px] p-[3px] active:opacity-70"
         style={{ backgroundColor: paleta.campo, borderWidth: 1.5, borderStyle: 'dashed', borderColor: paleta.borda }}
       >
-        <View className="items-center justify-center" style={{ height: 101 }}>
-          <Silhueta largura={60} cor={paleta.elevado} />
+        <View className="items-center justify-center" style={{ aspectRatio: 16 / 10 }}>
+          {arte ? (
+            // `tintColor` pinta a imagem inteira de uma cor só. Com fundo transparente, o que sobra
+            // é o contorno da espécie — a silhueta sai da própria arte, sem um segundo arquivo.
+            <Image
+              source={arte}
+              className="h-full w-full"
+              resizeMode="contain"
+              tintColor={paleta.elevado}
+            />
+          ) : (
+            <Silhueta largura={60} cor={paleta.elevado} />
+          )}
           <Text
             className="absolute left-1.5 top-1 font-display text-[10px] text-apoio"
             style={{ fontVariant: ['tabular-nums'] }}
@@ -56,7 +70,7 @@ export function CartaAlbum({
             Nº {n}
           </Text>
         </View>
-        <View className="px-1.5 pb-2 pt-1.5">
+        <View className="px-1.5 pb-2 pt-1">
           <Text className="font-corpo-forte text-[12px] text-apoio" numberOfLines={1}>
             {species.commonName}
           </Text>
@@ -81,13 +95,11 @@ export function CartaAlbum({
       }}
     >
       <View className="overflow-hidden rounded-[11px] bg-superficie">
-        <View style={{ height: 104 }} className="bg-elevado">
-          {foto ? (
-            <Image source={foto} className="h-full w-full" resizeMode="cover" />
+        <View style={{ aspectRatio: 16 / 10 }} className="items-center justify-center bg-elevado">
+          {arte ? (
+            <Image source={arte} className="h-full w-full" resizeMode="contain" />
           ) : (
-            <View className="h-full w-full items-center justify-center">
-              <Silhueta largura={52} cor={paleta.borda} />
-            </View>
+            <Silhueta largura={52} cor={paleta.borda} />
           )}
 
           <View className="absolute left-1.5 top-1.5 rounded-md bg-fundo/85 px-1.5 py-0.5">

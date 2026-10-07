@@ -75,7 +75,7 @@ import {
   sanearResposta,
 } from '../supabase/functions/identificar/regras.ts';
 import { PALETA, type Paleta, type Tema } from '../src/theme/cores.ts';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 let passou = 0;
@@ -783,6 +783,20 @@ teste('não identificado não disputa recorde de espécie', () => {
 const IDS = new Set(SPECIES.map((s) => s.id));
 const parecidas = (id: string) => getSpecies(id)?.visuallySimilarTo ?? [];
 const sug = (speciesId: string, confianca: number, motivo = ''): Sugestao => ({ speciesId, confianca, motivo });
+
+teste('toda espécie do catálogo tem ilustração, e nenhuma sobra', () => {
+  // A ilustração é a arte da carta: espécie sem ela aparece como buraco na grade do álbum.
+  // Falhou? Desenhe no gerador (`scripts/ilustracoes/`) e rode `npm run ilustracoes:prepare`.
+  const desenhadas = readdirSync(join(process.cwd(), 'assets', 'ilustracoes'))
+    .filter((f) => f.endsWith('.png'))
+    .map((f) => f.replace(/\.png$/, ''))
+    .sort();
+  assert.deepEqual(desenhadas, SPECIES.map((s) => s.id).sort());
+
+  // E o mapa gerado precisa citar exatamente esses ids — é ele que o bundle carrega.
+  const mapa = readFileSync(join(process.cwd(), 'src', 'catalog', 'ilustracoes.ts'), 'utf8');
+  for (const id of desenhadas) assert.ok(mapa.includes(`'${id}': require(`), `${id} fora de ilustracoes.ts`);
+});
 
 teste('a lista fechada da função está em dia com o catálogo do app', () => {
   // Falhou? Rode `npm run ia:catalogo` e publique a função de novo.

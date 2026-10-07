@@ -51,42 +51,66 @@ function Barra({ estado }: { estado: number }) {
   }
 
   return (
+    /*
+     * A sombra mora numa camada própria, atrás de tudo, e não no mesmo `View` que segura os itens.
+     *
+     * No Android a sombra vem da `elevation`, que também decide a ordem de desenho: com a sombra
+     * na barra, o botão de registrar — que é filho dela e sobe 30 px para fora — era pintado
+     * **embaixo** da sombra da própria barra, e aparecia um véu escuro sobre o laranja. Separando
+     * as camadas, a sombra fica onde deve: atrás da barra e atrás do botão.
+     */
     <View
-      className="absolute inset-x-3 flex-row items-end justify-between rounded-painel border border-borda px-3.5 pb-2.5 pt-2.5"
-      style={{
-        bottom: insets.bottom + 10,
-        backgroundColor: cores.campo,
-        // A sombra só aparece de verdade no tema claro; no escuro quem separa a barra do fundo é
-        // a borda. Manter as duas evita uma barra que flutua num tema e cola no outro.
-        shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowRadius: 18,
-        shadowOffset: { width: 0, height: 8 },
-        elevation: 12,
-      }}
+      className="absolute inset-x-3"
+      style={{ bottom: insets.bottom + 10 }}
+      pointerEvents="box-none"
     >
-      {ABAS.slice(0, 2).map((a, i) => (
-        <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
-      ))}
-
-      <Pressable
-        onPress={registrar}
-        accessibilityRole="button"
-        accessibilityLabel="Registrar captura"
-        className="h-[60px] w-[60px] items-center justify-center rounded-[20px] active:opacity-85"
+      {/* Camada 1: o fundo da barra e a sombra dela, atrás de tudo. */}
+      <View
+        className="absolute inset-0 rounded-painel border border-borda"
         style={{
-          marginTop: -30,
-          backgroundColor: cores.destaque,
-          borderBottomWidth: 5,
-          borderBottomColor: cores.destaqueBaixo,
+          backgroundColor: cores.campo,
+          // A sombra só aparece de verdade no tema claro; no escuro quem separa a barra do fundo é
+          // a borda. Manter as duas evita uma barra que flutua num tema e cola no outro.
+          shadowColor: '#000',
+          shadowOpacity: 0.3,
+          shadowRadius: 18,
+          shadowOffset: { width: 0, height: 8 },
+          elevation: 8,
         }}
-      >
-        <Icone nome="mais" tamanho={28} cor={cores.destaqueTexto} traco={2.6} />
-      </Pressable>
+      />
 
-      {ABAS.slice(2).map((a, i) => (
-        <ItemDaAba key={a.rota} {...a} ativa={estado === i + 2} onPress={() => router.navigate(a.rota)} />
-      ))}
+      {/*
+        Camada 2: os ícones e o botão. A `elevation` precisa ser maior que a da camada da sombra —
+        no Android ela define a ordem de desenho, e não a ordem no JSX: com a mesma elevação da
+        camada de baixo, os ícones ficariam atrás do fundo da barra.
+      */}
+      <View
+        className="flex-row items-end justify-between px-3.5 pb-2.5 pt-2.5"
+        style={{ elevation: 12, zIndex: 1 }}
+      >
+        {ABAS.slice(0, 2).map((a, i) => (
+          <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
+        ))}
+
+        <Pressable
+          onPress={registrar}
+          accessibilityRole="button"
+          accessibilityLabel="Registrar captura"
+          className="h-[60px] w-[60px] items-center justify-center rounded-[20px] active:opacity-85"
+          style={{
+            marginTop: -30,
+            backgroundColor: cores.destaque,
+            borderBottomWidth: 5,
+            borderBottomColor: cores.destaqueBaixo,
+          }}
+        >
+          <Icone nome="mais" tamanho={28} cor={cores.destaqueTexto} traco={2.6} />
+        </Pressable>
+
+        {ABAS.slice(2).map((a, i) => (
+          <ItemDaAba key={a.rota} {...a} ativa={estado === i + 2} onPress={() => router.navigate(a.rota)} />
+        ))}
+      </View>
     </View>
   );
 }

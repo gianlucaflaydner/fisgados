@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { getAlbum, RARITY_LABEL, RARITY_POINTS, speciesOfAlbum, type Species } from '@/catalog';
-import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { coresDeRaridade, useCores } from '@/theme';
 
 /**
@@ -20,13 +20,14 @@ import { coresDeRaridade, useCores } from '@/theme';
  * como uma caixa cinza de sistema operacional, igual a um aviso de erro. Aqui ela vira a única
  * cena com animação do produto.
  *
- * **A animação é a cor voltando ao desenho.** A carta trancada do álbum é a mesma foto em escala
- * de cinza; desbloquear é a cor preenchendo o que já estava lá. É por isso que não há partícula
- * nem confete: o gesto já conta a história, e o peixe é que é o assunto.
+ * **A animação é a cor voltando ao desenho.** A carta trancada do álbum é a silhueta da espécie —
+ * a mesma ilustração pintada de uma cor só. Desbloquear é a cor preenchendo o contorno que já
+ * estava lá. É por isso que não há partícula nem confete: o gesto já conta a história, e o peixe é
+ * que é o assunto.
  *
- * O efeito é feito com duas imagens sobrepostas — cinza embaixo, colorida por cima com opacidade
- * animada — e não animando o `filter`. Cruzar opacidade é o que o Reanimated faz bem em qualquer
- * versão; animar um filtro recém-chegado ao React Native seria apostar.
+ * O efeito é feito com duas cópias da ilustração sobrepostas — a silhueta embaixo, a colorida por
+ * cima com opacidade animada. Cruzar opacidade é o que o Reanimated faz bem em qualquer versão;
+ * animar um filtro recém-chegado ao React Native seria apostar.
  */
 export function Desbloqueio({
   species,
@@ -42,7 +43,7 @@ export function Desbloqueio({
 }) {
   const paleta = useCores();
   const rar = coresDeRaridade(paleta)[species.rarity];
-  const foto = getFoto(species.id);
+  const arte = getIlustracao(species.id);
   const semMovimento = useReducedMotion();
 
   const escala = useSharedValue(semMovimento ? 1 : 0.86);
@@ -87,25 +88,29 @@ export function Desbloqueio({
             ]}
           />
 
+          {/*
+            A carta segue a proporção da ilustração (16:10), e não o 3:4 da foto da captura: o
+            peixe é desenhado deitado, e numa carta alta ele ficaria pequeno no meio de duas faixas
+            vazias — justamente no único momento em que ele deveria ser grande.
+          */}
           <View
-            className="w-44 overflow-hidden rounded-carta bg-superficie"
-            style={{ aspectRatio: 3 / 4, borderWidth: 2, borderColor: rar }}
+            className="w-60 overflow-hidden rounded-carta bg-superficie"
+            style={{ borderWidth: 2, borderColor: rar }}
           >
-            <View className="flex-1 bg-elevado">
-              {foto ? (
+            <View className="items-center justify-center bg-elevado" style={{ aspectRatio: 16 / 10 }}>
+              {arte ? (
                 <>
-                  <View className="h-full w-full" style={{ filter: [{ grayscale: 1 }], opacity: 0.5 }}>
-                    <Image source={foto} className="h-full w-full" resizeMode="cover" />
-                  </View>
+                  <Image
+                    source={arte}
+                    className="h-full w-full"
+                    resizeMode="contain"
+                    tintColor={paleta.borda}
+                  />
                   <Animated.View className="absolute inset-0" style={estiloCor}>
-                    <Image source={foto} className="h-full w-full" resizeMode="cover" />
+                    <Image source={arte} className="h-full w-full" resizeMode="contain" />
                   </Animated.View>
                 </>
-              ) : (
-                <View className="h-full w-full items-center justify-center">
-                  <Text className="font-corpo text-[12px] text-apoio">sem foto</Text>
-                </View>
-              )}
+              ) : null}
             </View>
 
             <View className="border-t border-borda bg-superficie px-2 py-1.5">

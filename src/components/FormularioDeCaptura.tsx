@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ReactNode } from 'react';
 
 import type { Species } from '@/catalog';
-import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { CampoLocal } from './CampoLocal';
 import { Icone } from './Icone';
 import { BotaoIcone, Campo, CampoDeMedida, Rotulo, Segmentado } from './ui';
@@ -140,7 +140,7 @@ export function FormularioDeCaptura({
                     {species.scientificName}
                   </Text>
                 ) : (
-                  <Text className="font-corpo text-[13px] text-apoio">84 espécies do Sul, com foto</Text>
+                  <Text className="font-corpo text-[13px] text-apoio">84 espécies do Sul, com ilustração</Text>
                 )}
               </View>
               <Text className="font-corpo-forte text-[14px] text-acao">{species ? 'Trocar' : 'Ver lista'}</Text>
@@ -236,14 +236,14 @@ function DegradeParaBaixo({ cor }: { cor: string }) {
 /** A espécie escolhida como mini-carta, com a moldura da raridade. Lembra que isto é um álbum. */
 function MiniCarta({ species }: { species: Species }) {
   const paleta = useCores();
-  const foto = getFoto(species.id);
+  const arte = getIlustracao(species.id);
   return (
     <View
-      className="h-[52px] w-10 rounded-selo p-0.5"
+      className="h-[46px] w-[62px] rounded-selo p-0.5"
       style={{ backgroundColor: coresDeRaridade(paleta)[species.rarity] }}
     >
       <View className="h-full overflow-hidden rounded-[6px] bg-elevado">
-        {foto ? <Image source={foto} className="h-full w-full" resizeMode="cover" /> : null}
+        {arte ? <Image source={arte} className="h-full w-full" resizeMode="contain" /> : null}
       </View>
     </View>
   );

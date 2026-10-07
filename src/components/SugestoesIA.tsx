@@ -1,7 +1,7 @@
 import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 
 import { getSpecies } from '@/catalog';
-import { getFoto } from '@/catalog/fotos';
+import { getIlustracao } from '@/catalog/ilustracoes';
 import { apresentar, porcentagem, type Sugestao } from '@/domain/identificacao';
 import { useIdentificacao } from '@/stores/identificacao';
 import { useCores } from '@/theme';
@@ -99,7 +99,7 @@ export function SugestoesIA({ photoUri, escolhida, onEscolher, onAbrirLista }: P
 function Linha({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPress: () => void }) {
   const cores = useCores();
   const especie = getSpecies(s.speciesId);
-  const foto = getFoto(s.speciesId);
+  const arte = getIlustracao(s.speciesId);
   if (!especie) return null;
 
   return (
@@ -111,7 +111,7 @@ function Linha({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPress: ()
       style={{ borderColor: ativa ? cores.destaque : cores.borda, borderWidth: ativa ? 2 : 1 }}
     >
       <View className="h-12 w-12 overflow-hidden rounded-selo bg-elevado">
-        {foto ? <Image source={foto} className="h-full w-full" resizeMode="cover" /> : null}
+        {arte ? <Image source={arte} className="h-full w-full" resizeMode="contain" /> : null}
       </View>
       <View className="ml-3 flex-1">
         <Text className="font-display text-[17px] text-texto" numberOfLines={1}>
@@ -137,7 +137,7 @@ function Linha({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPress: ()
 function CartaoDuvida({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPress: () => void }) {
   const cores = useCores();
   const especie = getSpecies(s.speciesId);
-  const foto = getFoto(s.speciesId);
+  const arte = getIlustracao(s.speciesId);
   if (!especie) return null;
 
   return (
@@ -149,7 +149,7 @@ function CartaoDuvida({ s, ativa, onPress }: { s: Sugestao; ativa: boolean; onPr
       style={{ borderColor: ativa ? cores.destaque : cores.borda, borderWidth: ativa ? 2 : 1 }}
     >
       <View className="bg-elevado" style={{ aspectRatio: 4 / 3 }}>
-        {foto ? <Image source={foto} className="h-full w-full" resizeMode="cover" /> : null}
+        {arte ? <Image source={arte} className="h-full w-full" resizeMode="contain" /> : null}
       </View>
       <View className="p-2.5">
         <View className="flex-row items-baseline justify-between">

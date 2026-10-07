@@ -74,6 +74,7 @@ npm run catalog:build      # regera src/catalog/species.json + catalog-report.md
 npm run photos:fetch       # procura fotos por licença (só monta o manifesto)
 npm run photos:fetch -- --baixar     # e baixa a primeira candidata de cada espécie
 npm run photos:prepare     # reduz, gera src/catalog/fotos.ts e creditos.ts
+npm run ilustracoes:prepare  # otimiza assets/ilustracoes e gera src/catalog/ilustracoes.ts
 npm run nuvem:check        # confere .env, chave e esquema do Supabase
 npm run nuvem:convites     # testa convites e visibilidade entre contas (migration 0002)
 npm run ia:catalogo        # regera a lista fechada da função identificar a partir do catálogo
@@ -110,15 +111,36 @@ disso roda offline. O build sai com código 1 se encontrar erro no catálogo.
 | Mexer no esquema da nuvem | `supabase/migrations/0001_esquema.sql` |
 | Reordenar as cartas de um álbum | `ALBUM_LAYOUT` em `scripts/catalog/species-source.mts` |
 | Trocar a foto de uma espécie | apague o arquivo em `assets/especies/` e rode `photos:fetch -- --baixar` |
+| Redesenhar a ilustração de uma espécie | `scripts/ilustracoes/params.py`, depois `python scripts/ilustracoes/run.py <id>` e `npm run ilustracoes:prepare` |
 | Mexer em qualquer cor | `src/theme/cores.ts` **e** `src/global.css` — os dois, sempre |
 | Mexer no banco | `src/db/schema.ts`, depois `npm run db:generate` |
 
-`src/catalog/species.json`, `catalog-report.md`, `src/catalog/fotos.ts` e
-`src/catalog/creditos.ts` são **gerados**. Não edite à mão.
+`src/catalog/species.json`, `catalog-report.md`, `src/catalog/fotos.ts`, `src/catalog/creditos.ts`
+e `src/catalog/ilustracoes.ts` são **gerados**. Não edite à mão.
 
-## Fotos das espécies
+## A arte das cartas
 
-81 das 84 espécies têm foto embarcada (5,7 MB), vindas do iNaturalist e do Wikimedia Commons.
+Cada uma das 84 espécies tem uma **ilustração própria** — desenho em perfil, fundo transparente,
+1024×640 — e é ela que aparece como carta no álbum, miniatura no seletor de espécie e arte da cena
+de desbloqueio. São desenhos originais do projeto; as fotos licenciadas serviram de referência de
+forma e cor.
+
+O fundo transparente é o que faz a carta trancada funcionar: a mesma imagem pintada de uma cor só
+(`tintColor`) vira a silhueta exata daquele peixe — bagre de barbilhão, traíra de cabeça grande,
+arraia de disco. Desbloquear é a cor voltando ao mesmo desenho, sem segundo arquivo e sem filtro
+animado.
+
+O vetor de cada uma está em `assets/ilustracoes-svg/`, e o gerador que as desenha em
+`scripts/ilustracoes/` (Python + cairosvg). Para redesenhar uma espécie: ajuste
+`scripts/ilustracoes/params.py`, rode `python scripts/ilustracoes/run.py <id>` e depois
+`npm run ilustracoes:prepare`, que otimiza o PNG (paleta de 256 cores: 6,8 MB → 2,2 MB no bundle) e
+regenera `src/catalog/ilustracoes.ts`. O `npm test` falha se alguma espécie ficar sem ilustração.
+
+## Fotos de referência
+
+81 das 84 espécies têm foto embarcada (5,7 MB), vindas do iNaturalist e do Wikimedia Commons. Elas
+não são mais a carta: aparecem na ficha da espécie, no painel "Foto de referência", que é onde
+servem — comparar o peixe na mão com um exemplar de verdade.
 Só entram fotos sob **CC0, domínio público ou CC BY** — o padrão do iNaturalist é CC BY-NC, que
 proíbe uso comercial e por isso é recusado, e CC BY-SA também é recusado porque o recorte 3:4 da
 carta é uma adaptação e o share-alike se propagaria para o app.
@@ -163,6 +185,10 @@ src/
   theme/              paleta dos dois temas, fontes e raios — o style guide em código
   media/              entrada e compressão da foto
   components/         ui.tsx (as peças do guia), as cartas, o formulário de captura, ícones
+assets/
+  especies/           fotos de referência, de terceiros, com crédito obrigatório
+  ilustracoes/        a arte das 84 cartas (PNG com fundo transparente)
+  ilustracoes-svg/    o vetor de cada ilustração, para editar
   stores/             rascunho da captura, sessão, tema e identificação em andamento
 scripts/              geração e auditoria do catálogo, testes
 supabase/             migrations do Postgres e a Edge Function da IA
