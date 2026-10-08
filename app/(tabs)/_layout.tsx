@@ -70,19 +70,21 @@ function Barra({ estado }: { estado: number }) {
       style={{ bottom: insets.bottom + 10 }}
       pointerEvents="box-none"
     >
-      {/* Camada 1: o fundo da barra e a sombra dela, atrás de tudo. */}
+      {/*
+        Camada 1: o fundo da barra. **Sem sombra, de propósito.**
+
+        O guia pede uma barra que flutua, e a sombra fazia isso. Só que ela insistia em aparecer
+        por cima do botão de registrar, mesmo com o botão fora da barra e com a maior elevação da
+        pilha — e um véu escuro sobre a ação principal é pior defeito do que uma barra sem sombra.
+        Quem separa a barra do fundo agora é a borda, que já fazia esse trabalho no tema escuro.
+
+        Para devolver a sombra quando a causa estiver entendida: `shadowColor`, `shadowOpacity`,
+        `shadowRadius` e `shadowOffset` (iOS) e `elevation` (Android) voltam aqui, e o botão
+        precisa continuar com elevação maior que a deste bloco.
+      */}
       <View
         className="absolute inset-0 rounded-painel border border-borda"
-        style={{
-          backgroundColor: cores.campo,
-          // A sombra só aparece de verdade no tema claro; no escuro quem separa a barra do fundo é
-          // a borda. Manter as duas evita uma barra que flutua num tema e cola no outro.
-          shadowColor: '#000',
-          shadowOpacity: 0.3,
-          shadowRadius: 18,
-          shadowOffset: { width: 0, height: 8 },
-          elevation: 6,
-        }}
+        style={{ backgroundColor: cores.campo }}
       />
 
       {/*
@@ -90,10 +92,7 @@ function Barra({ estado }: { estado: number }) {
         o mesmo mecanismo, ao contrário. O vão do meio é o lugar reservado ao botão, que não é
         filho desta linha.
       */}
-      <View
-        className="flex-row items-end justify-between px-3.5 pb-2.5 pt-2.5"
-        style={{ elevation: 10, zIndex: 1 }}
-      >
+      <View className="flex-row items-end justify-between px-3.5 pb-2.5 pt-2.5" style={{ zIndex: 1 }}>
         {ABAS.slice(0, 2).map((a, i) => (
           <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
         ))}
@@ -119,9 +118,9 @@ function Barra({ estado }: { estado: number }) {
           marginLeft: -TAMANHO_DO_BOTAO / 2,
           top: -TAMANHO_DO_BOTAO / 2,
           backgroundColor: cores.destaque,
+          // O degrau continua: ele é borda, não sombra, e é o que dá o volume do botão.
           borderBottomWidth: 5,
           borderBottomColor: cores.destaqueBaixo,
-          elevation: 24,
           zIndex: 3,
         }}
       >
