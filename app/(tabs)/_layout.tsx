@@ -14,9 +14,9 @@ import { useCores } from '@/theme';
  * seções ficam a um toque de qualquer lugar, sempre no mesmo canto — o que importa num app usado
  * de pé, com uma mão.
  *
- * A barra é uma ilha flutuante, com margem lateral e cantos de 24. O botão de registrar sobe 30 px
- * acima dela: é a ação mais repetida do app e precisa ser o maior alvo da tela, não um item igual
- * aos outros no meio da fila.
+ * A barra é uma ilha flutuante, com margem lateral e cantos de 24. O botão de registrar fica no
+ * meio dela, em laranja e maior que os outros itens: é a ação mais repetida do app, e no meio é
+ * onde o polegar chega primeiro.
  */
 export default function AbasLayout() {
   return (
@@ -32,8 +32,9 @@ export default function AbasLayout() {
   );
 }
 
-/** 60 px: o maior alvo da tela, e a medida que o vão do meio da barra reserva. */
-const TAMANHO_DO_BOTAO = 60;
+/** O botão de registrar: mais largo e mais alto que os outros itens, porque é a ação da tela. */
+const TAMANHO_DO_BOTAO = 64;
+const ALTURA_DO_BOTAO = 48;
 
 const ABAS: { rota: '/' | '/album' | '/ranking' | '/amigos'; rotulo: string; icone: NomeDoIcone }[] = [
   { rota: '/', rotulo: 'Início', icone: 'inicio' },
@@ -55,77 +56,45 @@ function Barra({ estado }: { estado: number }) {
 
   return (
     /*
-     * Três camadas irmãs, e o botão de registrar **fora** da barra.
+     * A barra inteira numa peça só, **sem sombra em lugar nenhum**.
      *
-     * No Android a `elevation` desenha a sombra e também decide a ordem de pintura — ordem que
-     * ignora a ordem do JSX. Enquanto o botão foi filho da barra, ele herdava o contexto de
-     * desenho dela e aparecia por baixo da sua sombra, com um véu escuro sobre o laranja.
-     * Tirá-lo de dentro e dar a ele a maior elevação da pilha é o que resolve de vez: agora não
-     * existe camada acima dele para projetar sombra nenhuma.
+     * O guia desenhava o botão de registrar subindo para fora da barra, flutuando sobre ela. Na
+     * tela isso só funcionava com sombra, e a sombra teimava em aparecer por cima do laranja —
+     * três arranjos diferentes de camada e elevação não resolveram. Um véu escuro sobre a ação
+     * principal do app é defeito pior do que um botão alinhado com os outros.
      *
-     * O `box-none` deixa o toque atravessar o espaço vazio em volta da barra e chegar à tela.
+     * Então o botão voltou para a fila, no meio dos quatro ícones, onde sempre esteve no fluxo do
+     * dedo: continua sendo o maior alvo e a única cor de ação da tela, e agora não há camada
+     * nenhuma acima dele. Quem separa a barra do fundo é a borda.
      */
     <View
-      className="absolute inset-x-3"
-      style={{ bottom: insets.bottom + 10 }}
-      pointerEvents="box-none"
+      className="absolute inset-x-3 flex-row items-center justify-between rounded-painel border border-borda px-3 py-2"
+      style={{ bottom: insets.bottom + 10, backgroundColor: cores.campo }}
     >
-      {/*
-        Camada 1: o fundo da barra. **Sem sombra, de propósito.**
+      {ABAS.slice(0, 2).map((a, i) => (
+        <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
+      ))}
 
-        O guia pede uma barra que flutua, e a sombra fazia isso. Só que ela insistia em aparecer
-        por cima do botão de registrar, mesmo com o botão fora da barra e com a maior elevação da
-        pilha — e um véu escuro sobre a ação principal é pior defeito do que uma barra sem sombra.
-        Quem separa a barra do fundo agora é a borda, que já fazia esse trabalho no tema escuro.
-
-        Para devolver a sombra quando a causa estiver entendida: `shadowColor`, `shadowOpacity`,
-        `shadowRadius` e `shadowOffset` (iOS) e `elevation` (Android) voltam aqui, e o botão
-        precisa continuar com elevação maior que a deste bloco.
-      */}
-      <View
-        className="absolute inset-0 rounded-painel border border-borda"
-        style={{ backgroundColor: cores.campo }}
-      />
-
-      {/*
-        Camada 2: os quatro itens. Elevação maior que a do fundo, senão eles somem atrás dele —
-        o mesmo mecanismo, ao contrário. O vão do meio é o lugar reservado ao botão, que não é
-        filho desta linha.
-      */}
-      <View className="flex-row items-end justify-between px-3.5 pb-2.5 pt-2.5" style={{ zIndex: 1 }}>
-        {ABAS.slice(0, 2).map((a, i) => (
-          <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
-        ))}
-
-        <View style={{ width: TAMANHO_DO_BOTAO }} />
-
-        {ABAS.slice(2).map((a, i) => (
-          <ItemDaAba key={a.rota} {...a} ativa={estado === i + 2} onPress={() => router.navigate(a.rota)} />
-        ))}
-      </View>
-
-      {/* Camada 3: o botão de registrar, por cima de todo o resto. */}
       <Pressable
         onPress={registrar}
         accessibilityRole="button"
         accessibilityLabel="Registrar captura"
-        className="absolute items-center justify-center rounded-[20px] active:opacity-85"
+        className="items-center justify-center rounded-[18px] active:opacity-85"
         style={{
-          height: TAMANHO_DO_BOTAO,
+          height: ALTURA_DO_BOTAO,
           width: TAMANHO_DO_BOTAO,
-          // Centralizado na barra e subindo metade da própria altura para fora dela.
-          left: '50%',
-          marginLeft: -TAMANHO_DO_BOTAO / 2,
-          top: -TAMANHO_DO_BOTAO / 2,
           backgroundColor: cores.destaque,
-          // O degrau continua: ele é borda, não sombra, e é o que dá o volume do botão.
-          borderBottomWidth: 5,
+          // O degrau do guia: é borda, não sombra — fica embaixo do botão e não vaza para cima.
+          borderBottomWidth: 4,
           borderBottomColor: cores.destaqueBaixo,
-          zIndex: 3,
         }}
       >
         <Icone nome="mais" tamanho={28} cor={cores.destaqueTexto} traco={2.6} />
       </Pressable>
+
+      {ABAS.slice(2).map((a, i) => (
+        <ItemDaAba key={a.rota} {...a} ativa={estado === i + 2} onPress={() => router.navigate(a.rota)} />
+      ))}
     </View>
   );
 }

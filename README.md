@@ -375,9 +375,13 @@ que afunda 4 px no toque. Só cartas têm sombra.
 segmentado, pílulas, selos inclinados, etiquetas com ícone, gema de raridade, painel e progresso.
 Tela nova monta com elas; a nona variante de botão é o que desfaz um desenho.
 
-**Navegação** — quatro abas numa barra flutuante (Início, Álbum, Ranking, Amigos) e o botão
-laranja de registrar no meio, 30 px acima da barra. Antes álbum, ranking e amigos eram pílulas no
-topo da home, e só se chegava a eles passando por ela.
+**Navegação** — quatro abas numa barra flutuante (Início, Álbum, Ranking, Amigos) com o botão
+laranja de registrar no meio da fila. Antes álbum, ranking e amigos eram pílulas no topo da home,
+e só se chegava a eles passando por ela.
+
+O guia desenhava o botão saltando para fora da barra, sobre uma sombra. Na tela a sombra insistia
+em aparecer por cima do laranja, em três arranjos diferentes de camada e elevação — então a barra
+ficou sem sombra nenhuma, separada do fundo pela borda, e o botão voltou para dentro dela.
 
 ## Insígnias e card compartilhável (Etapa 5)
 
