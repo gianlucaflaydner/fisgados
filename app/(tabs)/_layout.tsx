@@ -32,6 +32,9 @@ export default function AbasLayout() {
   );
 }
 
+/** 60 px: o maior alvo da tela, e a medida que o vão do meio da barra reserva. */
+const TAMANHO_DO_BOTAO = 60;
+
 const ABAS: { rota: '/' | '/album' | '/ranking' | '/amigos'; rotulo: string; icone: NomeDoIcone }[] = [
   { rota: '/', rotulo: 'Início', icone: 'inicio' },
   { rota: '/album', rotulo: 'Álbum', icone: 'album' },
@@ -52,12 +55,15 @@ function Barra({ estado }: { estado: number }) {
 
   return (
     /*
-     * A sombra mora numa camada própria, atrás de tudo, e não no mesmo `View` que segura os itens.
+     * Três camadas irmãs, e o botão de registrar **fora** da barra.
      *
-     * No Android a sombra vem da `elevation`, que também decide a ordem de desenho: com a sombra
-     * na barra, o botão de registrar — que é filho dela e sobe 30 px para fora — era pintado
-     * **embaixo** da sombra da própria barra, e aparecia um véu escuro sobre o laranja. Separando
-     * as camadas, a sombra fica onde deve: atrás da barra e atrás do botão.
+     * No Android a `elevation` desenha a sombra e também decide a ordem de pintura — ordem que
+     * ignora a ordem do JSX. Enquanto o botão foi filho da barra, ele herdava o contexto de
+     * desenho dela e aparecia por baixo da sua sombra, com um véu escuro sobre o laranja.
+     * Tirá-lo de dentro e dar a ele a maior elevação da pilha é o que resolve de vez: agora não
+     * existe camada acima dele para projetar sombra nenhuma.
+     *
+     * O `box-none` deixa o toque atravessar o espaço vazio em volta da barra e chegar à tela.
      */
     <View
       className="absolute inset-x-3"
@@ -75,42 +81,52 @@ function Barra({ estado }: { estado: number }) {
           shadowOpacity: 0.3,
           shadowRadius: 18,
           shadowOffset: { width: 0, height: 8 },
-          elevation: 8,
+          elevation: 6,
         }}
       />
 
       {/*
-        Camada 2: os ícones e o botão. A `elevation` precisa ser maior que a da camada da sombra —
-        no Android ela define a ordem de desenho, e não a ordem no JSX: com a mesma elevação da
-        camada de baixo, os ícones ficariam atrás do fundo da barra.
+        Camada 2: os quatro itens. Elevação maior que a do fundo, senão eles somem atrás dele —
+        o mesmo mecanismo, ao contrário. O vão do meio é o lugar reservado ao botão, que não é
+        filho desta linha.
       */}
       <View
         className="flex-row items-end justify-between px-3.5 pb-2.5 pt-2.5"
-        style={{ elevation: 12, zIndex: 1 }}
+        style={{ elevation: 10, zIndex: 1 }}
       >
         {ABAS.slice(0, 2).map((a, i) => (
           <ItemDaAba key={a.rota} {...a} ativa={estado === i} onPress={() => router.navigate(a.rota)} />
         ))}
 
-        <Pressable
-          onPress={registrar}
-          accessibilityRole="button"
-          accessibilityLabel="Registrar captura"
-          className="h-[60px] w-[60px] items-center justify-center rounded-[20px] active:opacity-85"
-          style={{
-            marginTop: -30,
-            backgroundColor: cores.destaque,
-            borderBottomWidth: 5,
-            borderBottomColor: cores.destaqueBaixo,
-          }}
-        >
-          <Icone nome="mais" tamanho={28} cor={cores.destaqueTexto} traco={2.6} />
-        </Pressable>
+        <View style={{ width: TAMANHO_DO_BOTAO }} />
 
         {ABAS.slice(2).map((a, i) => (
           <ItemDaAba key={a.rota} {...a} ativa={estado === i + 2} onPress={() => router.navigate(a.rota)} />
         ))}
       </View>
+
+      {/* Camada 3: o botão de registrar, por cima de todo o resto. */}
+      <Pressable
+        onPress={registrar}
+        accessibilityRole="button"
+        accessibilityLabel="Registrar captura"
+        className="absolute items-center justify-center rounded-[20px] active:opacity-85"
+        style={{
+          height: TAMANHO_DO_BOTAO,
+          width: TAMANHO_DO_BOTAO,
+          // Centralizado na barra e subindo metade da própria altura para fora dela.
+          left: '50%',
+          marginLeft: -TAMANHO_DO_BOTAO / 2,
+          top: -TAMANHO_DO_BOTAO / 2,
+          backgroundColor: cores.destaque,
+          borderBottomWidth: 5,
+          borderBottomColor: cores.destaqueBaixo,
+          elevation: 24,
+          zIndex: 3,
+        }}
+      >
+        <Icone nome="mais" tamanho={28} cor={cores.destaqueTexto} traco={2.6} />
+      </Pressable>
     </View>
   );
 }
