@@ -569,7 +569,12 @@ Edge Function, prompt de lista fechada, desambiguação, telemetria de acurácia
 testada com fotos do catálogo. Modelo padrão `gemini-3.5-flash-lite` (~1,5 s por foto), trocável pelo secret `GEMINI_MODEL`.
 Timeout de 10 s no servidor em vez dos 6 s da seção 6.5: o free tier oscila, e o formulário não espera.
 
-**Etapa 5 — Card compartilhável e insígnias** (seção 14)
+**Etapa 5 — Card compartilhável e insígnias** (seção 14) — **código entregue**
+Motor em `src/domain/insignias.ts`: função pura sobre o histórico, com as seis famílias do PRD
+(volume, espécie, coleção, troféus, constância e história). Concessões gravadas em `badges`
+(migration 0005), com data; o recálculo retroativo da RN17 roda ao salvar e ao abrir a vitrine.
+Falta "Pioneiro", que depende do servidor. Card compartilhável em
+`src/components/CartaParaCompartilhar.tsx`, 1080×1080, via react-native-view-shot.
 
 Se a Etapa 1 não render um app agradável de usar com o peixe na mão, pare e conserte antes de
 seguir. Todas as etapas seguintes só amplificam o que existir ali.

@@ -67,6 +67,19 @@ import {
   pontosDeLocal,
   subiuDeGrau,
 } from '../src/domain/conquistas.ts';
+import {
+  avaliar,
+  chave,
+  contadores,
+  getLinha,
+  historiasConquistadas,
+  LINHAS,
+  maiorSequenciaDeMeses,
+  nomeDaConcessao,
+  pontosDeInsignia,
+  vitrine,
+  type CapturaParaInsignia,
+} from '../src/domain/insignias.ts';
 import { CATALOGO as LISTA_FECHADA } from '../supabase/functions/identificar/catalogo.ts';
 import {
   esquemaDeResposta,
@@ -1083,6 +1096,234 @@ teste('a vitrine começa pelo melhor grau e só o maior grau pontua (RN20)', () 
   assert.deepEqual(conquistas.map((c) => c.local), ['Rio Paranhana', 'Lagoa dos Patos']);
   // Prata (3) + bronze (1): os graus anteriores da mesma linha não somam.
   assert.equal(pontosDeLocal(conquistas), 4);
+});
+
+// ──────────────────────────────────────────────────────── insígnias (PRD 11)
+
+const cap = (
+  speciesId: string | null,
+  lengthCm: number,
+  caughtAt: string,
+  extra: { released?: boolean; offlineOrigin?: boolean } = {},
+): CapturaParaInsignia => ({
+  id: `${speciesId ?? 'ni'}-${caughtAt}-${lengthCm}`,
+  speciesId,
+  lengthCm,
+  caughtAt,
+  released: extra.released ?? false,
+  offlineOrigin: extra.offlineOrigin ?? false,
+});
+
+/** Brasília, que é o fuso de quem usa o app. */
+const FUSO = -180;
+const semNada = new Set<string>();
+
+teste('toda espécie do catálogo tem linha de insígnia, com nomes escritos', () => {
+  for (const s of SPECIES) {
+    const linha = getLinha(`especie:${s.id}`);
+    assert.ok(linha, `${s.id} sem linha`);
+    assert.ok(linha.degraus.length > 0, `${s.id} sem degraus`);
+    for (const d of linha.degraus) assert.ok(d.nome.trim().length > 0, `${s.id}/${d.grau} sem nome`);
+  }
+});
+
+teste('espécie lendária começa no ouro, sem bronze nem prata (PRD 11.6)', () => {
+  const lendaria = SPECIES.find((s) => s.rarity === 'lendario')!;
+  const graus = getLinha(`especie:${lendaria.id}`)!.degraus.map((d) => d.grau);
+  assert.deepEqual(graus, ['ouro', 'platina', 'diamante']);
+  // E a comum vai de bronze a diamante, com os cinco.
+  const comum = SPECIES.find((s) => s.rarity === 'comum')!;
+  assert.equal(getLinha(`especie:${comum.id}`)!.degraus.length, 5);
+});
+
+teste('os limiares de cada linha sobem do bronze ao diamante', () => {
+  for (const linha of LINHAS) {
+    for (let i = 1; i < linha.degraus.length; i++) {
+      assert.ok(
+        linha.degraus[i]!.exige > linha.degraus[i - 1]!.exige,
+        `${linha.id}: ${linha.degraus[i]!.grau} não exige mais que ${linha.degraus[i - 1]!.grau}`,
+      );
+    }
+  }
+});
+
+teste('o diamante da coleção é o catálogo inteiro', () => {
+  const diamante = getLinha('colecao')!.degraus.find((d) => d.grau === 'diamante')!;
+  assert.equal(diamante.exige, SPECIES.length);
+  assert.equal(diamante.nome, 'Álbum Fechado');
+});
+
+teste('"não identificado" conta para o volume, não para espécie nem troféu (RN14)', () => {
+  const c = contadores([cap(null, 40, '2026-09-01T13:00:00.000Z')], semNada, FUSO);
+  assert.equal(c.get('fisgadas'), 1);
+  assert.equal(c.get('trofeu'), undefined);
+});
+
+teste('troféu usa 80% do máximo da espécie (RN19)', () => {
+  const traira = getSpecies('traira')!; // máximo 60 cm → troféu a partir de 48
+  const abaixo = contadores([cap('traira', 47, '2026-09-01T13:00:00.000Z')], semNada, FUSO);
+  const acima = contadores([cap('traira', traira.maxLengthCm * 0.8, '2026-09-01T13:00:00.000Z')], semNada, FUSO);
+  assert.equal(abaixo.get('trofeu'), undefined);
+  assert.equal(acima.get('trofeu'), 1);
+});
+
+teste('a linha "Metro" conta o maior peixe, não quantos peixes', () => {
+  const c = contadores(
+    [cap('traira', 40, '2026-09-01T13:00:00.000Z'), cap('dourado', 95, '2026-09-02T13:00:00.000Z')],
+    semNada,
+    FUSO,
+  );
+  assert.equal(c.get('metro'), 95);
+});
+
+teste('coleção conta espécies desbloqueadas, e cada álbum conta as suas', () => {
+  const c = contadores([], new Set(['traira', 'corvina']), FUSO);
+  assert.equal(c.get('colecao'), 2);
+  // A traíra está em pesqueiros e em rios; a corvina, na costa.
+  assert.equal(c.get('album:costa-sul'), 1);
+  assert.ok((c.get('album:rios-acudes-sul') ?? 0) >= 1);
+});
+
+teste('pescarias conta dias distintos, no fuso de quem olha', () => {
+  const c = contadores(
+    [
+      cap('traira', 30, '2026-09-01T13:00:00.000Z'),
+      cap('traira', 31, '2026-09-01T19:00:00.000Z'),
+      // 00h30 de 3/9 em UTC ainda é dia 2 em Brasília: dois dias, não três.
+      cap('traira', 32, '2026-09-03T00:30:00.000Z'),
+    ],
+    semNada,
+    FUSO,
+  );
+  assert.equal(c.get('pescarias'), 2);
+});
+
+teste('a sequência guarda o maior trecho de meses seguidos, não o atual (RN13)', () => {
+  const m = (mes: string) => cap('traira', 30, `2026-${mes}-10T13:00:00.000Z`);
+  // Jan, fev, mar — depois um buraco em abril e volta em maio.
+  const capturas = [m('01'), m('02'), m('03'), m('05')];
+  assert.equal(maiorSequenciaDeMeses(capturas, FUSO), 3);
+  // Quebrar a sequência não derruba o que já foi: o contador continua 3.
+  assert.equal(contadores(capturas, semNada, FUSO).get('sequencia'), 3);
+});
+
+teste('a virada do ano também é sequência', () => {
+  const capturas = [
+    cap('traira', 30, '2026-12-10T13:00:00.000Z'),
+    cap('traira', 30, '2027-01-10T13:00:00.000Z'),
+  ];
+  assert.equal(maiorSequenciaDeMeses(capturas, FUSO), 2);
+});
+
+teste('insígnias de história de contagem', () => {
+  const offline = Array.from({ length: 10 }, (_, i) =>
+    cap('traira', 30, `2026-09-${String(i + 1).padStart(2, '0')}T13:00:00.000Z`, { offlineOrigin: true }),
+  );
+  assert.ok(historiasConquistadas(offline, semNada, FUSO).has('sem-sinal'));
+  assert.ok(!historiasConquistadas(offline.slice(0, 9), semNada, FUSO).has('sem-sinal'));
+
+  const soltas = Array.from({ length: 25 }, (_, i) =>
+    cap('traira', 30, `2026-09-${String((i % 28) + 1).padStart(2, '0')}T13:00:00.000Z`, { released: true }),
+  );
+  assert.ok(historiasConquistadas(soltas, semNada, FUSO).has('de-volta-pra-agua'));
+});
+
+teste('madrugueiro e sol a pino leem a hora no fuso local', () => {
+  // 03h em Brasília é 06h UTC. Em UTC puro isso não seria madrugada.
+  const madrugada = historiasConquistadas([cap('traira', 30, '2026-09-01T06:00:00.000Z')], semNada, FUSO);
+  assert.ok(madrugada.has('madrugueiro'));
+  assert.ok(!madrugada.has('sol-a-pino'));
+
+  // 13h em Brasília é 16h UTC.
+  const meioDia = historiasConquistadas([cap('traira', 30, '2026-09-01T16:00:00.000Z')], semNada, FUSO);
+  assert.ok(meioDia.has('sol-a-pino'));
+  assert.ok(!meioDia.has('madrugueiro'));
+});
+
+teste('cinco em um dia, grand slam e dobradinha olham o mesmo dia', () => {
+  const dia = (id: string, h: number) => cap(id, 30, `2026-09-01T${String(h).padStart(2, '0')}:00:00.000Z`);
+  const cinco = historiasConquistadas(
+    [dia('traira', 12), dia('jundia', 13), dia('cara', 14), dia('tilapia', 15), dia('lambari', 16)],
+    semNada,
+    FUSO,
+  );
+  assert.ok(cinco.has('cinco-em-um-dia'));
+  assert.ok(cinco.has('grand-slam-barranco'));
+
+  // Pintado e cachara são Pseudoplatystoma: mesmo gênero, espécies diferentes.
+  assert.ok(historiasConquistadas([dia('pintado', 12), dia('cachara', 13)], semNada, FUSO).has('dobradinha'));
+  // Duas traíras no mesmo dia não são dobradinha.
+  assert.ok(!historiasConquistadas([dia('traira', 12), dia('traira', 13)], semNada, FUSO).has('dobradinha'));
+});
+
+teste('"tá comendo" exige três capturas em menos de 30 minutos', () => {
+  const t = (min: number) => cap('traira', 30, `2026-09-01T13:${String(min).padStart(2, '0')}:00.000Z`);
+  assert.ok(historiasConquistadas([t(0), t(10), t(25)], semNada, FUSO).has('ta-comendo'));
+  assert.ok(!historiasConquistadas([t(0), t(20), t(45)], semNada, FUSO).has('ta-comendo'));
+});
+
+teste('"sul inteiro" exige uma espécie de cada álbum', () => {
+  // Cará só está em rios; corvina só na costa. Faltam os pesqueiros.
+  assert.ok(!historiasConquistadas([], new Set(['cara', 'corvina']), FUSO).has('sul-inteiro'));
+  // A traíra sozinha cobre pesqueiros e rios: com a corvina, fecham os três álbuns.
+  assert.ok(historiasConquistadas([], new Set(['traira', 'corvina']), FUSO).has('sul-inteiro'));
+});
+
+teste('avaliar só devolve o que ainda não foi concedido', () => {
+  const dez = Array.from({ length: 10 }, (_, i) =>
+    cap('traira', 30, `2026-09-${String(i + 1).padStart(2, '0')}T13:00:00.000Z`),
+  );
+  const primeira = avaliar(dez, semNada, semNada, FUSO, 'x');
+  const ids = primeira.map((c) => `${c.lineId}/${c.tier}`);
+  assert.ok(ids.includes('fisgadas/bronze'), 'dez capturas fecham o bronze de Fisgadas');
+  // Traíra é comum: bronze em 5, prata só em 15. Dez capturas param no bronze.
+  assert.ok(ids.includes('especie:traira/bronze'), 'cinco traíras já fechariam o bronze');
+  assert.ok(!ids.includes('especie:traira/prata'), 'dez traíras ainda não são a prata de uma comum');
+  assert.equal(primeira[0]?.triggerId, 'x');
+
+  // Rodar de novo com tudo gravado não concede nada.
+  const gravadas = new Set(primeira.map((c) => chave(c.lineId, c.tier)));
+  assert.deepEqual(avaliar(dez, semNada, gravadas, FUSO), []);
+});
+
+teste('apagar capturas não tira insígnia já concedida (RN13)', () => {
+  const dez = Array.from({ length: 10 }, (_, i) =>
+    cap('traira', 30, `2026-09-${String(i + 1).padStart(2, '0')}T13:00:00.000Z`),
+  );
+  const gravadas = new Set(avaliar(dez, semNada, semNada, FUSO).map((c) => chave(c.lineId, c.tier)));
+
+  // Sobrou uma captura. O contador desabou; o grau fica.
+  const v = vitrine([dez[0]!], semNada, gravadas, FUSO).find((l) => l.linha.id === 'fisgadas')!;
+  assert.equal(v.valor, 1);
+  assert.equal(v.atual?.grau, 'bronze');
+  assert.ok(gravadas.has(chave('fisgadas', 'bronze')));
+});
+
+teste('a vitrine mostra o maior grau e o que falta para o próximo (RN18)', () => {
+  const gravadas = new Set([chave('fisgadas', 'bronze')]);
+  const capturas = Array.from({ length: 12 }, (_, i) =>
+    cap('traira', 30, `2026-09-${String(i + 1).padStart(2, '0')}T13:00:00.000Z`),
+  );
+  const v = vitrine(capturas, semNada, gravadas, FUSO).find((l) => l.linha.id === 'fisgadas')!;
+  assert.equal(v.atual?.nome, 'Molhou o Anzol');
+  assert.equal(v.proximo?.nome, 'Vara Boa');
+  assert.equal(v.faltam, 38); // 50 − 12
+});
+
+teste('pontos de insígnia: só o maior grau da linha, 5 por história (RN20)', () => {
+  // Bronze e prata da mesma linha não somam: vale 3, não 4.
+  assert.equal(pontosDeInsignia(new Set([chave('fisgadas', 'bronze'), chave('fisgadas', 'prata')])), 3);
+  assert.equal(pontosDeInsignia(new Set([chave('historia:madrugueiro', 'bronze')])), 5);
+  assert.equal(pontosDeInsignia(semNada), 0);
+});
+
+teste('o nome da concessão sai da linha e do grau', () => {
+  assert.equal(nomeDaConcessao({ lineId: 'metro', tier: 'platina', triggerId: null }), 'Bateu o Metro');
+  assert.equal(nomeDaConcessao({ lineId: 'especie:traira', tier: 'ouro', triggerId: null }), 'Pescador de Traíra');
+  assert.equal(
+    nomeDaConcessao({ lineId: 'historia:virada-do-ano', tier: 'bronze', triggerId: null }),
+    'Virada do Ano',
+  );
 });
 
 // ──────────────────────────────────────────────────────────────────── resultado

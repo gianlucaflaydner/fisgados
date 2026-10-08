@@ -1,12 +1,16 @@
+import * as Sharing from 'expo-sharing';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
 
 import { getSpecies, type Species } from '@/catalog';
 import { Desbloqueio } from '@/components/Desbloqueio';
 import { FormularioDeCaptura } from '@/components/FormularioDeCaptura';
-import { BotaoPrincipal } from '@/components/ui';
+import { CartaParaCompartilhar, LADO_DO_CARD } from '@/components/CartaParaCompartilhar';
+import { BotaoPrincipal, BotaoSecundario } from '@/components/ui';
 import { deleteCatch, getCatch, updateCatch } from '@/db/queries';
+import type { CatchRow } from '@/db/schema';
 import { checkMeasure } from '@/domain/weight';
 import { useEdicao } from '@/stores/edicao';
 import { userIdAtual, useSession } from '@/stores/session';
@@ -30,11 +34,41 @@ export default function EditarCaptura() {
   const user = useSession((s) => s.user);
   const edicao = useEdicao();
 
-  const [foto, setFoto] = useState<string | null>(null);
-  const [caughtAt, setCaughtAt] = useState<string | null>(null);
+  const [row, setRow] = useState<CatchRow | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
+  const [compartilhando, setCompartilhando] = useState(false);
   const [aberta, setAberta] = useState<Species | null>(null);
+  const cartaRef = useRef<View>(null);
+
+  /**
+   * Gera a imagem e entrega ao sistema — F12.
+   *
+   * O arquivo vai para o cache do app, não para a galeria: quem compartilha quer mandar no grupo,
+   * não acumular imagem no carretel. O sistema operacional decide o resto, e quem recebe vê a
+   * carta na Água Funda, que é a identidade do app em qualquer conversa.
+   */
+  async function compartilhar() {
+    if (compartilhando || !cartaRef.current) return;
+    setCompartilhando(true);
+    try {
+      const uri = await captureRef(cartaRef, {
+        format: 'jpg',
+        quality: 0.92,
+        width: LADO_DO_CARD,
+        height: LADO_DO_CARD,
+      });
+      if (!(await Sharing.isAvailableAsync())) {
+        Alert.alert('Sem compartilhamento', 'Este aparelho não oferece a tela de compartilhar.');
+        return;
+      }
+      await Sharing.shareAsync(uri, { mimeType: 'image/jpeg', dialogTitle: 'Compartilhar captura' });
+    } catch {
+      Alert.alert('Não deu para gerar a imagem', 'Tente de novo.');
+    } finally {
+      setCompartilhando(false);
+    }
+  }
 
   // Carrega uma vez. Voltar do seletor de espécie não pode reler o banco por cima do que a
   // pessoa acabou de escolher.
@@ -42,19 +76,18 @@ export default function EditarCaptura() {
     if (!user?.id || !id) return;
     let vivo = true;
     (async () => {
-      const row = await getCatch(user.id, id);
+      const atual = await getCatch(user.id, id);
       if (!vivo) return;
-      if (row) {
+      if (atual) {
         useEdicao.getState().carregar({
-          id: row.id,
-          speciesId: row.speciesId,
-          lengthCm: String(row.lengthCm).replace('.', ','),
-          weightG: row.weightG === null ? '' : String(row.weightG / 1000).replace('.', ','),
-          placeLabel: row.placeLabel ?? '',
-          released: row.released,
+          id: atual.id,
+          speciesId: atual.speciesId,
+          lengthCm: String(atual.lengthCm).replace('.', ','),
+          weightG: atual.weightG === null ? '' : String(atual.weightG / 1000).replace('.', ','),
+          placeLabel: atual.placeLabel ?? '',
+          released: atual.released,
         });
-        setFoto(row.photoLocal);
-        setCaughtAt(row.caughtAt);
+        setRow(atual);
       }
       setCarregando(false);
     })();
@@ -161,8 +194,8 @@ export default function EditarCaptura() {
   return (
     <FormularioDeCaptura
       titulo="Corrigir captura"
-      fotoUri={foto}
-      quando={caughtAt ? new Date(caughtAt) : null}
+      fotoUri={row?.photoLocal ?? null}
+      quando={row ? new Date(row.caughtAt) : null}
       species={species}
       lengthCm={edicao.lengthCm}
       weightG={edicao.weightG}
@@ -179,9 +212,34 @@ export default function EditarCaptura() {
       }
       acoes={<BotaoPrincipal titulo="Salvar alterações" carregando={salvando} onPress={() => void salvar()} />}
       rodape={
-        <Pressable onPress={excluir} className="mt-2 self-start py-2 active:opacity-60">
-          <Text className="font-corpo-forte text-[15px] text-perigo">Excluir captura</Text>
-        </Pressable>
+        <View className="mt-2 gap-1">
+          <BotaoSecundario
+            titulo={compartilhando ? 'Gerando a imagem...' : 'Compartilhar captura'}
+            icone="compartilhar"
+            largura="cheia"
+            desabilitado={compartilhando || !row}
+            onPress={() => void compartilhar()}
+          />
+          <Text className="px-1 font-corpo text-[12px] leading-[17px] text-apoio">
+            Vira uma imagem com a foto, a espécie e a medida. O ponto de pesca exato não vai junto.
+          </Text>
+
+          <Pressable onPress={excluir} className="mt-4 self-start py-2 active:opacity-60">
+            <Text className="font-corpo-forte text-[15px] text-perigo">Excluir captura</Text>
+          </Pressable>
+
+          {/*
+            A carta de compartilhar é desenhada fora da tela, em tamanho real (1080×1080), porque o
+            `view-shot` fotografa o que está montado — não dá para gerar a imagem a partir de uma
+            versão reduzida sem perder resolução. `pointerEvents="none"` e a posição negativa a
+            mantêm invisível e inofensiva.
+          */}
+          {row ? (
+            <View pointerEvents="none" style={{ position: 'absolute', left: -9999, top: 0, opacity: 0 }}>
+              <CartaParaCompartilhar ref={cartaRef} row={row} nome={user?.nome ?? 'Fisgados'} />
+            </View>
+          ) : null}
+        </View>
       }
     />
   );

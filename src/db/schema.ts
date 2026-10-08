@@ -88,6 +88,30 @@ export const unlocks = sqliteTable(
 );
 
 /**
+ * Insígnias conquistadas — PRD seção 11, SDD 3.2.
+ *
+ * Uma linha por **grau**, e não por linha de insígnia: o histórico da linha é justamente a
+ * sequência de graus com data (RN18), e é dela que a vitrine lê o que mostrar.
+ *
+ * Nada aqui é recalculado para baixo. Pela RN13 a insígnia é permanente: excluir capturas derruba
+ * o contador, nunca o grau já concedido. É por isso que a tabela guarda a concessão em vez de o
+ * contador — o contador é derivável do histórico a qualquer momento, a concessão não.
+ */
+export const badges = sqliteTable(
+  'badges',
+  {
+    userId: text('user_id').notNull(),
+    /** `fisgadas`, `especie:traira`, `album:costa-sul`, `historia:madrugueiro` — SDD 14.3. */
+    lineId: text('line_id').notNull(),
+    tier: text('tier', { enum: ['bronze', 'prata', 'ouro', 'platina', 'diamante'] }).notNull(),
+    awardedAt: text('awarded_at').notNull(),
+    /** A captura que fechou o limiar. `null` quando veio do recálculo retroativo (RN17). */
+    triggerId: text('trigger_id'),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.lineId, t.tier] })],
+);
+
+/**
  * Preferências do aparelho — não da conta.
  *
  * O tema (claro, escuro ou seguir o sistema) é do celular, e não de quem está logado: quem empresta
@@ -125,5 +149,6 @@ export const syncOutbox = sqliteTable('sync_outbox', {
 export type CatchRow = typeof catches.$inferSelect;
 export type NewCatch = typeof catches.$inferInsert;
 export type UnlockRow = typeof unlocks.$inferSelect;
+export type BadgeRow = typeof badges.$inferSelect;
 export type OutboxRow = typeof syncOutbox.$inferSelect;
 export type AppPrefRow = typeof appPrefs.$inferSelect;

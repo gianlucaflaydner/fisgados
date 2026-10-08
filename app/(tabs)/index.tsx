@@ -174,6 +174,13 @@ export default function Home() {
 
             <View className="flex-row items-center gap-2">
               <Pressable
+                onPress={() => router.push('/insignias')}
+                className="h-9 flex-row items-center gap-1.5 rounded-full border border-borda-forte bg-elevado px-3 active:opacity-70"
+              >
+                <Icone nome="ranking" tamanho={14} cor={paleta.suave} />
+                <Text className="font-corpo-forte text-[13px] text-texto">Insígnias</Text>
+              </Pressable>
+              <Pressable
                 onPress={() => router.push('/locais')}
                 className="h-9 flex-row items-center gap-1.5 rounded-full border border-borda-forte bg-elevado px-3 active:opacity-70"
               >

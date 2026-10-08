@@ -9,8 +9,9 @@ import { FormularioDeCaptura } from '@/components/FormularioDeCaptura';
 import { SugestaoDeMedida } from '@/components/SugestaoDeMedida';
 import { SugestoesIA } from '@/components/SugestoesIA';
 import { BotaoPrincipal, BotaoTexto } from '@/components/ui';
-import { countAtPlace, saveCatch } from '@/db/queries';
+import { countAtPlace, saveCatch, sincronizarInsignias } from '@/db/queries';
 import { nomeDaConquista, subiuDeGrau } from '@/domain/conquistas';
+import { nomeDaConcessao } from '@/domain/insignias';
 import { aceitouPrimeira, apresentar, estimativaDeMedida, registroDaSugestao } from '@/domain/identificacao';
 import { checkMeasure } from '@/domain/weight';
 import { fotoDaGaleria } from '@/media/photo';
@@ -173,7 +174,16 @@ export default function Detalhes() {
       // Subiu de grau naquele lugar? É o reconhecimento de quem pesca sempre no mesmo canto —
       // justamente quem o álbum, que premia variedade, nunca premia.
       const degrau = local ? subiuDeGrau(noLocalAntes) : null;
-      const conquista = degrau ? nomeDaConquista(degrau.titulo, local) : null;
+      const conquistaDeLocal = degrau ? nomeDaConquista(degrau.titulo, local) : null;
+
+      /*
+       * As insígnias são avaliadas depois de a captura estar gravada, sobre o histórico inteiro
+       * (RN17). Vem por último na fila de anúncios: a carta nova é a recompensa do app, e um
+       * "Molhou o Anzol" aparecendo antes dela roubaria o momento.
+       */
+      const ganhas = await sincronizarInsignias(userIdAtual(), r.catchId);
+      const conquista =
+        conquistaDeLocal ?? (ganhas.length > 0 ? nomeDaConcessao(ganhas[0]!) : null);
 
       if (r.unlocked && species) {
         // A carta nova vem primeiro: é a cena de recompensa do app. A conquista do lugar espera
@@ -182,7 +192,9 @@ export default function Detalhes() {
         return;
       }
       if (conquista) {
-        Alert.alert('Conquista no seu ponto', conquista, [{ text: 'Boa!', onPress: concluir }]);
+        Alert.alert(conquistaDeLocal ? 'Conquista no seu ponto' : 'Insígnia nova', conquista, [
+          { text: 'Boa!', onPress: concluir },
+        ]);
         return;
       }
       if (r.trophy && species) {

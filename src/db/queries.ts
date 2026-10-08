@@ -11,7 +11,21 @@
 
 import { and, asc, desc, eq, isNotNull, isNull, lte, max, or, sql } from 'drizzle-orm';
 import { db } from './index';
-import { appPrefs, catches, syncOutbox, unlocks, type CatchRow, type NewCatch } from './schema';
+import {
+  appPrefs,
+  badges,
+  catches,
+  syncOutbox,
+  unlocks,
+  type BadgeRow,
+  type CatchRow,
+  type NewCatch,
+} from './schema';
+import {
+  avaliar as avaliarInsignias,
+  chave as chaveDaInsignia,
+  type Concessao,
+} from '../domain/insignias';
 import { agruparLocais, chaveDeLocal, type Local } from '../domain/locais';
 import { estimateWeightG, isTrophy } from '../domain/weight';
 import { getSpecies } from '../catalog';
@@ -278,6 +292,70 @@ export async function countAtPlace(userId: string, placeLabel: string): Promise<
   return locais.find((l) => l.chave === chave)?.capturas ?? 0;
 }
 
+/* ─────────────────────────────────────────────────────────────── insígnias */
+
+/** As insígnias já concedidas, como chaves `linha|grau` — o formato que o motor compara. */
+export async function listBadgeKeys(userId: string): Promise<Set<string>> {
+  const linhas = await db
+    .select({ lineId: badges.lineId, tier: badges.tier })
+    .from(badges)
+    .where(eq(badges.userId, userId));
+  return new Set(linhas.map((b) => chaveDaInsignia(b.lineId, b.tier)));
+}
+
+export async function listBadges(userId: string): Promise<BadgeRow[]> {
+  return db.select().from(badges).where(eq(badges.userId, userId)).orderBy(desc(badges.awardedAt));
+}
+
+/**
+ * Avalia o histórico e concede o que faltar — RN17, o recálculo retroativo.
+ *
+ * É chamada depois de salvar uma captura e ao abrir a tela de insígnias. As duas coisas são a
+ * mesma: o motor é uma função pura sobre o histórico inteiro, então "conceder ao salvar" e
+ * "conceder retroativamente" não são caminhos diferentes de código — e é por isso que lançar a
+ * funcionalidade hoje já entrega a quem pescou antes dela existir.
+ *
+ * Devolve só o que foi concedido **agora**, que é o que a tela anuncia.
+ */
+export async function sincronizarInsignias(
+  userId: string,
+  triggerId: string | null = null,
+): Promise<Concessao[]> {
+  const agora = new Date().toISOString();
+  const fuso = -new Date().getTimezoneOffset();
+
+  const [capturas, desbloqueios, jaConcedidas] = await Promise.all([
+    db
+      .select({
+        id: catches.id,
+        speciesId: catches.speciesId,
+        lengthCm: catches.lengthCm,
+        caughtAt: catches.caughtAt,
+        released: catches.released,
+        offlineOrigin: catches.offlineOrigin,
+      })
+      .from(catches)
+      .where(and(eq(catches.userId, userId), isNull(catches.deletedAt))),
+    listUnlockedIds(userId),
+    listBadgeKeys(userId),
+  ]);
+
+  const novas = avaliarInsignias(capturas, desbloqueios, jaConcedidas, fuso, triggerId);
+  if (novas.length === 0) return [];
+
+  await db.insert(badges).values(
+    novas.map((c) => ({
+      userId,
+      lineId: c.lineId,
+      tier: c.tier,
+      awardedAt: agora,
+      triggerId: c.triggerId,
+    })),
+  );
+
+  return novas;
+}
+
 export async function listCatchesOfSpecies(userId: string, speciesId: string): Promise<CatchRow[]> {
   return db
     .select()
@@ -463,6 +541,7 @@ export async function limparDadosLocais(): Promise<void> {
   await db.transaction(async (tx) => {
     await tx.delete(catches);
     await tx.delete(unlocks);
+    await tx.delete(badges);
     await tx.delete(syncOutbox);
   });
 }

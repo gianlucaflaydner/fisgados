@@ -27,7 +27,7 @@ Atualizado em 06/10/2026.
 | 2 | Álbum: grade, cartas acinzentadas quando bloqueadas, ficha da espécie, animação de desbloqueio, temas claro e escuro | ✅ Entregue |
 | 3 | Nuvem e amigos: login no Supabase, sincronização com fila offline, amigos por código, ranking | ✅ No ar. Migration 0002 aplicada e teste de convites passando (16/16). Falta testar no celular com duas contas |
 | 4 | IA: identificar a espécie pela foto, com o seletor manual como alternativa | ✅ No ar. Função publicada com `gemini-3.5-flash-lite`, traíra e dourado acertados em ~2 s. Falta testar no celular |
-| 5 | Card compartilhável e insígnias | ⬜ Não começada |
+| 5 | Card compartilhável e insígnias | 🟡 Código pronto: motor das 6 famílias, tela de insígnias e card 1080×1080. Falta testar no celular |
 
 ### Fase 3, em detalhe
 

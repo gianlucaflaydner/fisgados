@@ -91,6 +91,11 @@ export default function RootLayout() {
             headerTintColor: cores.texto,
             headerTitleStyle: { fontFamily: 'BricolageGrotesque_700Bold', fontSize: 18 },
             headerShadowVisible: false,
+            // Só a seta, sem o nome da tela anterior. No iOS esse nome sai do `title` de quem
+            // empurrou — e quem empurra quase tudo aqui é o grupo de abas, que não tem título
+            // nenhum: o botão aparecia escrito "(tabs)", o nome da pasta.
+            headerBackButtonDisplayMode: 'minimal',
+            headerBackTitle: '',
             contentStyle: { backgroundColor: cores.fundo },
           }}
         >
@@ -100,8 +105,12 @@ export default function RootLayout() {
            * ou por engano — e sair da conta desmonta tudo de uma vez.
            */}
           <Stack.Protected guard={user !== null}>
-            {/* As quatro abas trazem o próprio cabeçalho, desenhado dentro de cada tela. */}
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            {/*
+             * As quatro abas trazem o próprio cabeçalho, desenhado dentro de cada tela. O `title`
+             * existe mesmo sem cabeçalho: é dele que saem o nome da tela no sistema e qualquer
+             * rótulo de "voltar" que escape do modo mínimo.
+             */}
+            <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Fisgados' }} />
 
             <Stack.Screen name="album/[especie]" options={{ title: 'Ficha da espécie' }} />
             <Stack.Screen name="captura/camera" options={{ title: 'Foto da captura' }} />
@@ -120,6 +129,7 @@ export default function RootLayout() {
             />
             <Stack.Screen name="creditos" options={{ title: 'Créditos das fotos' }} />
             <Stack.Screen name="locais" options={{ title: 'Meus pontos de pesca' }} />
+            <Stack.Screen name="insignias" options={{ title: 'Insígnias' }} />
           </Stack.Protected>
 
           <Stack.Protected guard={user === null}>

@@ -378,3 +378,33 @@ Tela nova monta com elas; a nona variante de botão é o que desfaz um desenho.
 **Navegação** — quatro abas numa barra flutuante (Início, Álbum, Ranking, Amigos) e o botão
 laranja de registrar no meio, 30 px acima da barra. Antes álbum, ranking e amigos eram pílulas no
 topo da home, e só se chegava a eles passando por ela.
+
+## Insígnias e card compartilhável (Etapa 5)
+
+O segundo eixo de progressão. O álbum premia **variedade**; as insígnias premiam volume, tamanho e
+constância — é o que dá o que mostrar a quem pesca tilápia no mesmo açude há dez anos.
+
+São 99 linhas, em seis famílias (PRD seção 11): Fisgadas (volume), uma linha por espécie, Coleção
+(geral + uma por álbum), Troféus (exemplar de troféu e "Metro"), Constância (pescarias e meses
+seguidos) e História (12 eventos únicos, sem grau). Cada linha tem cinco graus, de bronze a
+diamante, com nome próprio.
+
+**O motor é uma função pura** `capturas[] → insígnias[]`, em `src/domain/insignias.ts`. Isso é o
+desenho inteiro, não um detalhe:
+
+- a RN17 (retroatividade) cai de graça — lançar hoje concede tudo que já foi pescado antes;
+- corrigir um limiar errado é mudar uma linha e recalcular, sem migrar dado;
+- "conceder ao salvar" e "conceder retroativamente" são o mesmo caminho de código.
+
+O que fica gravado em `badges` (migration 0005) é só a **concessão**: linha, grau e data. Pela RN13
+insígnia não volta atrás — apagar capturas derruba o contador, nunca o grau. É por isso que a
+tabela guarda a concessão em vez do contador, que é derivável a qualquer momento.
+
+**Falta "Pioneiro"** (primeiro do grupo a desbloquear uma espécie): ela depende de ordem entre
+pessoas e só o servidor pode conceder, como o SDD 14.1 já previa.
+
+**O card compartilhável** (`src/components/CartaParaCompartilhar.tsx`) é uma imagem de 1080×1080
+gerada com `react-native-view-shot` e entregue ao sistema por `expo-sharing`. Ela sai **sempre na
+Água Funda**, mesmo com o app no tema claro: quem recebe não escolheu tema nenhum, e card claro no
+fundo branco do WhatsApp some. A coordenada de GPS não entra ali (RN09) — só o rótulo do local, se
+houver.
